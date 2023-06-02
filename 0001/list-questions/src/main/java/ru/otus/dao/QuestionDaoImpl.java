@@ -1,25 +1,45 @@
 package ru.otus.dao;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import lombok.AllArgsConstructor;
 import ru.otus.dto.Answer;
 import ru.otus.dto.QuestionItem;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 
 @AllArgsConstructor
-public class QuestionImpl implements QuestionDao {
+public class QuestionDaoImpl implements QuestionDao {
 
-    final private LoadDataDao loadDataService;
+    private String fileName;
+
+    public List<String[]> getData(){
+        ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
+        InputStream fis = classLoader.getResourceAsStream(fileName);
+
+        CSVReader csvReader = new CSVReader(new InputStreamReader(fis));
+        try {
+            return csvReader.readAll();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (CsvException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Override
     public List<QuestionItem> getQuestionItems() {
         List<QuestionItem> rez = new ArrayList<>();
         try {
-            List<String[]> data = loadDataService.getData();
+            List<String[]> data = getData();
             for (String[] s : data) {
                 if (s != null && s.length > 2) {
                     QuestionItem questionItem = new QuestionItem();
