@@ -19,7 +19,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
     private String fileName;
 
-    public List<String[]> getData(){
+    private List<String[]> getData(){
         ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
         InputStream fis = classLoader.getResourceAsStream(fileName);
 
