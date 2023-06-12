@@ -20,16 +20,13 @@ public class QuestionDaoImpl implements QuestionDao {
     private String fileName;
 
     private List<String[]> getData(){
-        ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
-        InputStream fis = classLoader.getResourceAsStream(fileName);
 
-        CSVReader csvReader = new CSVReader(new InputStreamReader(fis));
-        try {
+        ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
+        try ( InputStream fis = classLoader.getResourceAsStream(fileName)) {
+            CSVReader csvReader = new CSVReader(new InputStreamReader(fis));
             return csvReader.readAll();
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (CsvException e) {
+        } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
     }

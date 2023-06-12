@@ -3,14 +3,15 @@ package service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.*;
-import ru.otus.config.DaoConfig;
-import ru.otus.config.ServiceConfig;
 import ru.otus.dao.PersonDao;
+import ru.otus.dao.QuestionDao;
+import ru.otus.dao.QuestionDaoImpl;
 import ru.otus.dao.UserInteractionDao;
 import ru.otus.dto.Person;
 import ru.otus.dto.QuestionItem;
+import ru.otus.service.IOService;
 import ru.otus.service.QuestionService;
+
 
 class PersonDaoImplTest implements PersonDao {
     @Override
@@ -22,6 +23,19 @@ class PersonDaoImplTest implements PersonDao {
     }
 }
 
+class IOServiceImplTest implements IOService {
+
+    @Override
+    public void printLn(String line) {
+        System.out.println(line);
+    }
+
+    @Override
+    public String readLine() {
+        return null;
+    }
+
+}
 class UserInteractionDaoImplTrue implements UserInteractionDao {
     @Override
     public boolean askQuestion(QuestionItem questionItem){
@@ -39,26 +53,25 @@ class UserInteractionDaoImplFalse implements UserInteractionDao {
 }
 
 
-
-
 public class QuestionServiceTest {
-
 
 
     @Test
     public void testTrueWork(){
 
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext();
-        context.registerBean("personDao", PersonDaoImplTest.class);
+        QuestionDao questionDao = new QuestionDaoImpl("data.csv");
+        PersonDao personDao = new PersonDaoImplTest();
+        UserInteractionDao userInteractionDao = new UserInteractionDaoImplTrue();
+        IOService ioService = new IOServiceImplTest();
 
-        context.register(DaoConfig.class);
-        context.registerBean("userInteractionDao", UserInteractionDaoImplTrue.class);
 
-        context.register(ServiceConfig.class);
-        context.refresh();
 
-        QuestionService questionService = context.getBean(QuestionService.class);
+        QuestionService questionService = new QuestionService(questionDao,
+                personDao,
+                userInteractionDao,
+                ioService,
+                1
+                );
 
         Assertions.assertTrue(questionService.userTesting());
 
@@ -68,20 +81,21 @@ public class QuestionServiceTest {
     @Test
     public void testFalseWork(){
 
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext();
+        QuestionDao questionDao = new QuestionDaoImpl("data.csv");
+        PersonDao personDao = new PersonDaoImplTest();
+        UserInteractionDao userInteractionDao = new UserInteractionDaoImplFalse();
+        IOService ioService = new IOServiceImplTest();
 
-        context.registerBean("personDao", PersonDaoImplTest.class);
-        context.register(DaoConfig.class);
-        context.registerBean("userInteractionDao", UserInteractionDaoImplFalse.class);
 
-        context.register(ServiceConfig.class);
-        context.refresh();
 
-        QuestionService questionService = context.getBean(QuestionService.class);
+        QuestionService questionService = new QuestionService(questionDao,
+                personDao,
+                userInteractionDao,
+                ioService,
+                1
+        );
 
         Assertions.assertFalse(questionService.userTesting());
-
 
     }
 }

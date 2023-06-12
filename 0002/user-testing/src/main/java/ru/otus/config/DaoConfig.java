@@ -8,6 +8,7 @@ import ru.otus.dao.PersonDao;
 import ru.otus.dao.PersonDaoImpl;
 import ru.otus.dao.QuestionDao;
 import ru.otus.dao.QuestionDaoImpl;
+import ru.otus.service.IOService;
 
 
 @PropertySource("classpath:application.properties")
@@ -23,8 +24,8 @@ public class DaoConfig {
     }
 
     @Bean
-    public PersonDao personDao(){
-        return new PersonDaoImpl();
+    public PersonDao personDao(IOService ioService){
+        return new PersonDaoImpl(ioService);
     }
 
 

@@ -18,6 +18,8 @@ public class QuestionService {
 
     private final UserInteractionDao userInteractionDao;
 
+    private final IOService ioService;
+
     private final int passingScore;
 
 
@@ -53,7 +55,7 @@ public class QuestionService {
         } else {
             sb.append("failed testing");
         }
-        System.out.println(sb);
+        ioService.printLn(sb.toString());
 
     }
 
@@ -61,7 +63,7 @@ public class QuestionService {
 
         List<QuestionItem> questionItems = questionDao.getQuestionItems();
 
-        System.out.println("--------questions-----------");
+        ioService.printLn("--------questions-----------");
         for (QuestionItem questionItem : questionItems) {
 
             StringBuilder sb = new StringBuilder();
@@ -73,8 +75,8 @@ public class QuestionService {
             sb.append(String.join(", ", questionItem.getAnswerOptions().stream().map(s -> s.getBody()).toList()));
             sb.append("]");
 
-            System.out.println(sb.toString());
-            System.out.println("-------------------");
+            ioService.printLn(sb.toString());
+            ioService.printLn("-------------------");
         }
 
 

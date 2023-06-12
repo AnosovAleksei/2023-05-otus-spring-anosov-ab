@@ -4,20 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>ru.otus</groupId>
-        <artifactId>maven-base</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
 
     <groupId>ru.otus</groupId>
     <artifactId>user-testing</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
+        <checkstyle.version>10.9.1</checkstyle.version>
+        <checkstyle.config.url>https://raw.githubusercontent.com/OtusTeam/Spring/master/checkstyle.xml</checkstyle.config.url>
+        <spring.boot.maven.plugin.version>3.1.0</spring.boot.maven.plugin.version>
         <opencsv.version>5.7.1</opencsv.version>
         <projectlombok.version>1.18.28</projectlombok.version>
         <springframework.version>6.0.9</springframework.version>
+        <jupiter.version>5.9.3</jupiter.version>
+        <projectlombok.version>1.18.28</projectlombok.version>
     </properties>
     <dependencies>
         <dependency>
@@ -30,8 +33,60 @@
             <artifactId>opencsv</artifactId>
             <version>${opencsv.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${projectlombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>userTesting</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>ru.otus.Main</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${checkstyle.config.url}</configLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
 </project>

@@ -1,22 +1,18 @@
 package ru.otus.dao;
 
+import lombok.RequiredArgsConstructor;
 import ru.otus.dto.Answer;
 import ru.otus.dto.QuestionItem;
+import ru.otus.service.IOService;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
+@RequiredArgsConstructor
 public class UserInteractionDaoImpl implements UserInteractionDao{
+    private final IOService ioService;
+
     private String askQuestionRaw(String question, String variant){
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-        try {
-            System.out.println("question: "+question + " answer options ["+variant+"]");
-            return reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ioService.printLn("question: "+question + " answer options ["+variant+"]");
+        return ioService.readLine();
     }
 
     @Override
