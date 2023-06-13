@@ -22,7 +22,7 @@ public class ServiceConfig {
 
     @Bean
     public IOService ioService(){
-        return new IOServiceImpl();
+        return new IOServiceImpl(System.out, System.in);
     }
 
     @Bean

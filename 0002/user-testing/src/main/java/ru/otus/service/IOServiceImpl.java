@@ -1,25 +1,30 @@
 package ru.otus.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
+
 
 public class IOServiceImpl implements IOService {
 
+    private final PrintStream output;
+
+    private final Scanner input;
+
+    public IOServiceImpl(PrintStream outputStream, InputStream inputStream) {
+        output = outputStream;
+        input = new Scanner(inputStream);
+    }
+
     @Override
     public void printLn(String line) {
-        System.out.println(line);
+        output.println(line);
     }
 
     @Override
     public String readLine() {
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-        try {
-            return reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return input.nextLine();
     }
 
 }
