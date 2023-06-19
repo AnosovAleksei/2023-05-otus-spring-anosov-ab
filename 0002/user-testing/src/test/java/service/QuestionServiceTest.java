@@ -2,6 +2,7 @@ package service;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.dao.PersonDao;
 import ru.otus.dao.QuestionDao;
@@ -53,9 +54,11 @@ class UserInteractionDaoImplFalse implements UserInteractionDao {
 }
 
 
+@DisplayName("Проверка работы сервиса тестирования тестирование")
 public class QuestionServiceTest {
 
 
+    @DisplayName("Проверка что тестирование пользователя прошло успешно")
     @Test
     public void testTrueWork(){
 
@@ -78,6 +81,7 @@ public class QuestionServiceTest {
 
     }
 
+    @DisplayName("Проверка пользователь не смог пройти тестирование")
     @Test
     public void testFalseWork(){
 
