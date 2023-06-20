@@ -2,7 +2,6 @@ package ru.otus.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import ru.otus.dao.PersonDao;
 import ru.otus.dao.QuestionDao;
 import ru.otus.dao.UserInteractionDao;

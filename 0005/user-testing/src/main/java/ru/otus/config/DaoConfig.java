@@ -3,7 +3,6 @@ package ru.otus.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import ru.otus.dao.PersonDao;
 import ru.otus.dao.PersonDaoImpl;
 import ru.otus.dao.QuestionDao;
@@ -11,10 +10,7 @@ import ru.otus.dao.QuestionDaoImpl;
 import ru.otus.service.IOService;
 import ru.otus.service.LocalizationService;
 
-import java.util.Locale;
 
-
-//@PropertySource("classpath:application.properties")
 @Configuration
 public class DaoConfig {
 

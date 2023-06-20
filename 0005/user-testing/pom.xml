@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
+		<spring.boot.maven.plugin.version>3.1.0</spring.boot.maven.plugin.version>
 		<checkstyle.version>10.9.1</checkstyle.version>
 		<checkstyle.config.url>https://raw.githubusercontent.com/OtusTeam/Spring/master/checkstyle.xml</checkstyle.config.url>
 		<opencsv.version>5.7.1</opencsv.version>
@@ -43,10 +44,22 @@
 	</dependencies>
 
 	<build>
+		<finalName>userTesting</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>ru.otus.UserTestingApplication</mainClass>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -69,18 +82,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

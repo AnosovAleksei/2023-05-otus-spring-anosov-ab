@@ -4,10 +4,7 @@ package ru.otus.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
 import ru.otus.config.LocaleConfig;
-
-import java.util.Locale;
 
 
 @RequiredArgsConstructor
