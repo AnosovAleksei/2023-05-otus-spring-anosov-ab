@@ -12,5 +12,6 @@
     <modules>
         <module>0001/list-questions</module>
         <module>0002/user-testing</module>
+        <module>0005/user-testing</module>
     </modules>
 </project>
