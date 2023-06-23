@@ -3,7 +3,7 @@ package ru.otus.dao;
 import lombok.RequiredArgsConstructor;
 import ru.otus.dto.Person;
 import ru.otus.service.IOService;
-import ru.otus.service.LocalizationService;
+import ru.otus.service.LocalizationServiceImpl;
 
 
 @RequiredArgsConstructor
@@ -13,7 +13,7 @@ public class PersonDaoImpl implements PersonDao {
     private final IOService ioService;
 
 
-    private final LocalizationService localizationService;
+    private final LocalizationServiceImpl localizationService;
 
     @Override
     public Person getPerson() {

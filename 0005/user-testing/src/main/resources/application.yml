@@ -6,6 +6,6 @@ spring:
 application:
   locale: en_EN
 
-passing-score: 3
-file-data-en: data_en.csv
-file-data-ru: data_ru.csv
+  passing-score: 3
+  file-data-en: data_en.csv
+  file-data-ru: data_ru.csv

@@ -1,10 +1,8 @@
 package ru.otus.service;
 
-
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
-
 
 
 public class IOServiceImpl implements IOService {

@@ -4,17 +4,10 @@ package ru.otus.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.MessageSource;
-import ru.otus.config.LocaleConfig;
-import ru.otus.dao.PersonDao;
-import ru.otus.dao.QuestionDao;
-import ru.otus.dao.QuestionDaoImpl;
-import ru.otus.dao.UserInteractionDao;
+
+import ru.otus.dao.*;
 import ru.otus.dto.Person;
 import ru.otus.dto.QuestionItem;
-
-import java.util.Locale;
 
 
 class PersonDaoImplTest implements PersonDao {
@@ -27,42 +20,50 @@ class PersonDaoImplTest implements PersonDao {
     }
 }
 
-class IOServiceImplTest implements IOService {
+
+class localizationServiceTestImpl implements LocalizationService{
+
+
+    @Override
+    public String getMessage(String key, Object[] args) {
+        return key;
+    }
+}
+
+class ioServiceTestTrueImpl implements IOService{
+    private String lastPrint;
+    @Override
+    public void printLn(String line) {
+        lastPrint = line;
+    }
+
+    @Override
+    public String readLine() {
+        switch (lastPrint) {
+            case "question: 6+3 answer.options [9, 7, 6, 5, 4, 3]":
+                return "9";
+            case "question: 7+1 answer.options [8, 5, 4, 3, 1]":
+                return "8";
+        }
+
+        return null;
+    }
+}
+
+class ioServiceTestFalseImpl implements IOService {
 
     @Override
     public void printLn(String line) {
-        System.out.println(line);
     }
 
     @Override
     public String readLine() {
         return null;
     }
-
 }
-class UserInteractionDaoImplTrue implements UserInteractionDao {
-    @Override
-    public boolean askQuestion(QuestionItem questionItem){
-        return true;
-    }
-}
-
-
-
-class UserInteractionDaoImplFalse implements UserInteractionDao {
-    @Override
-    public boolean askQuestion(QuestionItem questionItem){
-        return false;
-    }
-}
-
-
 
 @DisplayName("Проверка работы сервиса тестирования тестирование")
 public class QuestionServiceTest {
-
-    @MockBean
-    LocalizationService localizationService;
 
     @DisplayName("Проверка что тестирование пользователя прошло успешно")
     @Test
@@ -70,10 +71,10 @@ public class QuestionServiceTest {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
-        UserInteractionDao userInteractionDao = new UserInteractionDaoImplTrue();
-        IOService ioService = new IOServiceImplTest();
+        LocalizationService localizationService = new localizationServiceTestImpl();
+        IOService ioService = new ioServiceTestTrueImpl();
 
-
+        UserInteractionDao userInteractionDao = new UserInteractionDaoImpl(ioService, localizationService);
 
 
         QuestionService questionService = new QuestionService(questionDao,
@@ -95,9 +96,9 @@ public class QuestionServiceTest {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
-        UserInteractionDao userInteractionDao = new UserInteractionDaoImplFalse();
-        IOService ioService = new IOServiceImplTest();
-
+        LocalizationService localizationService = new localizationServiceTestImpl();
+        IOService ioService = new ioServiceTestFalseImpl();
+        UserInteractionDao userInteractionDao = new UserInteractionDaoImpl(ioService, localizationService);
 
 
         QuestionService questionService = new QuestionService(questionDao,
