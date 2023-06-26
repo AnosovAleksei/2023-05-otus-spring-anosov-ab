@@ -14,11 +14,11 @@ public class UserInteractionDaoImpl implements UserInteractionDao{
     private final LocalizationService localizationService;
 
     private String askQuestionRaw(String question, String variant){
-        ioService.printLn(localizationService.getMessage("question", null) +
+        ioService.printLn(localizationService.getMessage("question") +
                 ": "+
                 question +
                 " " +
-                localizationService.getMessage("answer.options", null) +
+                localizationService.getMessage("answer.options") +
                 " ["+variant+"]");
         return ioService.readLine();
     }

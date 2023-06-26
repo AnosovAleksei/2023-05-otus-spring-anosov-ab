@@ -22,10 +22,10 @@ public class PersonDaoImpl implements PersonDao {
         Person person = new Person();
 
 
-        ioService.printLn(localizationService.getMessage("welcome.name", null) +": ");
+        ioService.printLn(localizationService.getMessage("welcome.name") +": ");
         person.setName(ioService.readLine());
 
-        ioService.printLn(localizationService.getMessage("welcome.surname", null) + ": ");
+        ioService.printLn(localizationService.getMessage("welcome.surname") + ": ");
         person.setSurname(ioService.readLine());
         return person;
     }

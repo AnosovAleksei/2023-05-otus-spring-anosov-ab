@@ -28,6 +28,11 @@ class localizationServiceTestImpl implements LocalizationService{
     public String getMessage(String key, Object[] args) {
         return key;
     }
+
+    @Override
+    public String getMessage(String key) {
+        return getMessage(key, null);
+    }
 }
 
 class ioServiceTestTrueImpl implements IOService{

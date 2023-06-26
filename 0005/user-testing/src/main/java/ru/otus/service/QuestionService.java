@@ -51,16 +51,16 @@ public class QuestionService {
     public void printRaportTesting(boolean status) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(localizationService.getMessage("user", null));
+        sb.append(localizationService.getMessage("user"));
         sb.append(": ");
         sb.append(person.getName());
         sb.append(" ");
         sb.append(person.getSurname());
         sb.append("\n");
         if (status) {
-            sb.append(localizationService.getMessage("status.ok", null));
+            sb.append(localizationService.getMessage("status.ok"));
         } else {
-            sb.append(localizationService.getMessage("status.err", null));
+            sb.append(localizationService.getMessage("status.err"));
         }
         ioService.printLn(sb.toString());
 
