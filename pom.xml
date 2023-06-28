@@ -13,5 +13,6 @@
         <module>0001/list-questions</module>
         <module>0002/user-testing</module>
         <module>0005/user-testing</module>
+        <module>0007/user-testing-shell</module>
     </modules>
 </project>
