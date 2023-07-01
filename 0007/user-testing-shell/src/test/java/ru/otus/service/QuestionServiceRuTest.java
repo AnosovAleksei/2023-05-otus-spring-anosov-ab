@@ -4,6 +4,7 @@ package ru.otus.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +31,17 @@ public class QuestionServiceRuTest {
         Mockito.when(ioService.readLine("вопрос: 6+3 варианты ответа [9, 7, 6, 5, 4, 3]")).thenReturn("9");
         Mockito.when(ioService.readLine("вопрос: 7+1 варианты ответа [8, 6, 5, 4, 3, 1]")).thenReturn("8");
 
-        Assertions.assertTrue(questionService.userTesting());
+        boolean rez = questionService.userTesting();
+        Assertions.assertTrue(rez);
+        questionService.printRaportTesting(rez);
+
+        ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(ioService, Mockito.times(1)).printLn(valueCapture.capture());
+        valueCapture = valueCapture;
+        System.out.println(valueCapture.getAllValues().get(0));
+        Assertions.assertEquals(valueCapture.getAllValues().get(0),"пользователь: null null\n" +
+                "тест успешно выполнен");
     }
 
     @DisplayName("Проверка пользователь не смог пройти тестирование")
@@ -40,6 +51,16 @@ public class QuestionServiceRuTest {
         Mockito.when(ioService.readLine("вопрос: 6+3 варианты ответа [9, 7, 6, 5, 4, 3]")).thenReturn("7");
         Mockito.when(ioService.readLine("вопрос: 7+1 варианты ответа [8, 6, 5, 4, 3, 1]")).thenReturn("6");
 
-        Assertions.assertFalse(questionService.userTesting());
+        boolean rez = questionService.userTesting();
+        Assertions.assertFalse(rez);
+        questionService.printRaportTesting(rez);
+
+        ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
+
+        Mockito.verify(ioService, Mockito.times(1)).printLn(valueCapture.capture());
+        valueCapture = valueCapture;
+        System.out.println(valueCapture.getAllValues().get(0));
+        Assertions.assertEquals(valueCapture.getAllValues().get(0),"пользователь: null null\n" +
+                "тест не выполнен");
     }
 }

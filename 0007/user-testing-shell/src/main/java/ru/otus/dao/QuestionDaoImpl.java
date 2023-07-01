@@ -3,6 +3,8 @@ package ru.otus.dao;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import ru.otus.config.ResourceProvider;
 import ru.otus.dto.Answer;
 import ru.otus.dto.QuestionItem;
 
@@ -13,16 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-
+@Component
 @AllArgsConstructor
 public class QuestionDaoImpl implements QuestionDao {
 
-    private String fileName;
+
+    private final ResourceProvider resourceProvider;
+//    private String fileName;
 
     private List<String[]> getData(){
 
         ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
-        try ( InputStream fis = classLoader.getResourceAsStream(fileName)) {
+        try ( InputStream fis = classLoader.getResourceAsStream(resourceProvider.getFileResourceName())) {
             CSVReader csvReader = new CSVReader(new InputStreamReader(fis));
             return csvReader.readAll();
 

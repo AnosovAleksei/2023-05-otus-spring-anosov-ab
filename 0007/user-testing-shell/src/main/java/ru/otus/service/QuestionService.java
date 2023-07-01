@@ -1,6 +1,8 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.otus.config.TestingProvider;
 import ru.otus.dao.PersonDao;
 import ru.otus.dao.QuestionDao;
 import ru.otus.dao.UserInteractionDao;
@@ -10,6 +12,7 @@ import ru.otus.dto.QuestionItem;
 import java.util.List;
 
 
+@Service
 @RequiredArgsConstructor
 public class QuestionService {
 
@@ -23,7 +26,8 @@ public class QuestionService {
 
     private final LocalizationService localizationService;
 
-    private final int passingScore;
+    private final TestingProvider testingProvider;
+
 
 
 
@@ -40,7 +44,7 @@ public class QuestionService {
                 count++;
             }
         }
-        if (passingScore <= count) {
+        if (testingProvider.getPassingScore() <= count) {
             return true;
         }
         return false;
