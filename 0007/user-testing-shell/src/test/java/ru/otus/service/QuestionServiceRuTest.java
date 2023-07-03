@@ -31,9 +31,8 @@ public class QuestionServiceRuTest {
         Mockito.when(ioService.readLine("вопрос: 6+3 варианты ответа [9, 7, 6, 5, 4, 3]")).thenReturn("9");
         Mockito.when(ioService.readLine("вопрос: 7+1 варианты ответа [8, 6, 5, 4, 3, 1]")).thenReturn("8");
 
-        boolean rez = questionService.userTesting();
-        Assertions.assertTrue(rez);
-        questionService.printRaportTesting(rez);
+        String rez = questionService.startTestingUser ();
+        Assertions.assertEquals("тестирование завершенно" , rez);
 
         ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
 
@@ -51,9 +50,8 @@ public class QuestionServiceRuTest {
         Mockito.when(ioService.readLine("вопрос: 6+3 варианты ответа [9, 7, 6, 5, 4, 3]")).thenReturn("7");
         Mockito.when(ioService.readLine("вопрос: 7+1 варианты ответа [8, 6, 5, 4, 3, 1]")).thenReturn("6");
 
-        boolean rez = questionService.userTesting();
-        Assertions.assertFalse(rez);
-        questionService.printRaportTesting(rez);
+        String rez = questionService.startTestingUser ();
+        Assertions.assertEquals("тестирование завершенно" , rez);
 
         ArgumentCaptor<String> valueCapture = ArgumentCaptor.forClass(String.class);
 

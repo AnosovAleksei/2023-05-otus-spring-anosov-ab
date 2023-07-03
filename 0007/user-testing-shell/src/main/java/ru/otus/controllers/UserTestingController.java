@@ -19,8 +19,6 @@ public class UserTestingController {
 
     @ShellMethod(value = "start testing user", key = {"t", "test"})
     public String testingUser (){
-        questionService.printRaportTesting(questionService.userTesting());
-
-        return localizationService.getMessage("work.end");
+        return questionService.startTestingUser();
     }
 }

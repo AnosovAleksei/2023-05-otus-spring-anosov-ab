@@ -34,7 +34,7 @@ public class QuestionService {
 
     private Person person;
 
-    public boolean userTesting(Person person){
+    private boolean userTesting(Person person){
 
         this.person = person;
         List<QuestionItem> questionItems = questionDao.getQuestionItems();
@@ -51,13 +51,13 @@ public class QuestionService {
 
     }
 
-    public boolean userTesting() {
+    private boolean userTesting() {
         person = personDao.getPerson();
         return userTesting(person);
     }
 
 
-    public void printRaportTesting(boolean status) {
+    private void printRaportTesting(boolean status) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(localizationService.getMessage("user"));
@@ -74,6 +74,12 @@ public class QuestionService {
         ioService.printLn(sb.toString());
 
     }
+
+    public String startTestingUser(){
+        printRaportTesting(userTesting());
+        return localizationService.getMessage("work.end");
+    }
+
 
     public void printQuestions() {
 
