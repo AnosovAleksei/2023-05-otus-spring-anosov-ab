@@ -1,45 +1,123 @@
 package ru.otus.dao;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.otus.dto.Author;
-import ru.otus.dto.Book;
+import ru.otus.domain.Author;
+import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @Repository
-public class BookDaoJdbc{
+public class BookDaoJdbc {
 
-    private final JdbcOperations jdbc;
+    private final JdbcOperations jdbcOperations;
 
-    public BookDaoJdbc(JdbcOperations jdbcOperations) {
-        this.jdbc = jdbcOperations;
-    }
+    private final AuthorDaoJdbc authorDaoJdbc;
+
+    private final GenreDaoJdbc genreDaoJdbc;
 
     public int count() {
-        Integer count = jdbc.queryForObject("select count(*) from book", Integer.class);
+        Integer count = jdbcOperations.queryForObject("select count(*) from book", Integer.class);
         return count == null ? 0 : count;
     }
 
-    public List<Author> getAllAuthor(){
+    public Book createNewBook(String name, String authorName, String genreName) {
+        Author author = authorDaoJdbc.createAuthor(authorName);
+        Genre genre = genreDaoJdbc.createGenre(genreName);
 
-        return jdbc.query("select * from author order by id", new AuthorMapper());
+        return saveBook(name, author, genre);
+    }
 
+    public Book updateBook(String name, String authorName, String genreName) {
+        Author author = authorDaoJdbc.createAuthor(authorName);
+        Genre genre = genreDaoJdbc.createGenre(genreName);
+
+        return upgradeBook(name, author, genre);
+    }
+
+    public String delateBook(String name) {
+        jdbcOperations.update("""
+                delete from book where name = ?
+                """, name);
+        return "book : " + name + " deleted successfully";
+    }
+
+    private Book upgradeBook(String name, Author author, Genre genre) {
+        jdbcOperations.update("""
+                update book set author_id=?, genre_id=? where name = ?
+                """, author.getId(), genre.getId(), name);
+        return getBookByName(name);
+    }
+
+    private Book saveBook(String name, Author author, Genre genre) {
+        jdbcOperations.update("""
+                insert into book (name, author_id, genre_id) values (?, ?, ?)
+                """, name, author.getId(), genre.getId());
+        return getBookByName(name);
     }
 
 
-
-    private static class AuthorMapper implements RowMapper<Author> {
-
-        @Override
-        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            return new Author(id, name);
+    public Book getBookByName(String name) {
+        try {
+            return jdbcOperations.queryForObject("""
+                    select  b.name,
+                                a.name as author, 
+                                a.id as author_id,
+                                g.name as genre, 
+                                g.id as genre_id
+                                
+                        from book b
+                        left join author a on (a.id = b.author_id)
+                        left join genre g on (g.id = b.genre_id)
+                        where b.name = ?
+                    """, new BookMapper(), name);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
+
+
+    public List<Book> getAllBook() {
+
+        return jdbcOperations.query("""
+                select  b.name, 
+                        a.name as author, 
+                        a.id as author_id,
+                        g.name as genre, 
+                        g.id as genre_id
+                        
+                from book b
+                left join author a on (a.id = b.author_id)
+                left join genre g on (g.id = b.genre_id)
+                                    
+                order by b.name
+                """, new BookMapper());
+
+    }
+
+    private static class BookMapper implements RowMapper<Book> {
+
+        @Override
+        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
+            String name = resultSet.getString("name");
+
+            Long authorId = resultSet.getLong("author_id");
+            String author = resultSet.getString("author");
+
+            Long genreId = resultSet.getLong("genre_id");
+            String genre = resultSet.getString("genre");
+
+            return new Book(name, new Author(authorId, author), new Genre(genreId, genre));
+        }
+    }
+
 }
