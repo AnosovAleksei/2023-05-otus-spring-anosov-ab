@@ -16,7 +16,7 @@ public class BookJdbcDaoTest {
 
 
     @Test
-    public void testCrud(){
+    public void testCrud() {
 
         {
             Book book = bookDaoJdbc.createNewBook("testName", "testAuthor", "testGenre");
