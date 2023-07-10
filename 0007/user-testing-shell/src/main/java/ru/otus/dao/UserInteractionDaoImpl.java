@@ -10,32 +10,32 @@ import ru.otus.service.LocalizationService;
 
 @Component
 @RequiredArgsConstructor
-public class UserInteractionDaoImpl implements UserInteractionDao{
+public class UserInteractionDaoImpl implements UserInteractionDao {
     private final IOService ioService;
 
     private final LocalizationService localizationService;
 
-    private String askQuestionRaw(String question, String variant){
+    private String askQuestionRaw(String question, String variant) {
         String request = localizationService.getMessage("question") +
-                ": "+
+                ": " +
                 question +
                 " " +
                 localizationService.getMessage("answer.options") +
-                " ["+variant+"]";
+                " [" + variant + "]";
 
 
         return ioService.readLine(request);
     }
 
     @Override
-    public boolean askQuestion(QuestionItem questionItem){
+    public boolean askQuestion(QuestionItem questionItem) {
         String question = questionItem.getQuestion();
-        String variant = String.join(", ",  questionItem.getAnswerOptions() .stream().map(s->s.getBody()).toList());
+        String variant = String.join(", ", questionItem.getAnswerOptions().stream().map(s -> s.getBody()).toList());
 
         String userAanswer = askQuestionRaw(question, variant);
 
-        for(Answer answer : questionItem.getAnswerOptions()){
-            if(answer.getBody().equals(userAanswer) && answer.isCorrect()){
+        for (Answer answer : questionItem.getAnswerOptions()) {
+            if (answer.getBody().equals(userAanswer) && answer.isCorrect()) {
                 return true;
             }
         }

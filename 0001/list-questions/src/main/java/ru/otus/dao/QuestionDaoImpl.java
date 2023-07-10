@@ -19,7 +19,7 @@ public class QuestionDaoImpl implements QuestionDao {
 
     private String fileName;
 
-    private List<String[]> getData(){
+    private List<String[]> getData() {
         ClassLoader classLoader = QuestionDaoImpl.class.getClassLoader();
         InputStream fis = classLoader.getResourceAsStream(fileName);
 
@@ -49,7 +49,7 @@ public class QuestionDaoImpl implements QuestionDao {
                     answers.add(new Answer(s[1], true));
 
 
-                    IntStream.range(2,s.length).filter(i -> i > 2).forEach(i->answers.add(new Answer(s[i], false)));
+                    IntStream.range(2, s.length).filter(i -> i > 2).forEach(i -> answers.add(new Answer(s[i], false)));
 
                     rez.add(questionItem);
                 }

@@ -29,13 +29,13 @@ public class QuestionImplTest {
     LocalizationServiceImpl localizationService;
 
     @Test
-    public void testWork(){
+    public void testWork() {
         Mockito.when(resourceProvider.getFileResourceName()).thenReturn("data.csv");
 
         Assertions.assertNotNull(questionImpl);
 
         List<QuestionItem> QuestionItems = questionImpl.getQuestionItems();
 
-        Assertions.assertEquals(QuestionItems.size(),2);
+        Assertions.assertEquals(QuestionItems.size(), 2);
     }
 }

@@ -26,8 +26,6 @@ public class QuestionService {
     private final int passingScore;
 
 
-
-
     private Person person;
 
     public boolean userTesting() {
@@ -90,7 +88,7 @@ public class QuestionService {
     }
 
     @PostConstruct
-    public void workService(){
+    public void workService() {
         printRaportTesting(userTesting());
     }
 }

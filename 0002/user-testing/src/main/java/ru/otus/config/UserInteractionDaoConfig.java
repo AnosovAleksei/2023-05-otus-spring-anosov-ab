@@ -10,7 +10,7 @@ import ru.otus.service.IOService;
 @Configuration
 public class UserInteractionDaoConfig {
     @Bean
-    public UserInteractionDao userInteractionDao(IOService ioService){
+    public UserInteractionDao userInteractionDao(IOService ioService) {
         return new UserInteractionDaoImpl(ioService);
     }
 }

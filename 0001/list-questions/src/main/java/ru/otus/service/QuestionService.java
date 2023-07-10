@@ -11,12 +11,12 @@ public class QuestionService {
 
     private final QuestionDao questionDao;
 
-    public void printQuestions(){
+    public void printQuestions() {
 
         List<QuestionItem> questionItems = questionDao.getQuestionItems();
 
         System.out.println("--------questions-----------");
-        for(QuestionItem questionItem : questionItems){
+        for (QuestionItem questionItem : questionItems) {
 
             StringBuilder sb = new StringBuilder();
             sb.append("question : ");
@@ -24,7 +24,7 @@ public class QuestionService {
             sb.append("\n");
 
             sb.append("answer options : [");
-            sb.append(String.join(", ",  questionItem.getAnswerOptions() .stream().map(s->s.getBody()).toList()));
+            sb.append(String.join(", ", questionItem.getAnswerOptions().stream().map(s -> s.getBody()).toList()));
             sb.append("]");
 
             System.out.println(sb.toString());
