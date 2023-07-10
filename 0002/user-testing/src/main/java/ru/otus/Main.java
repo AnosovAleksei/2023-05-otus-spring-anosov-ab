@@ -5,7 +5,6 @@ import org.springframework.context.annotation.ComponentScan;
 import ru.otus.service.QuestionService;
 
 
-
 @ComponentScan
 public class Main {
     public static void main(String[] args) {

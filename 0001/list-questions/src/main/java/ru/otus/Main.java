@@ -4,9 +4,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.service.QuestionService;
 
 
-
-
-
 public class Main {
     public static void main(String[] args) {
 

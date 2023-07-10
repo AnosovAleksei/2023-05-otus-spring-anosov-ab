@@ -7,7 +7,7 @@ import java.util.Locale;
 
 
 @ConfigurationProperties(prefix = "application")
-public class AppProps implements LocaleProvider, TestingProvider, ResourceProvider{
+public class AppProps implements LocaleProvider, TestingProvider, ResourceProvider {
 
     private final Locale locale;
 
@@ -41,7 +41,7 @@ public class AppProps implements LocaleProvider, TestingProvider, ResourceProvid
 
     @Override
     public String getFileResourceName() {
-        if(locale.toString().equals("ru_RU")){
+        if (locale.toString().equals("ru_RU")) {
             return fileNameRu;
         }
         return fileNameEn;

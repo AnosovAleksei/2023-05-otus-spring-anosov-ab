@@ -21,7 +21,7 @@ class PersonDaoImplTest implements PersonDao {
 }
 
 
-class localizationServiceTestImpl implements LocalizationService{
+class localizationServiceTestImpl implements LocalizationService {
 
 
     @Override
@@ -35,8 +35,9 @@ class localizationServiceTestImpl implements LocalizationService{
     }
 }
 
-class ioServiceTestTrueImpl implements IOService{
+class ioServiceTestTrueImpl implements IOService {
     private String lastPrint;
+
     @Override
     public void printLn(String line) {
         lastPrint = line;
@@ -72,7 +73,7 @@ public class QuestionServiceTest {
 
     @DisplayName("Проверка что тестирование пользователя прошло успешно")
     @Test
-    public void testTrueWork(){
+    public void testTrueWork() {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
@@ -88,7 +89,7 @@ public class QuestionServiceTest {
                 ioService,
                 localizationService,
                 1
-                );
+        );
 
         Assertions.assertTrue(questionService.userTesting());
 
@@ -97,7 +98,7 @@ public class QuestionServiceTest {
 
     @DisplayName("Проверка пользователь не смог пройти тестирование")
     @Test
-    public void testFalseWork(){
+    public void testFalseWork() {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
