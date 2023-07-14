@@ -3,12 +3,11 @@ package ru.otus.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.dao.AuthorDaoJdbc;
 import ru.otus.dao.BookDaoJdbc;
-import ru.otus.dao.GenreDaoJdbc;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
+import ru.otus.service.BookService;
 
 import java.util.List;
 
@@ -18,9 +17,8 @@ public class LibraryController {
 
     private final BookDaoJdbc bookDaoJdbc;
 
-    private final AuthorDaoJdbc authorDaoJdbc;
 
-    private final GenreDaoJdbc genreDaoJdbc;
+    private final BookService bookService;
 
     @ShellMethod(value = "getting count book in library", key = {"c", "count"})
     public int testingUser() {
@@ -29,22 +27,22 @@ public class LibraryController {
 
     @ShellMethod(value = "getting authors", key = {"a", "authors"})
     public List<Author> getAllAuthors() {
-        return authorDaoJdbc.getAllAuthor();
+        return bookService.getAllAuthor();
     }
 
     @ShellMethod(value = "create", key = {"c_a", "create_author"})
     public Author createAuthor(String name) {
-        return authorDaoJdbc.createAuthor(name);
+        return bookService.createAuthor(name);
     }
 
     @ShellMethod(value = "getting genrees", key = {"g", "genre"})
     public List<Genre> getAllGenre() {
-        return genreDaoJdbc.getAllGenre();
+        return bookService.getAllGenre();
     }
 
     @ShellMethod(value = "create", key = {"c_g", "create_genre"})
     public Genre createGenre(String name) {
-        return genreDaoJdbc.createGenre(name);
+        return bookService.createGenre(name);
     }
 
 

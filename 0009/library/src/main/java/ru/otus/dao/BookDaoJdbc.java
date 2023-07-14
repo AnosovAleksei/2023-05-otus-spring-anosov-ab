@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
+import ru.otus.service.BookService;
 
 
 import java.sql.ResultSet;
@@ -21,9 +22,7 @@ public class BookDaoJdbc {
 
     private final JdbcOperations jdbcOperations;
 
-    private final AuthorDaoJdbc authorDaoJdbc;
-
-    private final GenreDaoJdbc genreDaoJdbc;
+    private final BookService bookService;
 
     public int count() {
         Integer count = jdbcOperations.queryForObject("select count(*) from book", Integer.class);
@@ -31,15 +30,15 @@ public class BookDaoJdbc {
     }
 
     public Book createNewBook(String name, String authorName, String genreName) {
-        Author author = authorDaoJdbc.createAuthor(authorName);
-        Genre genre = genreDaoJdbc.createGenre(genreName);
+        Author author = bookService.createAuthor(authorName);
+        Genre genre = bookService.createGenre(genreName);
 
         return saveBook(name, author, genre);
     }
 
     public Book updateBook(String name, String authorName, String genreName) {
-        Author author = authorDaoJdbc.createAuthor(authorName);
-        Genre genre = genreDaoJdbc.createGenre(genreName);
+        Author author = bookService.createAuthor(authorName);
+        Genre genre = bookService.createGenre(genreName);
 
         return upgradeBook(name, author, genre);
     }
@@ -119,5 +118,4 @@ public class BookDaoJdbc {
             return new Book(name, new Author(authorId, author), new Genre(genreId, genre));
         }
     }
-
 }

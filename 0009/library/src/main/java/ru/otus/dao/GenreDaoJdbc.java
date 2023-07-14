@@ -1,8 +1,10 @@
 package ru.otus.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.otus.domain.Genre;
 
@@ -10,31 +12,42 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Repository
-public class GenreDaoJdbc {
-
-    private final JdbcOperations jdbc;
-
-    public GenreDaoJdbc(JdbcOperations jdbcOperations) {
-        this.jdbc = jdbcOperations;
-    }
+public class GenreDaoJdbc implements GenreDao {
 
 
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+
+    @Override
     public List<Genre> getAllGenre() {
-        return jdbc.query("select * from genre order by id", new GenreMapper());
+        return namedParameterJdbcTemplate.query("select * from genre order by id", new GenreMapper());
     }
 
+    @Override
+    public Genre getGenreByName(String name) {
+        String sql = "select * from genre where name = :name";
 
+        SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+        List<Genre> tempList = this.namedParameterJdbcTemplate.query(sql, namedParameters, new GenreMapper());
+
+        return tempList != null && tempList.size() > 0 ? tempList.get(0) : null;
+    }
+
+    @Override
     public Genre createGenre(String name) {
-        try {
-            return jdbc.queryForObject("select * from genre where name = ?", new GenreMapper(), name);
+        Genre genre = getGenreByName(name);
 
-        } catch (EmptyResultDataAccessException e) {
-            jdbc.update("""
-                    insert into genre (name)
-                    values (?)""", name);
+        if (genre == null) {
+            String sql = "insert into genre (name) values (:name)";
+
+            SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+            this.namedParameterJdbcTemplate.update(sql, namedParameters);
+
             return createGenre(name);
         }
+        return genre;
     }
 
 
