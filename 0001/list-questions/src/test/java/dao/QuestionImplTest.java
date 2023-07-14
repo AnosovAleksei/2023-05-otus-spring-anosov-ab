@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.otus.dao.QuestionDaoImpl;
 import ru.otus.dto.QuestionItem;
+
 import java.util.List;
 
 public class QuestionImplTest {
 
     @Test
-    public void testWork(){
+    public void testWork() {
 
 
         QuestionDaoImpl questionImpl = new QuestionDaoImpl("data.csv");
@@ -18,6 +19,6 @@ public class QuestionImplTest {
 
         List<QuestionItem> QuestionItems = questionImpl.getQuestionItems();
 
-        Assertions.assertEquals(QuestionItems.size(),2);
+        Assertions.assertEquals(QuestionItems.size(), 2);
     }
 }

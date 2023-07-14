@@ -22,7 +22,7 @@ public class PersonDaoImpl implements PersonDao {
         Person person = new Person();
 
 
-        ioService.printLn(localizationService.getMessage("welcome.name") +": ");
+        ioService.printLn(localizationService.getMessage("welcome.name") + ": ");
         person.setName(ioService.readLine());
 
         ioService.printLn(localizationService.getMessage("welcome.surname") + ": ");

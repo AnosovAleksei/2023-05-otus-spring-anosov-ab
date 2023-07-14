@@ -29,12 +29,9 @@ public class QuestionService {
     private final TestingProvider testingProvider;
 
 
-
-
-
     private Person person;
 
-    private boolean userTesting(Person person){
+    private boolean userTesting(Person person) {
 
         this.person = person;
         List<QuestionItem> questionItems = questionDao.getQuestionItems();
@@ -75,7 +72,7 @@ public class QuestionService {
 
     }
 
-    public String startTestingUser(){
+    public String startTestingUser() {
         printRaportTesting(userTesting());
         return localizationService.getMessage("work.end");
     }
@@ -104,8 +101,8 @@ public class QuestionService {
 
     }
 
-//    @PostConstruct
-    public void workService(){
+    //    @PostConstruct
+    public void workService() {
         printRaportTesting(userTesting());
     }
 }

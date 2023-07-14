@@ -14,5 +14,6 @@
         <module>0002/user-testing</module>
         <module>0005/user-testing</module>
         <module>0007/user-testing-shell</module>
+        <module>0009/library</module>
     </modules>
 </project>

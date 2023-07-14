@@ -37,18 +37,18 @@ class IOServiceImplTest implements IOService {
     }
 
 }
+
 class UserInteractionDaoImplTrue implements UserInteractionDao {
     @Override
-    public boolean askQuestion(QuestionItem questionItem){
+    public boolean askQuestion(QuestionItem questionItem) {
         return true;
     }
 }
 
 
-
 class UserInteractionDaoImplFalse implements UserInteractionDao {
     @Override
-    public boolean askQuestion(QuestionItem questionItem){
+    public boolean askQuestion(QuestionItem questionItem) {
         return false;
     }
 }
@@ -60,7 +60,7 @@ public class QuestionServiceTest {
 
     @DisplayName("Проверка что тестирование пользователя прошло успешно")
     @Test
-    public void testTrueWork(){
+    public void testTrueWork() {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
@@ -68,13 +68,12 @@ public class QuestionServiceTest {
         IOService ioService = new IOServiceImplTest();
 
 
-
         QuestionService questionService = new QuestionService(questionDao,
                 personDao,
                 userInteractionDao,
                 ioService,
                 1
-                );
+        );
 
         Assertions.assertTrue(questionService.userTesting());
 
@@ -83,13 +82,12 @@ public class QuestionServiceTest {
 
     @DisplayName("Проверка пользователь не смог пройти тестирование")
     @Test
-    public void testFalseWork(){
+    public void testFalseWork() {
 
         QuestionDao questionDao = new QuestionDaoImpl("data.csv");
         PersonDao personDao = new PersonDaoImplTest();
         UserInteractionDao userInteractionDao = new UserInteractionDaoImplFalse();
         IOService ioService = new IOServiceImplTest();
-
 
 
         QuestionService questionService = new QuestionService(questionDao,
