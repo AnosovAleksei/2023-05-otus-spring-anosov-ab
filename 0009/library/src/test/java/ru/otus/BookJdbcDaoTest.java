@@ -2,6 +2,7 @@ package ru.otus;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -14,6 +15,7 @@ import ru.otus.service.BookService;
 
 //@SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 
+@DisplayName("Проверка работы BookJdbcDao")
 @JdbcTest
 @Import({BookDaoJdbc.class})
 public class BookJdbcDaoTest {
@@ -22,7 +24,7 @@ public class BookJdbcDaoTest {
     BookDaoJdbc bookDaoJdbc;
 
 
-
+    @DisplayName("Проверка работы методов доступа к данным")
     @Test
     public void testCrud() {
 

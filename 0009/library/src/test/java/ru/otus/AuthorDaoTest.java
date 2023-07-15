@@ -2,6 +2,7 @@ package ru.otus;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,8 @@ import ru.otus.domain.Author;
 
 import java.util.List;
 
+
+@DisplayName("Проверка работы AuthorDao")
 @SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 public class AuthorDaoTest {
 
@@ -17,6 +20,7 @@ public class AuthorDaoTest {
     private AuthorDao authorDao;
 
 
+    @DisplayName("Проверка работы методов доступа к данным")
     @Test
     public void test(){
         {

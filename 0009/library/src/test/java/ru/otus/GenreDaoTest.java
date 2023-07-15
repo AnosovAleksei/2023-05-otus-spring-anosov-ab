@@ -2,6 +2,7 @@ package ru.otus;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import ru.otus.service.GenreService;
 
 import java.util.List;
 
+@DisplayName("Проверка работы GenreDao")
 @SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 public class GenreDaoTest {
 
@@ -20,6 +22,7 @@ public class GenreDaoTest {
     @Autowired
     private GenreService genreService;
 
+    @DisplayName("Проверка работы методов доступа к данным")
     @Test
     public void test(){
         {
