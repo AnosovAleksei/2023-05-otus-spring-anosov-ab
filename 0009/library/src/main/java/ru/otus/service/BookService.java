@@ -3,33 +3,38 @@ package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.dao.AuthorDao;
-import ru.otus.dao.GenreDao;
+
+import ru.otus.dao.BookDao;
 import ru.otus.domain.Author;
+import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class BookService {
-    private final AuthorDao authorDao;
 
-    private final GenreDao genreDao;
+    private final AuthorService authorService;
 
-    public Author createAuthor(String name) {
-        return authorDao.createAuthor(name);
+    private final GenreService genreService;
+
+    private final BookDao bookDao;
+
+    public Book createNewBook(String name, String authorName, String genreName) {
+        Author author = authorService.createAuthor(authorName);
+        Genre genre = genreService.createGenre(genreName);
+
+        return bookDao.saveBook(name, author.getId(), genre.getId());
     }
 
-    public Genre createGenre(String name) {
-        return genreDao.createGenre(name);
+    public Book updateBook(String name, String authorName, String genreName) {
+        Author author = authorService.createAuthor(authorName);
+        Genre genre = genreService.createGenre(genreName);
+
+        return bookDao.upgradeBook(name, author.getId(), genre.getId());
     }
 
-    public List<Author> getAllAuthor() {
-        return authorDao.getAllAuthor();
-    }
 
-    public List<Genre> getAllGenre() {
-        return genreDao.getAllGenre();
-    }
+
+
 }

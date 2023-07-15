@@ -10,5 +10,5 @@ public interface GenreDao {
 
     Genre getGenreByName(String name);
 
-    Genre createGenre(String name);
+    void createGenre(String name);
 }

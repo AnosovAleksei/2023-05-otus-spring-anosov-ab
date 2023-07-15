@@ -4,41 +4,43 @@ package ru.otus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import ru.otus.dao.BookDao;
 import ru.otus.dao.BookDaoJdbc;
 import ru.otus.domain.Book;
+import ru.otus.service.BookService;
 
-@SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
+//@SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
+
+@JdbcTest
+@Import({BookDaoJdbc.class})
 public class BookJdbcDaoTest {
 
     @Autowired
     BookDaoJdbc bookDaoJdbc;
 
 
+
     @Test
     public void testCrud() {
 
         {
-            Book book = bookDaoJdbc.createNewBook("testName", "testAuthor", "testGenre");
 
-
-            Assertions.assertEquals(book.getAuthor().getName(), "testAuthor");
-            Assertions.assertEquals(book.getGenre().getName(), "testGenre");
-            Assertions.assertEquals(book.getName(), "testName");
-        }
-        {
+            bookDaoJdbc.saveBook("testName", 1L, 1L);
             Book book = bookDaoJdbc.getBookByName("testName");
 
-            Assertions.assertEquals(book.getAuthor().getName(), "testAuthor");
-            Assertions.assertEquals(book.getGenre().getName(), "testGenre");
-            Assertions.assertEquals(book.getName(), "testName");
-        }
-        {
-            Book book = bookDaoJdbc.updateBook("testName", "testAuthor1", "testGenre1");
 
-            Assertions.assertEquals(book.getAuthor().getName(), "testAuthor1");
-            Assertions.assertEquals(book.getGenre().getName(), "testGenre1");
+            Assertions.assertNotNull(book.getAuthor().getName());
+            Assertions.assertNotNull(book.getGenre().getName());
             Assertions.assertEquals(book.getName(), "testName");
+
+            Book book2 = bookDaoJdbc.upgradeBook("testName", 2L, 2L);
+
+            Assertions.assertNotEquals(book2.getAuthor().getName(), book.getAuthor().getName());
+            Assertions.assertNotEquals(book2.getGenre().getName(), book.getGenre().getName());
+            Assertions.assertEquals(book2.getName(), "testName");
         }
 
         {

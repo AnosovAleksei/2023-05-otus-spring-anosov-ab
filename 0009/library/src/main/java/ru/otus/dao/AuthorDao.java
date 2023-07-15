@@ -10,5 +10,5 @@ public interface AuthorDao {
 
     Author getAuthorByName(String name);
 
-    Author createAuthor(String name);
+    void createAuthor(String name);
 }

@@ -22,7 +22,7 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public List<Genre> getAllGenre() {
-        return namedParameterJdbcTemplate.query("select * from genre order by id", new GenreMapper());
+        return namedParameterJdbcTemplate.query("select * from genre order by genre_id", new GenreMapper());
     }
 
     @Override
@@ -36,18 +36,10 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
-    public Genre createGenre(String name) {
-        Genre genre = getGenreByName(name);
-
-        if (genre == null) {
-            String sql = "insert into genre (name) values (:name)";
-
-            SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
-            this.namedParameterJdbcTemplate.update(sql, namedParameters);
-
-            return createGenre(name);
-        }
-        return genre;
+    public void createGenre(String name) {
+        String sql = "insert into genre (name) values (:name)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+        this.namedParameterJdbcTemplate.update(sql, namedParameters);
     }
 
 
@@ -55,7 +47,7 @@ public class GenreDaoJdbc implements GenreDao {
 
         @Override
         public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            long id = resultSet.getLong("id");
+            long id = resultSet.getLong("genre_id");
             String name = resultSet.getString("name");
             return new Genre(id, name);
         }

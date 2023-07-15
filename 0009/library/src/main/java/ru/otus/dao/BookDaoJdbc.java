@@ -1,107 +1,115 @@
 package ru.otus.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
-import ru.otus.service.BookService;
 
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
 @Repository
-public class BookDaoJdbc {
+public class BookDaoJdbc implements BookDao {
 
-    private final JdbcOperations jdbcOperations;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final BookService bookService;
-
+    @Override
     public int count() {
-        Integer count = jdbcOperations.queryForObject("select count(*) from book", Integer.class);
-        return count == null ? 0 : count;
+        List<Book> tempList = namedParameterJdbcTemplate.query("select * from book", new BookMapper());
+        return tempList != null && tempList.size() > 0 ? tempList.size() : 0;
     }
 
-    public Book createNewBook(String name, String authorName, String genreName) {
-        Author author = bookService.createAuthor(authorName);
-        Genre genre = bookService.createGenre(genreName);
 
-        return saveBook(name, author, genre);
-    }
-
-    public Book updateBook(String name, String authorName, String genreName) {
-        Author author = bookService.createAuthor(authorName);
-        Genre genre = bookService.createGenre(genreName);
-
-        return upgradeBook(name, author, genre);
-    }
-
+    @Override
     public String delateBook(String name) {
-        jdbcOperations.update("""
-                delete from book where name = ?
-                """, name);
+        String sql = "delete from book where name = :name";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+
+        namedParameterJdbcTemplate.update(sql, namedParameters);
         return "book : " + name + " deleted successfully";
     }
 
-    private Book upgradeBook(String name, Author author, Genre genre) {
-        jdbcOperations.update("""
-                update book set author_id=?, genre_id=? where name = ?
-                """, author.getId(), genre.getId(), name);
+    @Override
+    public Book upgradeBook(String name, Long author_id, Long genre_id) {
+
+        String sql = "update book set author_id=:author_id, genre_id=:genre_id where name = :name";
+
+        Map<String, Object> namedParameters = new HashMap<>() {{
+            put("name", name);
+            put("author_id", author_id);
+            put("genre_id", genre_id);
+
+        }};
+        namedParameterJdbcTemplate.update(sql, namedParameters);
         return getBookByName(name);
     }
 
-    private Book saveBook(String name, Author author, Genre genre) {
-        jdbcOperations.update("""
-                insert into book (name, author_id, genre_id) values (?, ?, ?)
-                """, name, author.getId(), genre.getId());
+    @Override
+    public Book saveBook(String name, Long author_id, Long genre_id) {
+        String sql = "insert into book (name, author_id, genre_id) values (:name, :author_id, :genre_id)";
+
+        Map<String, Object> namedParameters = new HashMap<>() {{
+            put("name", name);
+            put("author_id", author_id);
+            put("genre_id", genre_id);
+
+        }};
+        namedParameterJdbcTemplate.update(sql, namedParameters);
         return getBookByName(name);
     }
 
 
+    @Override
     public Book getBookByName(String name) {
-        try {
-            return jdbcOperations.queryForObject("""
-                    select  b.name,
+        String sql = """
+                select  b.name,
                                 a.name as author, 
-                                a.id as author_id,
+                                a.author_id,
                                 g.name as genre, 
-                                g.id as genre_id
+                                g.genre_id
                                 
                         from book b
-                        left join author a on (a.id = b.author_id)
-                        left join genre g on (g.id = b.genre_id)
-                        where b.name = ?
-                    """, new BookMapper(), name);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+                        left join author a on (a.author_id = b.author_id)
+                        left join genre g on (g.genre_id = b.genre_id)
+                        where b.name = :name
+                        """;
+        SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+
+        List<Book> tempList = namedParameterJdbcTemplate.query(sql, namedParameters, new BookMapper());
+        return tempList != null && tempList.size() > 0 ? tempList.get(0) : null;
     }
 
 
+    @Override
     public List<Book> getAllBook() {
-
-        return jdbcOperations.query("""
+        String sql = """
                 select  b.name, 
                         a.name as author, 
-                        a.id as author_id,
+                        a.author_id,
                         g.name as genre, 
-                        g.id as genre_id
+                        g.genre_id
                         
                 from book b
-                left join author a on (a.id = b.author_id)
-                left join genre g on (g.id = b.genre_id)
+                left join author a on (a.author_id = b.author_id)
+                left join genre g on (g.genre_id = b.genre_id)
                                     
                 order by b.name
-                """, new BookMapper());
+                        """;
 
+        return namedParameterJdbcTemplate.query(sql, new BookMapper());
     }
+
 
     private static class BookMapper implements RowMapper<Book> {
 

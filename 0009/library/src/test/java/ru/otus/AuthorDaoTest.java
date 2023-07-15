@@ -20,7 +20,8 @@ public class AuthorDaoTest {
     @Test
     public void test(){
         {
-            Author author = authorDao.createAuthor("testAuthor");
+            authorDao.createAuthor("testAuthor");
+            Author author = authorDao.getAuthorByName("testAuthor");
             Assertions.assertEquals(author.getName(), "testAuthor");
         }
         {

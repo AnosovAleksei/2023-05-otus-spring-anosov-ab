@@ -21,7 +21,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     @Override
     public List<Author> getAllAuthor() {
 
-        return namedParameterJdbcTemplate.query("select * from author order by id", new AuthorMapper());
+        return namedParameterJdbcTemplate.query("select * from author order by author_id", new AuthorMapper());
 
     }
 
@@ -36,18 +36,10 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
-    public Author createAuthor(String name) {
-        Author author = getAuthorByName(name);
-
-        if (author == null) {
-            String sql = "insert into author (name) values (:name)";
-
-            SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
-            this.namedParameterJdbcTemplate.update(sql, namedParameters);
-
-            return createAuthor(name);
-        }
-        return author;
+    public void createAuthor(String name) {
+        String sql = "insert into author (name) values (:name)";
+        SqlParameterSource namedParameters = new MapSqlParameterSource("name", name);
+        this.namedParameterJdbcTemplate.update(sql, namedParameters);
     }
 
 
@@ -55,7 +47,7 @@ public class AuthorDaoJdbc implements AuthorDao {
 
         @Override
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            long id = resultSet.getLong("id");
+            long id = resultSet.getLong("author_id");
             String name = resultSet.getString("name");
             return new Author(id, name);
         }

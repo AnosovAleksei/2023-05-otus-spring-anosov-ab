@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.Genre;
+import ru.otus.service.GenreService;
 
 import java.util.List;
 
@@ -16,11 +17,13 @@ public class GenreDaoTest {
     @Autowired
     private GenreDao genreDao;
 
+    @Autowired
+    private GenreService genreService;
 
     @Test
     public void test(){
         {
-            Genre genre = genreDao.createGenre("testGenre");
+            Genre genre = genreService.createGenre("testGenre");
             Assertions.assertEquals(genre.getName(), "testGenre");
         }
         {
