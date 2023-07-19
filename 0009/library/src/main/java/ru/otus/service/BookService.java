@@ -2,15 +2,16 @@ package ru.otus.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import ru.otus.dao.BookDao;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 
+import java.util.List;
 
-@Component
+
+@Service
 @RequiredArgsConstructor
 public class BookService {
 
@@ -34,7 +35,19 @@ public class BookService {
         return bookDao.upgradeBook(name, author.getId(), genre.getId());
     }
 
+    public int count() {
+        return bookDao.count();
+    }
 
+    public List<Book> getAllBook() {
+        return bookDao.getAllBook();
+    }
 
+    public Book getBookByName(String name) {
+        return bookDao.getBookByName(name);
+    }
 
+    public String delateBook(String name) {
+        return bookDao.delateBook(name);
+    }
 }

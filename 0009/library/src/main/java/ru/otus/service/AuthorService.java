@@ -1,7 +1,7 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.otus.dao.AuthorDao;
 import ru.otus.domain.Author;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class AuthorService {
 
     private final AuthorDao authorDao;

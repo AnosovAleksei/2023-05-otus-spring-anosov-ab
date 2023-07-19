@@ -17,16 +17,4 @@ public class Book {
 
     private Genre genre;
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("book: ");
-        sb.append(name);
-        sb.append(" [");
-        sb.append(author.getName());
-        sb.append(" : ");
-        sb.append(genre.getName());
-        sb.append("]");
-        return sb.toString();
-    }
 }

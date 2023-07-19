@@ -1,7 +1,7 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.Genre;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class GenreService {
 
     private final GenreDao genreDao;

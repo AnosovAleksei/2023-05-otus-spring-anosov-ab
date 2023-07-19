@@ -3,21 +3,20 @@ package ru.otus.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.dao.BookDao;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 import ru.otus.service.AuthorService;
+import ru.otus.service.BookConverter;
 import ru.otus.service.BookService;
 import ru.otus.service.GenreService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @ShellComponent
 public class LibraryController {
-
-    private final BookDao bookDao;
 
     private final AuthorService authorService;
 
@@ -27,7 +26,7 @@ public class LibraryController {
 
     @ShellMethod(value = "getting count book in library", key = {"c", "count"})
     public int testingUser() {
-        return bookDao.count();
+        return bookService.count();
     }
 
     @ShellMethod(value = "getting authors", key = {"a", "authors"})
@@ -52,27 +51,33 @@ public class LibraryController {
 
 
     @ShellMethod(value = "getting all book", key = {"b", "books"})
-    public List<Book> printAllBooks() {
-        return bookDao.getAllBook();
+    public List<String> printAllBooks() {
+        return new ArrayList<>() {
+            {
+                for (Book book : bookService.getAllBook()) {
+                    add(BookConverter.convertBookToStr(book));
+                }
+            }
+        };
     }
 
     @ShellMethod(value = "create book", key = {"c_b", "create_book"})
-    public Book printBook(String name, String author, String genre) {
-        return bookService.createNewBook(name, author, genre);
+    public String printBook(String name, String author, String genre) {
+        return BookConverter.convertBookToStr(bookService.createNewBook(name, author, genre));
     }
 
     @ShellMethod(value = "read book", key = {"r_b", "read_book"})
-    public Book readBook(String name) {
-        return bookDao.getBookByName(name);
+    public String readBook(String name) {
+        return BookConverter.convertBookToStr(bookService.getBookByName(name));
     }
 
     @ShellMethod(value = "update book", key = {"u_b", "update_book"})
-    public Book updateBook(String name, String author, String genre) {
-        return bookService.updateBook(name, author, genre);
+    public String updateBook(String name, String author, String genre) {
+        return BookConverter.convertBookToStr(bookService.updateBook(name, author, genre));
     }
 
     @ShellMethod(value = "delate book", key = {"d_b", "delate_book"})
     public String delateBook(String name) {
-        return bookDao.delateBook(name);
+        return bookService.delateBook(name);
     }
 }
