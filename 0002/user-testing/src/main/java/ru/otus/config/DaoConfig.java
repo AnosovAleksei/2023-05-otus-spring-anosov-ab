@@ -24,7 +24,7 @@ public class DaoConfig {
     }
 
     @Bean
-    public PersonDao personDao(IOService ioService){
+    public PersonDao personDao(IOService ioService) {
         return new PersonDaoImpl(ioService);
     }
 

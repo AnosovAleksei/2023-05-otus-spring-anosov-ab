@@ -21,7 +21,7 @@ public class ServiceConfig {
 
 
     @Bean
-    public IOService ioService(){
+    public IOService ioService() {
         return new IOServiceImpl(System.out, System.in);
     }
 
@@ -29,7 +29,7 @@ public class ServiceConfig {
     public QuestionService questionService(QuestionDao questionDao,
                                            PersonDao personDao,
                                            UserInteractionDao userInteractionDao,
-                                           IOService ioService){
+                                           IOService ioService) {
         return new QuestionService(questionDao, personDao, userInteractionDao, ioService, passingScore);
     }
 }

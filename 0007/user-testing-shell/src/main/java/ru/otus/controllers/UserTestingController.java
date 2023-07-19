@@ -18,7 +18,7 @@ public class UserTestingController {
 
 
     @ShellMethod(value = "start testing user", key = {"t", "test"})
-    public String testingUser (){
+    public String testingUser() {
         return questionService.startTestingUser();
     }
 }

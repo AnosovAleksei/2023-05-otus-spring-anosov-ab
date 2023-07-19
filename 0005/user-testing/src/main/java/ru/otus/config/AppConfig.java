@@ -34,15 +34,14 @@ public class AppConfig {
     }
 
     @Bean
-    public PersonDao personDao(IOService ioService, LocalizationServiceImpl localizationService){
+    public PersonDao personDao(IOService ioService, LocalizationServiceImpl localizationService) {
         return new PersonDaoImpl(ioService, localizationService);
     }
 
     @Bean
-    public UserInteractionDao userInteractionDao(IOService ioService, LocalizationService localizationService){
+    public UserInteractionDao userInteractionDao(IOService ioService, LocalizationService localizationService) {
         return new UserInteractionDaoImpl(ioService, localizationService);
     }
-
 
 
     @Bean
@@ -64,9 +63,6 @@ public class AppConfig {
                 localizationService,
                 appProps.getPassingScore());
     }
-
-
-
 
 
     @Bean
