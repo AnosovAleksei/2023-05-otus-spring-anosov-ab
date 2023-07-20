@@ -9,7 +9,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
@@ -36,7 +35,6 @@ public class BookDaoJpa implements BookDao {
     }
 
 
-    @Transactional
     @Override
     public String delateBook(String name) {
         Query query = em.createQuery("delete " +
@@ -47,7 +45,6 @@ public class BookDaoJpa implements BookDao {
         return "book : " + name + " deleted successfully";
     }
 
-    @Transactional
     @Override
     public Book upgradeBook(String name, Author author, Genre genre) {
 
@@ -61,9 +58,14 @@ public class BookDaoJpa implements BookDao {
         return book;
     }
 
-    @Transactional
     @Override
-    public Book saveBook(String name, Author author, Genre genre) {
+    public Book updateBook(Book book) {
+        em.persist(book);
+        return book;
+    }
+
+    @Override
+    public Book createBook(String name, Author author, Genre genre) {
         Book book = new Book();
         book.setName(name);
         book.setAuthor(author);
@@ -75,7 +77,6 @@ public class BookDaoJpa implements BookDao {
     }
 
 
-    @Transactional
     @Override
     public Book getBookByName(String name) {
         TypedQuery<Book> query = em.createQuery("select a from Book a where a.name = :name",

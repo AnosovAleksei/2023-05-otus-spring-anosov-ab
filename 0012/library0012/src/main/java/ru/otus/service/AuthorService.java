@@ -14,6 +14,7 @@ public class AuthorService {
 
     private final AuthorDao authorDao;
 
+
     public Author createAuthor(String name) {
         Author author = authorDao.getAuthorByName(name);
         if (author != null) {

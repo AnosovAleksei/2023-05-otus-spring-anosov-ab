@@ -31,9 +31,9 @@ public class CommentaryDaoJpaTest {
     public void testCreate(){
         Book book = bookDaoJpa.getBookById(1L);
         final String str = "any massege";
-        Commentary commentary = commentaryDaoJpa.create(book.getId(), str);
+        Commentary commentary = commentaryDaoJpa.create(book, str);
         Assertions.assertNotNull(commentary);
-        Assertions.assertEquals(commentary.getBookId(), book.getId());
+        Assertions.assertEquals(commentary.getBook().getId(), book.getId());
         Assertions.assertEquals(commentary.getMessage(), str);
     }
 
@@ -42,12 +42,12 @@ public class CommentaryDaoJpaTest {
     public void testRead(){
         Book book = bookDaoJpa.getBookById(1L);
         final String str = "any massege";
-        Commentary commentary = commentaryDaoJpa.create(book.getId(), str);
+        Commentary commentary = commentaryDaoJpa.create(book, str);
 
         Commentary commentary2 = commentaryDaoJpa.read(commentary.getId());
 
         Assertions.assertNotNull(commentary2);
-        Assertions.assertEquals(commentary2.getBookId(), book.getId());
+        Assertions.assertEquals(commentary2.getBook().getId(), book.getId());
         Assertions.assertEquals(commentary2.getMessage(), str);
     }
 
@@ -58,7 +58,7 @@ public class CommentaryDaoJpaTest {
         final String str = "any massege";
         final String strNew = "update massege";
 
-        Commentary commentary = commentaryDaoJpa.create(book.getId(), str);
+        Commentary commentary = commentaryDaoJpa.create(book, str);
 
         commentary.setMessage(strNew);
 
@@ -66,7 +66,7 @@ public class CommentaryDaoJpaTest {
         Commentary commentary2 = commentaryDaoJpa.update(commentary);
 
         Assertions.assertNotNull(commentary2);
-        Assertions.assertEquals(commentary2.getBookId(), book.getId());
+        Assertions.assertEquals(commentary2.getBook().getId(), book.getId());
         Assertions.assertEquals(commentary2.getMessage(), strNew);
     }
 
@@ -77,7 +77,7 @@ public class CommentaryDaoJpaTest {
         final String str = "any massege";
         final String strNew = "update massege";
 
-        Commentary commentary = commentaryDaoJpa.create(book.getId(), str);
+        Commentary commentary = commentaryDaoJpa.create(book, str);
         Long id = commentary.getId();
 
 
@@ -99,8 +99,8 @@ public class CommentaryDaoJpaTest {
         final String str = "any massege";
         final String strNew = "new massege";
 
-        Commentary commentary1 = commentaryDaoJpa.create(book.getId(), str);
-        Commentary commentary2 = commentaryDaoJpa.create(book.getId(), strNew);
+        Commentary commentary1 = commentaryDaoJpa.create(book, str);
+        Commentary commentary2 = commentaryDaoJpa.create(book, strNew);
 
 
         List<Commentary> commentaryList =  commentaryDaoJpa.getAllCommentary();

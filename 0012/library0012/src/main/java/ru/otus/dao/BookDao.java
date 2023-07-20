@@ -15,7 +15,9 @@ public interface BookDao {
 
     Book upgradeBook(String name, Author author, Genre genre);
 
-    Book saveBook(String name, Author author, Genre genre);
+    Book updateBook(Book book);
+
+    Book createBook(String name, Author author, Genre genre);
 
     Book getBookByName(String name);
 

@@ -10,11 +10,11 @@ import java.sql.SQLException;
 public class LibraryApp {
 
     public static void main(String[] args) {
-//        try {
-//            Console.main(args);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            Console.main(args);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         SpringApplication.run(LibraryApp.class, args);
 
     }

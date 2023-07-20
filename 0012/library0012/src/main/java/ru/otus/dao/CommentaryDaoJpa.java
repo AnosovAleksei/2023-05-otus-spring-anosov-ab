@@ -2,13 +2,14 @@ package ru.otus.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 
 import java.util.List;
@@ -21,11 +22,10 @@ public class CommentaryDaoJpa implements CommentaryDao {
     @PersistenceContext
     private final EntityManager em;
 
-    @Transactional
     @Override
-    public Commentary create(Long bookId, String message) {
+    public Commentary create(Book book, String message) {
         Commentary commentary = new Commentary();
-        commentary.setBookId(bookId);
+        commentary.setBook(book);
         commentary.setMessage(message);
         em.persist(commentary);
 
@@ -41,26 +41,20 @@ public class CommentaryDaoJpa implements CommentaryDao {
         return tempList != null && tempList.size() > 0 ? tempList.get(0) : null;
     }
 
-    @Transactional
     @Override
     public Commentary update(Commentary commentary) {
         em.merge(commentary);
         return commentary;
     }
 
-    @Transactional
     @Override
     public String delate(Commentary commentary) {
-        Long commentaryId = commentary.getId();
-        em.remove(commentary);
-//        em.flush();
-
-//        Long commentaryId  = commentary.getId();
-//        Query query = em.createQuery("delete " +
-//                "from Commentary s " +
-//                "where s.id = :commentaryId");
-//        query.setParameter("commentaryId", commentaryId);
-//        query.executeUpdate();
+        Long commentaryId  = commentary.getId();
+        Query query = em.createQuery("delete " +
+                "from Commentary s " +
+                "where s.id = :commentaryId");
+        query.setParameter("commentaryId", commentaryId);
+        query.executeUpdate();
         return "commentary (id) : " + commentaryId + " deleted successfully";
     }
 

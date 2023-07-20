@@ -3,6 +3,7 @@ package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.BookDao;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
@@ -21,13 +22,15 @@ public class BookService {
 
     private final BookDao bookDao;
 
+    @Transactional
     public Book createNewBook(String name, String authorName, String genreName) {
         Author author = authorService.createAuthor(authorName);
         Genre genre = genreService.createGenre(genreName);
 
-        return bookDao.saveBook(name, author, genre);
+        return bookDao.createBook(name, author, genre);
     }
 
+    @Transactional
     public Book updateBook(String name, String authorName, String genreName) {
         Author author = authorService.createAuthor(authorName);
         Genre genre = genreService.createGenre(genreName);
@@ -43,10 +46,12 @@ public class BookService {
         return bookDao.getAllBook();
     }
 
+    @Transactional
     public Book getBookByName(String name) {
         return bookDao.getBookByName(name);
     }
 
+    @Transactional
     public String delateBook(String name) {
         return bookDao.delateBook(name);
     }

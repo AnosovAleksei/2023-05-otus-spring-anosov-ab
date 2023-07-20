@@ -3,6 +3,7 @@ package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.BookDao;
 import ru.otus.dao.CommentaryDao;
 import ru.otus.domain.Book;
@@ -29,31 +30,36 @@ public class CommentaryService {
         }};
     }
 
-
+    @Transactional
     public Commentary create(Long bookId, String message) {
         Book book = bookDao.getBookById(bookId);
         if (book == null) {
             //TODO действия если книги нет
         }
-        return commentaryDao.create(bookId, message);
+        return commentaryDao.create(book, message);
 
     }
 
+    @Transactional
     public Commentary read(Long commentary_id) {
         return commentaryDao.read(commentary_id);
     }
 
-    public Commentary update(Long commentary_id, String msg, Long bookId){
+    @Transactional
+    public Commentary update(Long commentary_id, String msg, Long bookId) {
+        Book book = bookDao.getBookById(bookId);
+
         Commentary commentary = new Commentary();
         commentary.setId(commentary_id);
         commentary.setMessage(msg);
-        commentary.setBookId(bookId);
+        commentary.setBook(book);
         return commentaryDao.update(commentary);
     }
 
-    public String delate(Long commentary_id){
+    @Transactional
+    public String delate(Long commentary_id) {
         Commentary commentary = commentaryDao.read(commentary_id);
-        return  commentaryDao.delate(commentary);
+        return commentaryDao.delate(commentary);
     }
 
 
