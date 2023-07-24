@@ -23,36 +23,36 @@ public class BookService {
     private final BookDao bookDao;
 
     @Transactional
-    public Book createNewBook(String name, String authorName, String genreName) {
-        Author author = authorService.createAuthor(authorName);
-        Genre genre = genreService.createGenre(genreName);
+    public Book create(String name, String authorName, String genreName) {
+        Author author = authorService.create(authorName);
+        Genre genre = genreService.create(genreName);
 
-        return bookDao.createBook(name, author, genre);
+        return bookDao.create(name, author, genre);
     }
 
     @Transactional
-    public Book updateBook(String name, String authorName, String genreName) {
-        Author author = authorService.createAuthor(authorName);
-        Genre genre = genreService.createGenre(genreName);
+    public Book update(String name, String authorName, String genreName) {
+        Author author = authorService.create(authorName);
+        Genre genre = genreService.create(genreName);
 
-        return bookDao.upgradeBook(name, author, genre);
+        return bookDao.upgrade(name, author, genre);
     }
 
     public int count() {
         return bookDao.count();
     }
 
-    public List<Book> getAllBook() {
-        return bookDao.getAllBook();
+    public List<Book> getAll() {
+        return bookDao.getAll();
     }
 
     @Transactional
-    public Book getBookByName(String name) {
-        return bookDao.getBookByName(name);
+    public Book getByName(String name) {
+        return bookDao.getByName(name);
     }
 
     @Transactional
-    public String delateBook(String name) {
-        return bookDao.delateBook(name);
+    public String delate(String name) {
+        return bookDao.delate(name);
     }
 }

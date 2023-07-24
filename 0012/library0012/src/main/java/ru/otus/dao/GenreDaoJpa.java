@@ -8,7 +8,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Genre;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class GenreDaoJpa implements GenreDao {
     private final EntityManager em;
 
     @Override
-    public List<Genre> getAllGenre() {
+    public List<Genre> getAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
         Root<Genre> rootEntry = cq.from(Genre.class);
@@ -32,7 +31,7 @@ public class GenreDaoJpa implements GenreDao {
     }
 
     @Override
-    public Genre getGenreByName(String name) {
+    public Genre getByName(String name) {
         TypedQuery<Genre> query = em.createQuery("select a from Genre a where a.name = :name",
                 Genre.class);
         query.setParameter("name", name);
@@ -40,11 +39,9 @@ public class GenreDaoJpa implements GenreDao {
         return tempList != null && tempList.size() > 0 ? tempList.get(0) : null;
     }
 
-    @Transactional
+
     @Override
-    public Genre createGenre(String name) {
-        Genre genre = new Genre();
-        genre.setName(name);
+    public Genre create(Genre genre) {
         em.persist(genre);
         return genre;
     }

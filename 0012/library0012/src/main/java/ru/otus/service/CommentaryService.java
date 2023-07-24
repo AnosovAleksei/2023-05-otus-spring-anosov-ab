@@ -21,8 +21,8 @@ public class CommentaryService {
     private final BookDao bookDao;
 
 
-    public List<String> getAllCommentary() {
-        List<Commentary> commentaryList = commentaryDao.getAllCommentary();
+    public List<String> getAll() {
+        List<Commentary> commentaryList = commentaryDao.getAll();
         return new ArrayList<>() {{
             for (Commentary commentary : commentaryList) {
                 add(ModelConverter.convertComentaryToStr(commentary));
@@ -32,7 +32,7 @@ public class CommentaryService {
 
     @Transactional
     public Commentary create(Long bookId, String message) {
-        Book book = bookDao.getBookById(bookId);
+        Book book = bookDao.getById(bookId);
         if (book == null) {
             //TODO действия если книги нет
         }
@@ -47,7 +47,7 @@ public class CommentaryService {
 
     @Transactional
     public Commentary update(Long commentary_id, String msg, Long bookId) {
-        Book book = bookDao.getBookById(bookId);
+        Book book = bookDao.getById(bookId);
 
         Commentary commentary = new Commentary();
         commentary.setId(commentary_id);

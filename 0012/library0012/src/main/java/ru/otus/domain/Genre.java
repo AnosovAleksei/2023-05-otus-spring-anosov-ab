@@ -21,10 +21,16 @@ import lombok.ToString;
 @Table(name = "genre")
 public class Genre {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "genre_id")
     private Long id;
 
     private String name;
+
+    public Genre(String name) {
+        this.name = name;
+    }
+
 }

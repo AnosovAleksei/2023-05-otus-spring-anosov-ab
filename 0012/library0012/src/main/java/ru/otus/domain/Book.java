@@ -49,8 +49,8 @@ public class Book {
     private Genre genre;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "book_id")
     private List<Commentary> commentaryList;
 
 }

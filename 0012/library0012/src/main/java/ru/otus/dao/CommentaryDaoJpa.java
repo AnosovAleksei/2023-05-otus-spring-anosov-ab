@@ -59,7 +59,7 @@ public class CommentaryDaoJpa implements CommentaryDao {
     }
 
     @Override
-    public List<Commentary> getAllCommentary() {
+    public List<Commentary> getAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Commentary> cq = cb.createQuery(Commentary.class);
         Root<Commentary> rootEntry = cq.from(Commentary.class);

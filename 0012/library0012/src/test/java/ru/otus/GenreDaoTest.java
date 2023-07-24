@@ -6,9 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.GenreDao;
 import ru.otus.domain.Genre;
-import ru.otus.service.GenreService;
 
 import java.util.List;
 
@@ -19,26 +19,32 @@ public class GenreDaoTest {
     @Autowired
     private GenreDao genreDao;
 
-    @Autowired
-    private GenreService genreService;
+
 
     @DisplayName("Проверка работы методов доступа к данным")
+    @Transactional
     @Test
     public void test(){
         {
-            Genre genre = genreService.createGenre("testGenre");
+            Genre genre = genreDao.create(new Genre("testGenre"));
             Assertions.assertEquals(genre.getName(), "testGenre");
         }
         {
-            Genre genre = genreDao.getGenreByName("testGenre");
+            Genre genre = genreDao.getByName("testGenre");
             Assertions.assertEquals(genre.getName(), "testGenre");
 
-            List<Genre> genres = genreDao.getAllGenre();
+            List<Genre> genres = genreDao.getAll();
             for(Genre g : genres){
                 if(g.getId() == genre.getId()){
                     Assertions.assertEquals(g.getName(), "testGenre");
                 }
             }
+        }
+        {
+
+            RuntimeException e = Assertions.assertThrows(RuntimeException.class, () ->
+                    genreDao.create(new Genre("testGenre")));
+
         }
     }
 }

@@ -11,18 +11,18 @@ import java.util.List;
 public interface BookDao {
     int count();
 
-    String delateBook(String name);
+    String delate(String name);
 
-    Book upgradeBook(String name, Author author, Genre genre);
+    Book upgrade(String name, Author author, Genre genre);
 
-    Book updateBook(Book book);
+    Book update(Book book);
 
-    Book createBook(String name, Author author, Genre genre);
+    Book create(String name, Author author, Genre genre);
 
-    Book getBookByName(String name);
+    Book getByName(String name);
 
-    Book getBookById(Long bookId);
+    Book getById(Long bookId);
 
-    List<Book> getAllBook();
+    List<Book> getAll();
 
 }

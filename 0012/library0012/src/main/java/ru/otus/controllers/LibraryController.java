@@ -35,22 +35,22 @@ public class LibraryController {
 
     @ShellMethod(value = "getting authors", key = {"a", "authors"})
     public List<Author> getAllAuthors() {
-        return authorService.getAllAuthor();
+        return authorService.getAll();
     }
 
     @ShellMethod(value = "create", key = {"c_a", "create_author"})
     public Author createAuthor(String name) {
-        return authorService.createAuthor(name);
+        return authorService.create(name);
     }
 
     @ShellMethod(value = "getting genrees", key = {"g", "genre"})
     public List<Genre> getAllGenre() {
-        return genreService.getAllGenre();
+        return genreService.getAll();
     }
 
     @ShellMethod(value = "create", key = {"c_g", "create_genre"})
     public Genre createGenre(String name) {
-        return genreService.createGenre(name);
+        return genreService.create(name);
     }
 
 
@@ -58,7 +58,7 @@ public class LibraryController {
     public List<String> printAllBooks() {
         return new ArrayList<>() {
             {
-                for (Book book : bookService.getAllBook()) {
+                for (Book book : bookService.getAll()) {
                     add(ModelConverter.convertBookToStr(book));
                 }
             }
@@ -67,28 +67,28 @@ public class LibraryController {
 
     @ShellMethod(value = "create book", key = {"c_b", "create_book"})
     public String printBook(String name, String author, String genre) {
-        return ModelConverter.convertBookToStr(bookService.createNewBook(name, author, genre));
+        return ModelConverter.convertBookToStr(bookService.create(name, author, genre));
     }
 
     @ShellMethod(value = "read book", key = {"r_b", "read_book"})
     public String readBook(String name) {
-        return ModelConverter.convertBookToStr(bookService.getBookByName(name));
+        return ModelConverter.convertBookToStr(bookService.getByName(name));
     }
 
     @ShellMethod(value = "update book", key = {"u_b", "update_book"})
     public String updateBook(String name, String author, String genre) {
-        return ModelConverter.convertBookToStr(bookService.updateBook(name, author, genre));
+        return ModelConverter.convertBookToStr(bookService.update(name, author, genre));
     }
 
     @ShellMethod(value = "delate book", key = {"d_b", "delate_book"})
     public String delateBook(String name) {
         System.out.println(name);
-        return bookService.delateBook(name);
+        return bookService.delate(name);
     }
 
     @ShellMethod(value = "get all commentary", key = {"cm", "commentary"})
     public List<String> getAllCommentary() {
-        return commentaryService.getAllCommentary();
+        return commentaryService.getAll();
     }
 
     @ShellMethod(value = "create commentary", key = {"c_cm", "create_commentary"})

@@ -8,7 +8,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class AuthorDaoJpa implements AuthorDao {
     private final EntityManager em;
 
     @Override
-    public List<Author> getAllAuthor() {
+    public List<Author> getAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Author> cq = cb.createQuery(Author.class);
         Root<Author> rootEntry = cq.from(Author.class);
@@ -31,7 +30,7 @@ public class AuthorDaoJpa implements AuthorDao {
     }
 
     @Override
-    public Author getAuthorByName(String name) {
+    public Author getByName(String name) {
         TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name",
                 Author.class);
         query.setParameter("name", name);
@@ -39,11 +38,8 @@ public class AuthorDaoJpa implements AuthorDao {
         return tempList != null && tempList.size() > 0 ? tempList.get(0) : null;
     }
 
-    @Transactional
     @Override
-    public Author createAuthor(String name) {
-        Author author = new Author();
-        author.setName(name);
+    public Author create(Author author) {
         em.persist(author);
         return author;
     }

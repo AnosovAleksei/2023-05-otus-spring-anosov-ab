@@ -36,7 +36,7 @@ public class BookDaoJpa implements BookDao {
 
 
     @Override
-    public String delateBook(String name) {
+    public String delate(String name) {
         Query query = em.createQuery("delete " +
                 "from Book s " +
                 "where s.name = :name");
@@ -46,7 +46,7 @@ public class BookDaoJpa implements BookDao {
     }
 
     @Override
-    public Book upgradeBook(String name, Author author, Genre genre) {
+    public Book upgrade(String name, Author author, Genre genre) {
 
         Book book = new Book();
         book.setName(name);
@@ -59,13 +59,13 @@ public class BookDaoJpa implements BookDao {
     }
 
     @Override
-    public Book updateBook(Book book) {
+    public Book update(Book book) {
         em.persist(book);
         return book;
     }
 
     @Override
-    public Book createBook(String name, Author author, Genre genre) {
+    public Book create(String name, Author author, Genre genre) {
         Book book = new Book();
         book.setName(name);
         book.setAuthor(author);
@@ -78,7 +78,7 @@ public class BookDaoJpa implements BookDao {
 
 
     @Override
-    public Book getBookByName(String name) {
+    public Book getByName(String name) {
         TypedQuery<Book> query = em.createQuery("select a from Book a where a.name = :name",
                 Book.class);
         query.setParameter("name", name);
@@ -87,7 +87,7 @@ public class BookDaoJpa implements BookDao {
     }
 
     @Override
-    public Book getBookById(Long bookId) {
+    public Book getById(Long bookId) {
         TypedQuery<Book> query = em.createQuery("select a from Book a where a.id = :bookId",
                 Book.class);
         query.setParameter("bookId", bookId);
@@ -97,7 +97,7 @@ public class BookDaoJpa implements BookDao {
 
 
     @Override
-    public List<Book> getAllBook() {
+    public List<Book> getAll() {
         TypedQuery<Book> query = em.createQuery("select a from Book a",
                 Book.class);
         return query.getResultList();

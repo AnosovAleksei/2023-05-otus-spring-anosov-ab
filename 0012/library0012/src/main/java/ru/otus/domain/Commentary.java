@@ -1,8 +1,8 @@
 package ru.otus.domain;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,9 +30,10 @@ public class Commentary {
     private Long id;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
+    @ManyToOne
+    @JoinColumn(name = "book_id", insertable = true)//, insertable = false, updatable = false)
     private Book book;
+
 
     private String message;
 }

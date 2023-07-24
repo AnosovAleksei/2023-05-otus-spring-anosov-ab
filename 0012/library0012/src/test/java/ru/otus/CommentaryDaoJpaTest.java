@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.dao.AuthorDaoJpa;
 import ru.otus.dao.BookDaoJpa;
 import ru.otus.dao.CommentaryDaoJpa;
-import ru.otus.dao.GenreDaoJpa;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 
@@ -29,7 +27,7 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка create")
     @Test
     public void testCreate(){
-        Book book = bookDaoJpa.getBookById(1L);
+        Book book = bookDaoJpa.getById(1L);
         final String str = "any massege";
         Commentary commentary = commentaryDaoJpa.create(book, str);
         Assertions.assertNotNull(commentary);
@@ -40,7 +38,7 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка read")
     @Test
     public void testRead(){
-        Book book = bookDaoJpa.getBookById(1L);
+        Book book = bookDaoJpa.getById(1L);
         final String str = "any massege";
         Commentary commentary = commentaryDaoJpa.create(book, str);
 
@@ -54,7 +52,7 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка update")
     @Test
     public void testUpdate(){
-        Book book = bookDaoJpa.getBookById(1L);
+        Book book = bookDaoJpa.getById(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -73,7 +71,7 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка delate")
     @Test
     public void testDelate(){
-        Book book = bookDaoJpa.getBookById(1L);
+        Book book = bookDaoJpa.getById(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -95,7 +93,7 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка getAllCommentary")
     @Test
     public void testGetAllComentary(){
-        Book book = bookDaoJpa.getBookById(1L);
+        Book book = bookDaoJpa.getById(1L);
         final String str = "any massege";
         final String strNew = "new massege";
 
@@ -103,7 +101,7 @@ public class CommentaryDaoJpaTest {
         Commentary commentary2 = commentaryDaoJpa.create(book, strNew);
 
 
-        List<Commentary> commentaryList =  commentaryDaoJpa.getAllCommentary();
+        List<Commentary> commentaryList =  commentaryDaoJpa.getAll();
 
         Assertions.assertNotNull(commentaryList);
         Assertions.assertTrue(commentaryList.size()>=2);

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface GenreDao {
 
-    List<Genre> getAllGenre();
+    List<Genre> getAll();
 
-    Genre getGenreByName(String name);
+    Genre getByName(String name);
 
-    Genre createGenre(String name);
+    Genre create(Genre genre);
 }

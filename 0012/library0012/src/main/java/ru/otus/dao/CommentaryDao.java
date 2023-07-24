@@ -16,5 +16,5 @@ public interface CommentaryDao {
 
     String delate(Commentary commentary);
 
-    List<Commentary> getAllCommentary();
+    List<Commentary> getAll();
 }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface AuthorDao {
 
-    List<Author> getAllAuthor();
+    List<Author> getAll();
 
-    Author getAuthorByName(String name);
+    Author getByName(String name);
 
-    Author createAuthor(String name);
+    Author create(Author Author);
 }
