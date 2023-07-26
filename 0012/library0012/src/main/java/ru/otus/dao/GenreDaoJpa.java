@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import ru.otus.domain.Genre;
 
@@ -42,7 +43,11 @@ public class GenreDaoJpa implements GenreDao {
 
     @Override
     public Genre create(Genre genre) {
-        em.persist(genre);
-        return genre;
+        try {
+            em.persist(genre);
+            return genre;
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

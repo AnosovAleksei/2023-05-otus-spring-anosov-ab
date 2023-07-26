@@ -33,33 +33,23 @@ public class CommentaryService {
     @Transactional
     public Commentary create(Long bookId, String message) {
         Book book = bookDao.getById(bookId);
-        if (book == null) {
-            //TODO действия если книги нет
-        }
         return commentaryDao.create(book, message);
 
     }
 
     @Transactional
-    public Commentary read(Long commentary_id) {
-        return commentaryDao.read(commentary_id);
+    public Commentary read(Long commentaryId) {
+        return commentaryDao.read(commentaryId);
     }
 
     @Transactional
-    public Commentary update(Long commentary_id, String msg, Long bookId) {
-        Book book = bookDao.getById(bookId);
-
-        Commentary commentary = new Commentary();
-        commentary.setId(commentary_id);
-        commentary.setMessage(msg);
-        commentary.setBook(book);
+    public Commentary update(Commentary commentary) {
         return commentaryDao.update(commentary);
     }
 
     @Transactional
-    public String delate(Long commentary_id) {
-        Commentary commentary = commentaryDao.read(commentary_id);
-        return commentaryDao.delate(commentary);
+    public void delate(Commentary commentary) {
+        commentaryDao.delate(commentary);
     }
 
 

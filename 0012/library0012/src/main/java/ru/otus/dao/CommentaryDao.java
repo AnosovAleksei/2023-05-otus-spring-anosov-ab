@@ -14,7 +14,7 @@ public interface CommentaryDao {
 
     Commentary update(Commentary commentary);
 
-    String delate(Commentary commentary);
+    void delate(Commentary commentary);
 
     List<Commentary> getAll();
 }

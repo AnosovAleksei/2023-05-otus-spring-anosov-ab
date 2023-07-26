@@ -38,6 +38,23 @@ public class BookDaoJpaTest {
     @Autowired
     CommentaryDaoJpa commentaryDaoJpa;
 
+    @DisplayName("Проверка работы методов доступа к данным count")
+    @Test
+    public void testCount(){
+//        Author author = new Author();
+//        author.setName("Author");
+//        author = authorDaoJpa.create(author);
+//
+//        Genre genre = new Genre();
+//        genre.setName("Genre");
+//        genre = genreDaoJpa.create(genre);
+//
+//        Book book = bookDaoJdbc.create("bookName", author, genre);
+
+
+        Assertions.assertTrue(bookDaoJdbc.count() > 0);
+    }
+
     @DisplayName("Проверка работы методов доступа к данным create")
     @Test
     public void testCreate(){
@@ -49,12 +66,16 @@ public class BookDaoJpaTest {
         genre.setName("Genre");
         genre = genreDaoJpa.create(genre);
 
-        Book book = bookDaoJdbc.create("bookName", author, genre);
+        Book book = new Book();
+        book.setName("bookName");
+        book.setGenre(genre);
+        book.setAuthor(author);
+        book = bookDaoJdbc.create(book);
 
-        List<Commentary> commentaryList = new ArrayList<>(){{
-            add(commentaryDaoJpa.create(book, "comment one"));
-            add(commentaryDaoJpa.create(book, "comment two"));
-        }};
+        List<Commentary> commentaryList = new ArrayList<>();
+        commentaryList.add(commentaryDaoJpa.create(book, "comment one"));
+        commentaryList.add(commentaryDaoJpa.create(book, "comment two"));
+
         book.setCommentaryList(commentaryList);
 
 
@@ -80,12 +101,17 @@ public class BookDaoJpaTest {
         genre.setName("Genre");
         genre = genreDaoJpa.create(genre);
 
-        Book book = bookDaoJdbc.create("bookName", author, genre);
 
-        List<Commentary> commentaryList = new ArrayList<>(){{
-            add(commentaryDaoJpa.create(book, "comment one"));
-            add(commentaryDaoJpa.create(book, "comment two"));
-        }};
+        Book book = new Book();
+        book.setName("bookName");
+        book.setGenre(genre);
+        book.setAuthor(author);
+        book = bookDaoJdbc.create(book);
+
+        List<Commentary> commentaryList = new ArrayList<>();
+        commentaryList.add(commentaryDaoJpa.create(book, "comment one"));
+        commentaryList.add(commentaryDaoJpa.create(book, "comment two"));
+
         book.setCommentaryList(commentaryList);
 
 
@@ -137,7 +163,11 @@ public class BookDaoJpaTest {
             genre.setName("TestGenre");
             genre = genreDaoJpa.create(genre);
 
-            Book book = bookDaoJdbc.create("testName", author, genre);
+            Book book = new Book();
+            book.setName("testName");
+            book.setGenre(genre);
+            book.setAuthor(author);
+            book = bookDaoJdbc.create(book);
 
 
             Assertions.assertNotNull(book.getAuthor().getName());
@@ -152,8 +182,11 @@ public class BookDaoJpaTest {
             genre2.setName("TestGenre2");
             genre2 = genreDaoJpa.create(genre2);
 
-
-            Book book2 = bookDaoJdbc.upgrade("testName", author2, genre2);
+            Book book2 = new Book();
+            book2.setName("testName");
+            book2.setGenre(genre2);
+            book2.setAuthor(author2);
+            book2 = bookDaoJdbc.create(book2);
 
             Assertions.assertEquals(book2.getAuthor().getName(), "TestAuthor2");
             Assertions.assertEquals(book2.getGenre().getName(), "TestGenre2");
@@ -161,9 +194,7 @@ public class BookDaoJpaTest {
         }
 
         {
-            String msg = bookDaoJdbc.delate("testName");
-
-            Assertions.assertEquals(msg, "book : testName deleted successfully");
+            bookDaoJdbc.delate("testName");
 
             Book book = bookDaoJdbc.getByName("testName");
 

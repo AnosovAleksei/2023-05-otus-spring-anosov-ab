@@ -5,6 +5,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Commentary;
 import ru.otus.domain.Genre;
 import ru.otus.service.AuthorService;
 import ru.otus.service.CommentaryService;
@@ -29,7 +30,7 @@ public class LibraryController {
     private final CommentaryService commentaryService;
 
     @ShellMethod(value = "getting count book in library", key = {"c", "count"})
-    public int testingUser() {
+    public long testingUser() {
         return bookService.count();
     }
 
@@ -82,8 +83,10 @@ public class LibraryController {
 
     @ShellMethod(value = "delate book", key = {"d_b", "delate_book"})
     public String delateBook(String name) {
-        System.out.println(name);
-        return bookService.delate(name);
+        Book book = bookService.getByName(name);
+        String rez = ModelConverter.operationDelateBook(book);
+        bookService.delate(name);
+        return rez;
     }
 
     @ShellMethod(value = "get all commentary", key = {"cm", "commentary"})
@@ -102,12 +105,19 @@ public class LibraryController {
     }
 
     @ShellMethod(value = "update commentary", key = {"u_cm", "update_commentary"})
-    public String updateComment(Long commentary_id, String msg, Long bookId) {
-        return ModelConverter.convertComentaryToStr(commentaryService.update(commentary_id, msg, bookId));
+    public String updateComment(Long commentaryId, String msg, Long bookId) {
+        Book book = bookService.getByID(bookId);
+        Commentary commentary = commentaryService.read(commentaryId);
+        commentary.setMessage(msg);
+        commentary.setBook(book);
+        return ModelConverter.convertComentaryToStr(commentaryService.update(commentary));
     }
 
     @ShellMethod(value = "delate commentary", key = {"d_cm", "delate_commentary"})
-    public String delateComment(Long commentary_id) {
-        return commentaryService.delate(commentary_id);
+    public String delateComment(Long commentaryId) {
+        Commentary commentary = commentaryService.read(commentaryId);
+        String rez = ModelConverter.operationDelateCommentary(commentary);
+        commentaryService.delate(commentary);
+        return rez;
     }
 }

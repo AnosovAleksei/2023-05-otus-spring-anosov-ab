@@ -27,7 +27,12 @@ public class BookService {
         Author author = authorService.create(authorName);
         Genre genre = genreService.create(genreName);
 
-        return bookDao.create(name, author, genre);
+        Book book = new Book();
+        book.setName(name);
+        book.setAuthor(author);
+        book.setGenre(genre);
+
+        return bookDao.create(book);
     }
 
     @Transactional
@@ -38,10 +43,11 @@ public class BookService {
         return bookDao.upgrade(name, author, genre);
     }
 
-    public int count() {
+    public long count() {
         return bookDao.count();
     }
 
+    @Transactional
     public List<Book> getAll() {
         return bookDao.getAll();
     }
@@ -52,7 +58,12 @@ public class BookService {
     }
 
     @Transactional
-    public String delate(String name) {
-        return bookDao.delate(name);
+    public Book getByID(Long bookId) {
+        return bookDao.getById(bookId);
+    }
+
+    @Transactional
+    public void delate(String name) {
+        bookDao.delate(name);
     }
 }

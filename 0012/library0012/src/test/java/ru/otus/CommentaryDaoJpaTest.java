@@ -79,10 +79,7 @@ public class CommentaryDaoJpaTest {
         Long id = commentary.getId();
 
 
-        String answer =  commentaryDaoJpa.delate(commentary);
-
-        Assertions.assertNotNull(answer);
-        Assertions.assertTrue(answer.length()>0);
+        commentaryDaoJpa.delate(commentary);
 
         Commentary commentary2 = commentaryDaoJpa.read(id);
 

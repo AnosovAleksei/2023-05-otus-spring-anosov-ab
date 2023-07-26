@@ -1,7 +1,6 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.AuthorDao;
@@ -19,11 +18,7 @@ public class AuthorService {
 
     @Transactional
     public Author create(String name) {
-        try {
-            return authorDao.create(new Author(name));
-        } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException(e);
-        }
+        return authorDao.create(new Author(name));
     }
 
     public List<Author> getAll() {

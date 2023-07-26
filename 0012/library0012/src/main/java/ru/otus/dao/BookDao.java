@@ -9,15 +9,15 @@ import java.util.List;
 
 
 public interface BookDao {
-    int count();
+    long count();
 
-    String delate(String name);
+    void delate(String name);
 
     Book upgrade(String name, Author author, Genre genre);
 
     Book update(Book book);
 
-    Book create(String name, Author author, Genre genre);
+    Book create(Book book);
 
     Book getByName(String name);
 

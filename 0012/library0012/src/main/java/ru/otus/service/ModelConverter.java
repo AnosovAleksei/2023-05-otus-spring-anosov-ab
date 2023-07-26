@@ -3,7 +3,6 @@ package ru.otus.service;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 
-import java.util.List;
 
 public class ModelConverter {
     public static String convertBookToStr(Book book) {
@@ -15,12 +14,6 @@ public class ModelConverter {
         sb.append(" : ");
         sb.append(book.getGenre().getName());
 
-        List<Commentary> commentaryList = book.getCommentaryList();
-        if (commentaryList != null && commentaryList.size() > 0) {
-            sb.append(" : < ");
-            sb.append(String.join(", ", commentaryList.stream().map(s -> convertComentaryToStr(s)).toList()));
-            sb.append(" >");
-        }
         sb.append("]");
         return sb.toString();
     }
@@ -35,5 +28,13 @@ public class ModelConverter {
         sb.append(commentary.getBook().getId());
         sb.append("]");
         return sb.toString();
+    }
+
+    public static String operationDelateBook(Book book) {
+        return "book : " + book.getName() + " deleted successfully";
+    }
+
+    public static String operationDelateCommentary(Commentary commentary) {
+        return "commentary : " + commentary.getId() + " deleted successfully";
     }
 }

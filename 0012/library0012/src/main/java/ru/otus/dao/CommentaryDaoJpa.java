@@ -48,14 +48,12 @@ public class CommentaryDaoJpa implements CommentaryDao {
     }
 
     @Override
-    public String delate(Commentary commentary) {
-        Long commentaryId  = commentary.getId();
+    public void delate(Commentary commentary) {
         Query query = em.createQuery("delete " +
                 "from Commentary s " +
                 "where s.id = :commentaryId");
-        query.setParameter("commentaryId", commentaryId);
+        query.setParameter("commentaryId", commentary.getId());
         query.executeUpdate();
-        return "commentary (id) : " + commentaryId + " deleted successfully";
     }
 
     @Override

@@ -1,7 +1,6 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.GenreDao;
@@ -18,11 +17,7 @@ public class GenreService {
 
     @Transactional
     public Genre create(String name) {
-        try {
-            return genreDao.create(new Genre(name));
-        } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException(e);
-        }
+        return genreDao.create(new Genre(name));
     }
 
 
