@@ -126,7 +126,7 @@ public class BookDaoJpaTest {
         Long commentaryId1 = bookNew.getCommentaryList().get(0).getId();
         Long commentaryId2 = bookNew.getCommentaryList().get(1).getId();
 
-        bookDaoJdbc.delate(bookNew.getName());
+        bookDaoJdbc.delete(bookNew.getName());
 
         Assertions.assertNull(commentaryDaoJpa.read(commentaryId1));
         Assertions.assertNull(commentaryDaoJpa.read(commentaryId2));
@@ -194,7 +194,7 @@ public class BookDaoJpaTest {
         }
 
         {
-            bookDaoJdbc.delate("testName");
+            bookDaoJdbc.delete("testName");
 
             Book book = bookDaoJdbc.getByName("testName");
 

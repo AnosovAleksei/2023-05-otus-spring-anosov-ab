@@ -63,7 +63,7 @@ public class BookService {
     }
 
     @Transactional
-    public void delate(String name) {
-        bookDao.delate(name);
+    public void delete(String name) {
+        bookDao.delete(name);
     }
 }

@@ -27,7 +27,7 @@ public class BookDaoJpa implements BookDao {
 
 
     @Override
-    public void delate(String name) {
+    public void delete(String name) {
         Query query = em.createQuery("delete " +
                 "from Book s " +
                 "where s.name = :name");

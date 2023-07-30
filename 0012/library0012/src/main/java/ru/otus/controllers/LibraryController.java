@@ -85,7 +85,7 @@ public class LibraryController {
     public String delateBook(String name) {
         Book book = bookService.getByName(name);
         String rez = ModelConverter.operationDelateBook(book);
-        bookService.delate(name);
+        bookService.delete(name);
         return rez;
     }
 

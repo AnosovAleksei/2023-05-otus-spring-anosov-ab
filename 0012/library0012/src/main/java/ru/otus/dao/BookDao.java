@@ -11,7 +11,7 @@ import java.util.List;
 public interface BookDao {
     long count();
 
-    void delate(String name);
+    void delete(String name);
 
     Book upgrade(String name, Author author, Genre genre);
 
