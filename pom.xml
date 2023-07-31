@@ -16,5 +16,6 @@
         <module>0007/user-testing-shell</module>
         <module>0009/library</module>
         <module>0012/library0012</module>
+        <module>0013/library0013</module>
     </modules>
 </project>
