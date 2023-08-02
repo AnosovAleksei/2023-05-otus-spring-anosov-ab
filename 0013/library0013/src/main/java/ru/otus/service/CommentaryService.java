@@ -1,56 +1,23 @@
 package ru.otus.service;
 
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.BookDao;
-import ru.otus.dao.CommentaryDao;
-import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class CommentaryService {
-
-    private final CommentaryDao commentaryDao;
-
-    private final BookDao bookDao;
+public interface CommentaryService {
+    List<Commentary> getAll();
 
 
-    public List<String> getAll() {
-        List<Commentary> commentaryList = commentaryDao.getAll();
-        return new ArrayList<>() {{
-            for (Commentary commentary : commentaryList) {
-                add(ModelConverter.convertComentaryToStr(commentary));
-            }
-        }};
-    }
+    List<String> getAllForString();
 
-    @Transactional
-    public Commentary create(Long bookId, String message) {
-        Book book = bookDao.getById(bookId);
-        return commentaryDao.create(book, message);
+    Commentary create(Long bookId, String message);
 
-    }
+    Commentary read(Long commentaryId);
 
-    @Transactional
-    public Commentary read(Long commentaryId) {
-        return commentaryDao.read(commentaryId);
-    }
+    Commentary update(Commentary commentary);
 
-    @Transactional
-    public Commentary update(Commentary commentary) {
-        return commentaryDao.update(commentary);
-    }
+    void delete(Commentary commentary);
 
-    @Transactional
-    public void delate(Commentary commentary) {
-        commentaryDao.delate(commentary);
-    }
-
+    List<Commentary> getCommentaryByBookId(Long bookId);
 
 }

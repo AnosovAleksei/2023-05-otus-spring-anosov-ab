@@ -91,7 +91,7 @@ public class LibraryController {
 
     @ShellMethod(value = "get all commentary", key = {"cm", "commentary"})
     public List<String> getAllCommentary() {
-        return commentaryService.getAll();
+        return commentaryService.getAllForString();
     }
 
     @ShellMethod(value = "create commentary", key = {"c_cm", "create_commentary"})
@@ -109,7 +109,7 @@ public class LibraryController {
         Book book = bookService.getByID(bookId);
         Commentary commentary = commentaryService.read(commentaryId);
         commentary.setMessage(msg);
-        commentary.setBook(book);
+        commentary.setBookId(book.getId());
         return ModelConverter.convertComentaryToStr(commentaryService.update(commentary));
     }
 
@@ -117,7 +117,7 @@ public class LibraryController {
     public String delateComment(Long commentaryId) {
         Commentary commentary = commentaryService.read(commentaryId);
         String rez = ModelConverter.operationDelateCommentary(commentary);
-        commentaryService.delate(commentary);
+        commentaryService.delete(commentary);
         return rez;
     }
 }

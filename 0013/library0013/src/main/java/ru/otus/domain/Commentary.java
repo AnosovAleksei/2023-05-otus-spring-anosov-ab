@@ -1,13 +1,12 @@
 package ru.otus.domain;
 
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,11 +28,8 @@ public class Commentary {
     @Column(name = "commentary_id")
     private Long id;
 
-
-    @ManyToOne
-    @JoinColumn(name = "book_id", insertable = true)//, insertable = false, updatable = false)
-    private Book book;
-
+    @Column(name = "book_id")
+    private Long bookId;
 
     private String message;
 }

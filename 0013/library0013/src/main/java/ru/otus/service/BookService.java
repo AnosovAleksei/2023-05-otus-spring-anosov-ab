@@ -1,69 +1,26 @@
 package ru.otus.service;
 
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.BookDao;
-import ru.otus.domain.Author;
 import ru.otus.domain.Book;
-import ru.otus.domain.Genre;
+
 
 import java.util.List;
 
+public interface BookService {
 
-@Service
-@RequiredArgsConstructor
-public class BookService {
+    Book create(String name, String authorName, String genreName);
 
-    private final AuthorService authorService;
+    Book update(String name, String authorName, String genreName);
 
-    private final GenreService genreService;
+    Book update(Book book);
 
-    private final BookDao bookDao;
+    long count();
 
-    @Transactional
-    public Book create(String name, String authorName, String genreName) {
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+    List<Book> getAll();
 
-        Book book = new Book();
-        book.setName(name);
-        book.setAuthor(author);
-        book.setGenre(genre);
+    Book getByName(String name);
 
-        return bookDao.create(book);
-    }
+    Book getByID(Long bookId);
 
-    @Transactional
-    public Book update(String name, String authorName, String genreName) {
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+    void delete(String name);
 
-        return bookDao.upgrade(name, author, genre);
-    }
-
-    public long count() {
-        return bookDao.count();
-    }
-
-    @Transactional
-    public List<Book> getAll() {
-        return bookDao.getAll();
-    }
-
-    @Transactional
-    public Book getByName(String name) {
-        return bookDao.getByName(name);
-    }
-
-    @Transactional
-    public Book getByID(Long bookId) {
-        return bookDao.getById(bookId);
-    }
-
-    @Transactional
-    public void delete(String name) {
-        bookDao.delete(name);
-    }
 }

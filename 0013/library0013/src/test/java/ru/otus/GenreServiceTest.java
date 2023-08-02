@@ -7,17 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.GenreDao;
 import ru.otus.domain.Genre;
+import ru.otus.service.GenreService;
 
 import java.util.List;
 
 @DisplayName("Проверка работы GenreDao")
 @SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
-public class GenreDaoTest {
+public class GenreServiceTest {
 
     @Autowired
-    private GenreDao genreDao;
+    private GenreService genreService;
 
 
 
@@ -26,24 +26,24 @@ public class GenreDaoTest {
     @Test
     public void test(){
         {
-            Genre genre = genreDao.create(new Genre("testGenre"));
+            Genre genre = genreService.create("testGenre");
             Assertions.assertEquals(genre.getName(), "testGenre");
         }
         {
-            Genre genre = genreDao.getByName("testGenre");
-            Assertions.assertEquals(genre.getName(), "testGenre");
+            Genre genre = genreService.create("testGenre1");
+            Assertions.assertEquals(genre.getName(), "testGenre1");
 
-            List<Genre> genres = genreDao.getAll();
+            List<Genre> genres = genreService.getAll();
             for(Genre g : genres){
                 if(g.getId() == genre.getId()){
-                    Assertions.assertEquals(g.getName(), "testGenre");
+                    Assertions.assertEquals(g.getName(), "testGenre1");
                 }
             }
         }
         {
 
             RuntimeException e = Assertions.assertThrows(RuntimeException.class, () ->
-                    genreDao.create(new Genre("testGenre")));
+                    genreService.create("testGenre"));
 
         }
     }

@@ -4,84 +4,90 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import ru.otus.dao.BookDaoJpa;
-import ru.otus.dao.CommentaryDaoJpa;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
+import ru.otus.service.AuthorService;
+import ru.otus.service.BookService;
+import ru.otus.service.CommentaryService;
+import ru.otus.service.GenreService;
 
 import java.util.List;
 
 @DisplayName("Проверка работы CommentaryDaoJpa")
-@DataJpaTest
-@Import({BookDaoJpa.class, CommentaryDaoJpa.class})
-public class CommentaryDaoJpaTest {
+@SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
+public class CommentaryServiceTest {
+    @Autowired
+    AuthorService authorService;
 
     @Autowired
-    BookDaoJpa bookDaoJpa;
+    GenreService genreService;
 
     @Autowired
-    CommentaryDaoJpa commentaryDaoJpa;
+    BookService bookService;
+
+    @Autowired
+    CommentaryService commentaryService;
+
 
     @DisplayName("Проверка create")
     @Test
     public void testCreate(){
-        Book book = bookDaoJpa.getById(1L);
+        Book book = bookService.getByID(1L);
         final String str = "any massege";
-        Commentary commentary = commentaryDaoJpa.create(book, str);
+        Commentary commentary = commentaryService.create(book.getId(), str);
         Assertions.assertNotNull(commentary);
-        Assertions.assertEquals(commentary.getBook().getId(), book.getId());
+        Assertions.assertEquals(commentary.getBookId(), book.getId());
         Assertions.assertEquals(commentary.getMessage(), str);
     }
 
     @DisplayName("Проверка read")
     @Test
     public void testRead(){
-        Book book = bookDaoJpa.getById(1L);
+        Book book = bookService.getByID(1L);
         final String str = "any massege";
-        Commentary commentary = commentaryDaoJpa.create(book, str);
+        Commentary commentary = commentaryService.create(book.getId(), str);
 
-        Commentary commentary2 = commentaryDaoJpa.read(commentary.getId());
+        Commentary commentary2 = commentaryService.read(commentary.getId());
 
         Assertions.assertNotNull(commentary2);
-        Assertions.assertEquals(commentary2.getBook().getId(), book.getId());
+        Assertions.assertEquals(commentary2.getBookId(), book.getId());
         Assertions.assertEquals(commentary2.getMessage(), str);
     }
 
     @DisplayName("Проверка update")
     @Test
     public void testUpdate(){
-        Book book = bookDaoJpa.getById(1L);
+        Book book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
-        Commentary commentary = commentaryDaoJpa.create(book, str);
+        Commentary commentary = commentaryService.create(book.getId(), str);
 
         commentary.setMessage(strNew);
 
 
-        Commentary commentary2 = commentaryDaoJpa.update(commentary);
+        Commentary commentary2 = commentaryService.update(commentary);
 
         Assertions.assertNotNull(commentary2);
-        Assertions.assertEquals(commentary2.getBook().getId(), book.getId());
+        Assertions.assertEquals(commentary2.getBookId(), book.getId());
         Assertions.assertEquals(commentary2.getMessage(), strNew);
     }
 
     @DisplayName("Проверка delate")
     @Test
     public void testDelate(){
-        Book book = bookDaoJpa.getById(1L);
+        Book book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
-        Commentary commentary = commentaryDaoJpa.create(book, str);
+        Commentary commentary = commentaryService.create(book.getId(), str);
         Long id = commentary.getId();
 
 
-        commentaryDaoJpa.delate(commentary);
+        commentaryService.delete(commentary);
 
-        Commentary commentary2 = commentaryDaoJpa.read(id);
+        Commentary commentary2 = commentaryService.read(id);
 
         Assertions.assertNull(commentary2);
 
@@ -90,15 +96,15 @@ public class CommentaryDaoJpaTest {
     @DisplayName("Проверка getAllCommentary")
     @Test
     public void testGetAllComentary(){
-        Book book = bookDaoJpa.getById(1L);
+        Book book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "new massege";
 
-        Commentary commentary1 = commentaryDaoJpa.create(book, str);
-        Commentary commentary2 = commentaryDaoJpa.create(book, strNew);
+        Commentary commentary1 = commentaryService.create(book.getId(), str);
+        Commentary commentary2 = commentaryService.create(book.getId(), strNew);
 
 
-        List<Commentary> commentaryList =  commentaryDaoJpa.getAll();
+        List<Commentary> commentaryList =  commentaryService.getAll();
 
         Assertions.assertNotNull(commentaryList);
         Assertions.assertTrue(commentaryList.size()>=2);

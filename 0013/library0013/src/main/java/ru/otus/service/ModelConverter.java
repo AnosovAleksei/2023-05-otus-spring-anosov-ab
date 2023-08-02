@@ -25,7 +25,7 @@ public class ModelConverter {
         sb.append(" [msg:");
         sb.append(commentary.getMessage());
         sb.append(" , book_id : ");
-        sb.append(commentary.getBook().getId());
+        sb.append(commentary.getBookId());
         sb.append("]");
         return sb.toString();
     }

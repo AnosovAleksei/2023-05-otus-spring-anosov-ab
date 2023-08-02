@@ -18,10 +18,9 @@ CREATE TABLE IF NOT EXISTS genre
 CREATE TABLE IF NOT EXISTS BOOK
 (
     book_id BIGSERIAL not null PRIMARY KEY,
-    NAME text not null,
+    NAME text not null UNIQUE,
     author_id BIGSERIAL not null,
-    genre_id BIGSERIAL not null
-    ,
+    genre_id BIGSERIAL not null,
     CONSTRAINT author_dfk FOREIGN KEY (author_id) REFERENCES author(author_id) ON DELETE CASCADE,
     CONSTRAINT genre_dfk FOREIGN KEY (genre_id) REFERENCES genre(genre_id) ON DELETE CASCADE
 );
