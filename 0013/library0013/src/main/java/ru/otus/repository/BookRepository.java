@@ -2,15 +2,13 @@ package ru.otus.repository;
 
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Book;
 
-import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface BookRepository extends CrudRepository<Book, Long> {
-
-    @Override
-    List<Book> findAll();
 
     Optional<Book> getByName(String name);
 

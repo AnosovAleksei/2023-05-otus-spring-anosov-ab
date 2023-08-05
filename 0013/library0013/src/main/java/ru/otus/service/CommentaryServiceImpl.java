@@ -22,13 +22,15 @@ public class CommentaryServiceImpl implements CommentaryService {
 
     @Override
     public List<Commentary> getAll() {
-        return commentaryRepository.findAll();
+        List<Commentary> comentaries = new ArrayList<>();
+        commentaryRepository.findAll().forEach(comentaries::add);
+        return comentaries;
     }
 
 
     @Override
     public List<String> getAllForString() {
-        List<Commentary> commentaryList = commentaryRepository.findAll();
+        List<Commentary> commentaryList = getAll();
         return new ArrayList<>() {{
             for (Commentary commentary : commentaryList) {
                 add(ModelConverter.convertComentaryToStr(commentary));

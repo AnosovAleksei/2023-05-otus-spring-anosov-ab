@@ -8,10 +8,6 @@ import java.util.List;
 
 public interface CommentaryRepository extends CrudRepository<Commentary, Long> {
 
-    @Override
-    List<Commentary> findAll();
-
-
     List<Commentary> findByBookId(Long bookId);
 
 

@@ -13,7 +13,6 @@ import ru.otus.service.ModelConverter;
 import ru.otus.service.BookService;
 import ru.otus.service.GenreService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -54,16 +53,9 @@ public class LibraryController {
         return genreService.create(name);
     }
 
-
     @ShellMethod(value = "getting all book", key = {"b", "books"})
     public List<String> printAllBooks() {
-        return new ArrayList<>() {
-            {
-                for (Book book : bookService.getAll()) {
-                    add(ModelConverter.convertBookToStr(book));
-                }
-            }
-        };
+        return ModelConverter.allBookDescription(bookService.getAll());
     }
 
     @ShellMethod(value = "create book", key = {"c_b", "create_book"})

@@ -3,6 +3,9 @@ package ru.otus.service;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ModelConverter {
     public static String convertBookToStr(Book book) {
@@ -16,6 +19,17 @@ public class ModelConverter {
 
         sb.append("]");
         return sb.toString();
+    }
+
+
+    public static List<String> allBookDescription(List<Book> books) {
+        return new ArrayList<>() {
+            {
+                for (Book book : books) {
+                    add(ModelConverter.convertBookToStr(book));
+                }
+            }
+        };
     }
 
     public static String convertComentaryToStr(Commentary commentary) {

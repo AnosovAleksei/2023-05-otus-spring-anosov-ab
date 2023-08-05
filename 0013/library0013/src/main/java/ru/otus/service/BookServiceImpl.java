@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
+import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.GenreRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,9 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     private final BookRepository bookRepository;
 
@@ -26,8 +29,11 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book create(String name, String authorName, String genreName) {
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+        Author author = new Author(authorName);
+        authorRepository.save(author);
+
+        Genre genre = new Genre(genreName);
+        genreRepository.save(genre);
 
         Book book = new Book();
         book.setName(name);
@@ -41,8 +47,11 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book update(String name, String authorName, String genreName) {
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+        Author author = new Author(authorName);
+        authorRepository.save(author);
+
+        Genre genre = new Genre(genreName);
+        genreRepository.save(genre);
 
         Book book = getByName(name);
         if (book != null) {
@@ -58,7 +67,12 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book update(Book book) {
-        return bookRepository.save(book);
+        Book book1 = getByName(book.getName());
+        if (book1 == null) {
+            throw new RuntimeException("book with bookName " + book.getName() + " does not exist");
+        }
+        bookRepository.save(book);
+        return book;
     }
 
     @Override
@@ -69,7 +83,15 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public List<Book> getAll() {
-        return bookRepository.findAll();
+        List<Book> books = new ArrayList<>();
+        bookRepository.findAll().forEach(books::add);
+
+        List<Author> authors = new ArrayList<>();
+        authorRepository.findAll().forEach(authors::add);
+
+        List<Genre> genries = new ArrayList<>();
+        genreRepository.findAll().forEach(genries::add);
+        return books;
     }
 
     @Override
