@@ -41,13 +41,6 @@ public class AuthorServiceTest {
                 }
             }
         }
-        {
-
-            RuntimeException e = Assertions.assertThrows(RuntimeException.class, () ->
-                    authorService.create("testAuthor"));
-
-        }
-
     }
 
 

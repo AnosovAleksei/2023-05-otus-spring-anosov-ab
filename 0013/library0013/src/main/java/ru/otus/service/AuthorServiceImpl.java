@@ -19,10 +19,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public Author create(String name) {
-        Author author = new Author(name);
-        authorRepository.save(author);
+        Author author = authorRepository.getByName(name).orElse(new Author(name));
+        if (author.getId() == null) {
+            authorRepository.save(author);
+        }
         return author;
     }
+
 
     @Override
     public List<Author> getAll() {

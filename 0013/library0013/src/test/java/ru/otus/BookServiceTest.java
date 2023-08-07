@@ -15,6 +15,7 @@ import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
 import ru.otus.service.GenreService;
+import ru.otus.service.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +47,20 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным create")
     @Test
     public void testCreate(){
+        Author author = authorService.create("Author1");
+        Genre genre = genreService.create("Genre1");
+        Book book = new Book();
+        book.setName("bookName1");
+        book.setAuthor(author);
+        book.setGenre(genre);
 
-        Book book = bookService.create("bookName", "Author", "Genre");
 
-        Author author = book.getAuthor();
-        Genre genre = book.getGenre();
+
+
+        book = bookService.create(book);
+
+//        Author author = book.getAuthor();
+//        Genre genre = book.getGenre();
 
         List<Commentary> commentaryList = new ArrayList<>();
         commentaryList.add(commentaryService.create(book.getId(), "comment one"));
@@ -72,10 +82,17 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным delete")
     @Test
     public void testDelate(){
+        Author author = authorService.create("Author5");
+        Genre genre = genreService.create("Genre5");
+        Book book = new Book();
+        book.setName("bookName5");
+        book.setAuthor(author);
+        book.setGenre(genre);
 
-        Book book = bookService.create("bookName5", "Author5", "Genre5");
-        Author author = book.getAuthor();
-        Genre genre = book.getGenre();
+
+        bookService.create(book);
+//        Author author = book.getAuthor();
+//        Genre genre = book.getGenre();
 
         List<Commentary> commentaryList = new ArrayList<>();
         commentaryList.add(commentaryService.create(book.getId(), "comment one"));
@@ -118,9 +135,18 @@ public class BookServiceTest {
     public void testCrud() {
 
         {
-            Book book = bookService.create("testName", "TestAuthor", "TestGenre");
-            Author author = book.getAuthor();
-            Genre genre = book.getGenre();
+            Author author = authorService.create("Author");
+            Genre genre = genreService.create("Genre");
+            Book book = new Book();
+            book.setName("testName");
+            book.setAuthor(author);
+            book.setGenre(genre);
+
+            bookService.create(book);
+
+//            Book book = bookService.create("testName", "TestAuthor", "TestGenre");
+//            Author author = book.getAuthor();
+//            Genre genre = book.getGenre();
 
             Assertions.assertNotNull(book.getAuthor().getName());
             Assertions.assertNotNull(book.getGenre().getName());
@@ -147,7 +173,7 @@ public class BookServiceTest {
 
         {
             bookService.delete("testName");
-            RuntimeException e = Assertions.assertThrows(RuntimeException.class, () ->
+            NotFoundException e = Assertions.assertThrows(NotFoundException.class, () ->
                     bookService.getByName("testName"));
         }
 

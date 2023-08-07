@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface BookService {
 
-    Book create(String name, String authorName, String genreName);
-
-    Book update(String name, String authorName, String genreName);
+    Book create(Book book);
 
     Book update(Book book);
 

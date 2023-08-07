@@ -25,43 +25,11 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
-
     @Override
     @Transactional
-    public Book create(String name, String authorName, String genreName) {
-        Author author = new Author(authorName);
-        authorRepository.save(author);
-
-        Genre genre = new Genre(genreName);
-        genreRepository.save(genre);
-
-        Book book = new Book();
-        book.setName(name);
-        book.setAuthor(author);
-        book.setGenre(genre);
-
+    public Book create(Book book) {
         bookRepository.save(book);
         return book;
-    }
-
-    @Override
-    @Transactional
-    public Book update(String name, String authorName, String genreName) {
-        Author author = new Author(authorName);
-        authorRepository.save(author);
-
-        Genre genre = new Genre(genreName);
-        genreRepository.save(genre);
-
-        Book book = getByName(name);
-        if (book != null) {
-            throw new RuntimeException("book with bookName" + name + "does not exist");
-        }
-        book.setAuthor(author);
-        book.setGenre(genre);
-
-
-        return update(book);
     }
 
     @Override
@@ -69,7 +37,7 @@ public class BookServiceImpl implements BookService {
     public Book update(Book book) {
         Book book1 = getByName(book.getName());
         if (book1 == null) {
-            throw new RuntimeException("book with bookName " + book.getName() + " does not exist");
+            throw new NotFoundException("book with bookName " + book.getName() + " does not exist");
         }
         bookRepository.save(book);
         return book;
@@ -97,21 +65,15 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book getByName(String name) {
-        Book book = bookRepository.getByName(name).orElse(null);
-        if (book == null) {
-            throw new RuntimeException("book with bookName" + name + "does not exist");
-        }
-        return book;
+        return bookRepository.getByName(name)
+                .orElseThrow(() -> new NotFoundException("book with bookName" + name + "does not exist"));
     }
 
     @Override
     @Transactional
     public Book getByID(Long bookId) {
-        Book book = bookRepository.getById(bookId).orElse(null);
-        if (book == null) {
-            throw new RuntimeException("book with bookId" + bookId.toString() + "does not exist");
-        }
-        return book;
+        return bookRepository.getById(bookId)
+                .orElseThrow(() -> new NotFoundException("book with bookId" + bookId.toString() + "does not exist"));
     }
 
     @Override

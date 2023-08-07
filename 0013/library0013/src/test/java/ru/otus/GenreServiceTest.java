@@ -40,11 +40,5 @@ public class GenreServiceTest {
                 }
             }
         }
-        {
-
-            RuntimeException e = Assertions.assertThrows(RuntimeException.class, () ->
-                    genreService.create("testGenre"));
-
-        }
     }
 }

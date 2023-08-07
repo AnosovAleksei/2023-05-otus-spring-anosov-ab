@@ -59,8 +59,17 @@ public class LibraryController {
     }
 
     @ShellMethod(value = "create book", key = {"c_b", "create_book"})
-    public String printBook(String name, String author, String genre) {
-        return ModelConverter.convertBookToStr(bookService.create(name, author, genre));
+    public String createBook(String name, String authorName, String genreName) {
+
+        Author author = authorService.create(authorName);
+        Genre genre = genreService.create(genreName);
+        Book book = new Book();
+        book.setGenre(genre);
+        book.setAuthor(author);
+        book.setName(name);
+
+
+        return ModelConverter.convertBookToStr(bookService.create(book));
     }
 
     @ShellMethod(value = "read book", key = {"r_b", "read_book"})
@@ -69,8 +78,16 @@ public class LibraryController {
     }
 
     @ShellMethod(value = "update book", key = {"u_b", "update_book"})
-    public String updateBook(String name, String author, String genre) {
-        return ModelConverter.convertBookToStr(bookService.update(name, author, genre));
+    public String updateBook(String name, String authorName, String genreName) {
+        Author author = authorService.create(authorName);
+        Genre genre = genreService.create(genreName);
+        Book book = bookService.getByName(name);
+        book.setGenre(genre);
+        book.setAuthor(author);
+
+
+
+        return ModelConverter.convertBookToStr(bookService.update(book));
     }
 
     @ShellMethod(value = "delate book", key = {"d_b", "delate_book"})

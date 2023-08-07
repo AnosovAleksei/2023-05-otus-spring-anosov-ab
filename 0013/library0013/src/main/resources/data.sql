@@ -1,11 +1,11 @@
 -- в учебных целях заполним базу тестовыми данными
 --В реальном приложении будем подключение к реальной БД или подтягивание начальных данных из NSI/ MDM
 
-insert into author (name, author_id)
-values ('Pushkin', 1),('Tolstoy', 2);
+insert into author (name)
+values ('Pushkin'),('Tolstoy');
 
-insert into genre (name, genre_id)
-values ('poetry', 1), ('prose', 2);
+insert into genre (name)
+values ('poetry'), ('prose');
 
 insert into book (name, author_id, genre_id)
 values ('Eugene Onegin',
