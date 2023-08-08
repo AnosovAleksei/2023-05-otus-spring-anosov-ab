@@ -12,6 +12,7 @@ import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
 import ru.otus.service.GenreService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DisplayName("Проверка работы CommentaryDaoJpa")
@@ -104,7 +105,11 @@ public class CommentaryServiceTest {
         Commentary commentary2 = commentaryService.create(book.getId(), strNew);
 
 
-        List<Commentary> commentaryList =  commentaryService.getAll();
+        Iterable<Commentary> commentaryIter =  commentaryService.getAll();
+
+        List<Commentary> commentaryList = new ArrayList<>();
+        commentaryIter.forEach(commentaryList::add);
+
 
         Assertions.assertNotNull(commentaryList);
         Assertions.assertTrue(commentaryList.size()>=2);

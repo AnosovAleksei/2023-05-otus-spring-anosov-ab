@@ -34,7 +34,7 @@ public class AuthorServiceTest {
             Author author = authorService.create("testAuthor1");
             Assertions.assertEquals(author.getName(), "testAuthor1");
 
-            List<Author> authors = authorService.getAll();
+            Iterable<Author> authors = authorService.getAll();
             for (Author a : authors) {
                 if (a.getId() == author.getId()) {
                     Assertions.assertEquals(a.getName(), "testAuthor1");

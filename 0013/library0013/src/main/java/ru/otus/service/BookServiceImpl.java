@@ -4,14 +4,13 @@ package ru.otus.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.domain.Author;
 import ru.otus.domain.Book;
-import ru.otus.domain.Genre;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
+import ru.otus.repository.CommentaryRepository;
 import ru.otus.repository.GenreRepository;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -24,6 +23,8 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     private final BookRepository bookRepository;
+
+    private final CommentaryRepository commentaryRepository;
 
     @Override
     public Book create(Book book) {
@@ -65,28 +66,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional
-    public List<Book> getAll() {
-        List<Book> books = new ArrayList<>();
-        bookRepository.findAll().forEach(books::add);
-
-        List<Author> authors = new ArrayList<>();
-        authorRepository.findAll().forEach(authors::add);
-
-        List<Genre> genries = new ArrayList<>();
-        genreRepository.findAll().forEach(genries::add);
+    public Iterable<Book> getAll() {
+        Iterable<Book> books = bookRepository.findAll();
         return books;
     }
 
     @Override
-    @Transactional
     public Book getByName(String name) {
         return bookRepository.getByName(name)
                 .orElseThrow(() -> new NotFoundException("book with bookName" + name + "does not exist"));
     }
 
     @Override
-    @Transactional
     public Book getByID(Long bookId) {
         return bookRepository.getById(bookId)
                 .orElseThrow(() -> new NotFoundException("book with bookId" + bookId.toString() + "does not exist"));
@@ -97,7 +88,25 @@ public class BookServiceImpl implements BookService {
     public void delete(String name) {
         Book book = bookRepository.getByName(name).orElse(null);
         if (book != null) {
+            Long authorId = book.getAuthor().getId();
+            Long genreId = book.getGenre().getId();
+            Long bookId = book.getId();
+
             bookRepository.delete(book);
+            {
+                List<Book> tempBookList = bookRepository.getByAuthorId(authorId);
+                if (tempBookList != null && tempBookList.size() == 0) {
+                    authorRepository.delete(authorRepository.findById(authorId).get());
+                }
+            }
+            {
+                List<Book> tempBookList = bookRepository.getByGenreId(genreId);
+                if (tempBookList != null && tempBookList.size() == 0) {
+                    genreRepository.delete(genreRepository.findById(genreId).get());
+                }
+            }
+
+            commentaryRepository.deleteAll(commentaryRepository.findByBookId(bookId));
         }
     }
 }

@@ -22,7 +22,7 @@ public class ModelConverter {
     }
 
 
-    public static List<String> allBookDescription(List<Book> books) {
+    public static List<String> allBookDescription(Iterable<Book> books) {
         return new ArrayList<>() {
             {
                 for (Book book : books) {

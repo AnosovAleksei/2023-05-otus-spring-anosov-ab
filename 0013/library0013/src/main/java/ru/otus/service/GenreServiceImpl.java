@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Genre;
 import ru.otus.repository.GenreRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @RequiredArgsConstructor
@@ -28,9 +27,7 @@ public class GenreServiceImpl implements GenreService {
 
 
     @Override
-    public List<Genre> getAll() {
-        List<Genre> genries = new ArrayList<>();
-        genreRepository.findAll().forEach(genries::add);
-        return genries;
+    public Iterable<Genre> getAll() {
+        return genreRepository.findAll();
     }
 }

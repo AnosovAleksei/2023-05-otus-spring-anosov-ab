@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.repository.AuthorRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -28,9 +26,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 
     @Override
-    public List<Author> getAll() {
-        List<Author> authors = new ArrayList<>();
-        authorRepository.findAll().forEach(authors::add);
-        return authors;
+    public Iterable<Author> getAll() {
+        return authorRepository.findAll();
     }
 }

@@ -3,6 +3,7 @@ package ru.otus.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
@@ -34,7 +35,7 @@ public class LibraryController {
     }
 
     @ShellMethod(value = "getting authors", key = {"a", "authors"})
-    public List<Author> getAllAuthors() {
+    public Iterable<Author> getAllAuthors() {
         return authorService.getAll();
     }
 
@@ -44,7 +45,7 @@ public class LibraryController {
     }
 
     @ShellMethod(value = "getting genrees", key = {"g", "genre"})
-    public List<Genre> getAllGenre() {
+    public Iterable<Genre> getAllGenre() {
         return genreService.getAll();
     }
 
@@ -53,8 +54,11 @@ public class LibraryController {
         return genreService.create(name);
     }
 
+    @Transactional(readOnly = true)
     @ShellMethod(value = "getting all book", key = {"b", "books"})
     public List<String> printAllBooks() {
+        authorService.getAll();
+        genreService.getAll();
         return ModelConverter.allBookDescription(bookService.getAll());
     }
 

@@ -33,7 +33,7 @@ public class GenreServiceTest {
             Genre genre = genreService.create("testGenre1");
             Assertions.assertEquals(genre.getName(), "testGenre1");
 
-            List<Genre> genres = genreService.getAll();
+            Iterable<Genre> genres = genreService.getAll();
             for(Genre g : genres){
                 if(g.getId() == genre.getId()){
                     Assertions.assertEquals(g.getName(), "testGenre1");

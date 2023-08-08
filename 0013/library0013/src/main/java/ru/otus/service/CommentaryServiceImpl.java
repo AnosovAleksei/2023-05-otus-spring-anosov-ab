@@ -21,16 +21,14 @@ public class CommentaryServiceImpl implements CommentaryService {
     private final BookRepository bookRepository;
 
     @Override
-    public List<Commentary> getAll() {
-        List<Commentary> comentaries = new ArrayList<>();
-        commentaryRepository.findAll().forEach(comentaries::add);
-        return comentaries;
+    public Iterable<Commentary> getAll() {
+        return commentaryRepository.findAll();
     }
 
 
     @Override
     public List<String> getAllForString() {
-        List<Commentary> commentaryList = getAll();
+        Iterable<Commentary> commentaryList = getAll();
         return new ArrayList<>() {{
             for (Commentary commentary : commentaryList) {
                 add(ModelConverter.convertComentaryToStr(commentary));
