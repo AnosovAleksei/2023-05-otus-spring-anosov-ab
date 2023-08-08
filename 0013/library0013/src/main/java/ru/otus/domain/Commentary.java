@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 
 @Getter
@@ -20,7 +19,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString
 @Table(name = "commentary")
 public class Commentary {
     @Id
@@ -32,4 +30,12 @@ public class Commentary {
     private Long bookId;
 
     private String message;
+
+    @Override
+    public String toString() {
+        return "Commentary{" +
+                "id=" + id +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }
