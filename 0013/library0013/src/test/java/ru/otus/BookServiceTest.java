@@ -47,8 +47,8 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным create")
     @Test
     public void testCreate(){
-        Author author = authorService.create("Author1");
-        Genre genre = genreService.create("Genre1");
+        Author author = authorService.create(new Author("Author1"));
+        Genre genre = genreService.create(new Genre("Genre1"));
         Book book = new Book();
         book.setName("bookName1");
         book.setAuthor(author);
@@ -82,8 +82,8 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным delete")
     @Test
     public void testDelate(){
-        Author author = authorService.create("Author5");
-        Genre genre = genreService.create("Genre5");
+        Author author = authorService.create(new Author("Author5"));
+        Genre genre = genreService.create(new Genre("Genre5"));
         Book book = new Book();
         book.setName("bookName5");
         book.setAuthor(author);
@@ -135,8 +135,8 @@ public class BookServiceTest {
     public void testCrud() {
 
         {
-            Author author = authorService.create("Author");
-            Genre genre = genreService.create("Genre");
+            Author author = authorService.create(new Author("Author"));
+            Genre genre = genreService.create(new Genre("Genre"));
             Book book = new Book();
             book.setName("testName");
             book.setAuthor(author);
@@ -154,11 +154,11 @@ public class BookServiceTest {
 
             Author author2 = new Author();
             author2.setName("TestAuthor2");
-            author2 = authorService.create(author2.getName());
+            author2 = authorService.create(author2);
 
             Genre genre2 = new Genre();
             genre2.setName("TestGenre2");
-            genre2 = genreService.create(genre2.getName());
+            genre2 = genreService.create(genre2);
 
             Book book2 = bookService.getByName("testName");
             book2.setName("testName");

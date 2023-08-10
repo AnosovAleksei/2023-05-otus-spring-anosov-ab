@@ -13,6 +13,7 @@ import ru.otus.service.CommentaryService;
 import ru.otus.service.ModelConverter;
 import ru.otus.service.BookService;
 import ru.otus.service.GenreService;
+import ru.otus.service.NotFoundException;
 
 import java.util.List;
 
@@ -41,8 +42,9 @@ public class LibraryController {
 
     @ShellMethod(value = "create", key = {"c_a", "create_author"})
     public Author createAuthor(String name) {
-        return authorService.create(name);
+        return authorService.create(new Author(name));
     }
+
 
     @ShellMethod(value = "getting genrees", key = {"g", "genre"})
     public Iterable<Genre> getAllGenre() {
@@ -51,27 +53,37 @@ public class LibraryController {
 
     @ShellMethod(value = "create", key = {"c_g", "create_genre"})
     public Genre createGenre(String name) {
-        return genreService.create(name);
+        return genreService.create(new Genre(name));
     }
 
     @Transactional(readOnly = true)
     @ShellMethod(value = "getting all book", key = {"b", "books"})
     public List<String> printAllBooks() {
-        authorService.getAll();
-        genreService.getAll();
         return ModelConverter.allBookDescription(bookService.getAll());
     }
 
     @ShellMethod(value = "create book", key = {"c_b", "create_book"})
     public String createBook(String name, String authorName, String genreName) {
 
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+        Author author;
+        try {
+            author = authorService.read(authorName);
+        } catch (NotFoundException e) {
+            author = new Author(name);
+            authorService.create(author);
+        }
+
+        Genre genre;
+        try {
+            genre = genreService.read(genreName);
+        } catch (NotFoundException e) {
+            genre = new Genre(name);
+            genreService.create(genre);
+        }
         Book book = new Book();
         book.setGenre(genre);
         book.setAuthor(author);
         book.setName(name);
-
 
         return ModelConverter.convertBookToStr(bookService.create(book));
     }
@@ -83,12 +95,11 @@ public class LibraryController {
 
     @ShellMethod(value = "update book", key = {"u_b", "update_book"})
     public String updateBook(String name, String authorName, String genreName) {
-        Author author = authorService.create(authorName);
-        Genre genre = genreService.create(genreName);
+        Author author = authorService.create(new Author(authorName));
+        Genre genre = genreService.create(new Genre(genreName));
         Book book = bookService.getByName(name);
         book.setGenre(genre);
         book.setAuthor(author);
-
 
 
         return ModelConverter.convertBookToStr(bookService.update(book));

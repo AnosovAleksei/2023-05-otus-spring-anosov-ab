@@ -5,7 +5,7 @@ import ru.otus.domain.Commentary;
 import java.util.List;
 
 public interface CommentaryService {
-    Iterable<Commentary> getAll();
+    List<Commentary> getAll();
 
 
     List<String> getAllForString();

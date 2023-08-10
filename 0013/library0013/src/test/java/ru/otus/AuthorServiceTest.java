@@ -20,28 +20,42 @@ public class AuthorServiceTest {
     @Autowired
     private AuthorService authorService;
 
+    @DisplayName("Проверка работы методов доступа к данным - create")
+    @Test
+    public void testCreate() {
+        Author author = authorService.create(new Author("testAuthor1"));
+        Assertions.assertEquals(author.getName(), "testAuthor1");
+    }
 
-    @DisplayName("Проверка работы методов доступа к данным")
+    @DisplayName("Проверка работы методов доступа к данным - update")
+    @Test
+    public void testUpdate() {
+        Author author = authorService.create(new Author("testAuthor"));
+        author.setName("testAuthor2");
+        author = authorService.update(author);
+        Assertions.assertEquals(author.getName(), "testAuthor2");
+    }
+
+    @DisplayName("Проверка работы методов доступа к данным - read")
+    @Test
+    public void testRead() {
+        authorService.create(new Author("testAuthor"));
+        Author author = authorService.read("testAuthor");
+        Assertions.assertEquals(author.getName(), "testAuthor");
+    }
+
+    @DisplayName("Проверка работы методов доступа к данным - getAll")
     @Test
     @Transactional
-    public void test() {
-        {
-            Author author = authorService.create("testAuthor");
+    public void testGetAll() {
+        Author author = authorService.create(new Author("testAuthor1"));
+        Assertions.assertEquals(author.getName(), "testAuthor1");
 
-            Assertions.assertEquals(author.getName(), "testAuthor");
-        }
-        {
-            Author author = authorService.create("testAuthor1");
-            Assertions.assertEquals(author.getName(), "testAuthor1");
-
-            Iterable<Author> authors = authorService.getAll();
-            for (Author a : authors) {
-                if (a.getId() == author.getId()) {
-                    Assertions.assertEquals(a.getName(), "testAuthor1");
-                }
+        Iterable<Author> authors = authorService.getAll();
+        for (Author a : authors) {
+            if (a.getId() == author.getId()) {
+                Assertions.assertEquals(a.getName(), "testAuthor1");
             }
         }
     }
-
-
 }

@@ -1,12 +1,13 @@
 package ru.otus.repository;
 
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.domain.Commentary;
 import java.util.List;
 
 
-public interface CommentaryRepository extends CrudRepository<Commentary, Long> {
+public interface CommentaryRepository extends JpaRepository<Commentary, Long> {
+
 
     List<Commentary> findByBookId(Long bookId);
 

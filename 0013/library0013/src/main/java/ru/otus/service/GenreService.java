@@ -2,9 +2,15 @@ package ru.otus.service;
 
 import ru.otus.domain.Genre;
 
+import java.util.List;
+
 
 public interface GenreService {
-    Genre create(String name);
+    Genre create(Genre genre);
 
-    Iterable<Genre> getAll();
+    Genre update(Genre genre);
+
+    Genre read(String name);
+
+    List<Genre> getAll();
 }

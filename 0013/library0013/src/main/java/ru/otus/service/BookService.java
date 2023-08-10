@@ -2,6 +2,8 @@ package ru.otus.service;
 
 import ru.otus.domain.Book;
 
+import java.util.List;
+
 
 public interface BookService {
 
@@ -11,7 +13,7 @@ public interface BookService {
 
     long count();
 
-    Iterable<Book> getAll();
+    List<Book> getAll();
 
     Book getByName(String name);
 

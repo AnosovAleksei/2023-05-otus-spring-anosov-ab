@@ -2,9 +2,19 @@ package ru.otus.service;
 
 import ru.otus.domain.Author;
 
-public interface AuthorService {
-    Author create(String name);
+import java.util.List;
 
-    Iterable<Author> getAll();
+public interface AuthorService {
+    Author create(Author author);
+
+
+    Author update(Author author);
+
+
+    Author read(String name);
+
+
+
+    List<Author> getAll();
 
 }

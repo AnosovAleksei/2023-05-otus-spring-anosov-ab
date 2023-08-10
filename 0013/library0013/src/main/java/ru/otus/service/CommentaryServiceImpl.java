@@ -21,7 +21,7 @@ public class CommentaryServiceImpl implements CommentaryService {
     private final BookRepository bookRepository;
 
     @Override
-    public Iterable<Commentary> getAll() {
+    public List<Commentary> getAll() {
         return commentaryRepository.findAll();
     }
 
@@ -39,10 +39,8 @@ public class CommentaryServiceImpl implements CommentaryService {
     @Override
     @Transactional
     public Commentary create(Long bookId, String message) {
-        Book book = bookRepository.getById(bookId).orElse(null);
-        if (book == null) {
-            throw new RuntimeException("book with bookId" + bookId.toString() + "does not exist");
-        }
+        Book book = bookRepository.getById(bookId)
+                .orElseThrow(() -> new RuntimeException("book with bookId" + bookId.toString() + "does not exist"));
         Commentary commentary = new Commentary();
         commentary.setMessage(message);
         commentary.setBookId(book.getId());

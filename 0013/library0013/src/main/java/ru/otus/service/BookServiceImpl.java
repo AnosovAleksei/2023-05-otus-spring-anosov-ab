@@ -66,9 +66,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Iterable<Book> getAll() {
-        Iterable<Book> books = bookRepository.findAll();
-        return books;
+    public List<Book> getAll() {
+        return bookRepository.findAll();
     }
 
     @Override
@@ -93,20 +92,20 @@ public class BookServiceImpl implements BookService {
             Long bookId = book.getId();
 
             bookRepository.delete(book);
-            {
-                List<Book> tempBookList = bookRepository.getByAuthorId(authorId);
-                if (tempBookList != null && tempBookList.size() == 0) {
-                    authorRepository.delete(authorRepository.findById(authorId).get());
-                }
-            }
-            {
-                List<Book> tempBookList = bookRepository.getByGenreId(genreId);
-                if (tempBookList != null && tempBookList.size() == 0) {
-                    genreRepository.delete(genreRepository.findById(genreId).get());
-                }
-            }
-
-            commentaryRepository.deleteAll(commentaryRepository.findByBookId(bookId));
+//            {
+//                List<Book> tempBookList = bookRepository.getByAuthorId(authorId);
+//                if (tempBookList != null && tempBookList.size() == 0) {
+//                    authorRepository.delete(authorRepository.findById(authorId).get());
+//                }
+//            }
+//            {
+//                List<Book> tempBookList = bookRepository.getByGenreId(genreId);
+//                if (tempBookList != null && tempBookList.size() == 0) {
+//                    genreRepository.delete(genreRepository.findById(genreId).get());
+//                }
+//            }
+//
+//            commentaryRepository.deleteAll(commentaryRepository.findByBookId(bookId));
         }
     }
 }
