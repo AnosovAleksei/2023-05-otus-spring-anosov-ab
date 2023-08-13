@@ -1,0 +1,49 @@
+spring:
+#  main:
+#    allow-bean-definition-overriding: true
+
+  shell:
+    interactive:
+      enabled: true
+    noninteractive:
+      enabled: false
+
+    command:
+      version:
+        enabled: false
+
+
+  data:
+    mongodb:
+#      host: localhost
+      port: 0
+      database: library
+
+#    для подключения к реальной монге
+#    mongodb:
+#      port: 27017
+#      database: library
+#      host: localhost
+#      authentication-database: admin
+#      username: mongoadmin
+#      password: secret
+
+
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+
+mongock:
+#  runner-type: "ApplicationRunner" # default
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
