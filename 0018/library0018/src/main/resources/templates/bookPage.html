@@ -1,0 +1,159 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragments/header}"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/books}" method="get">
+          <label>getAll</label>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить все книги</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/book}" method="post">
+          <label>create</label>
+          <div>
+            <label>название книги</label>
+            <input id="create-name-book" name="name" value="">
+          </div>
+          <div>
+            <label>authorId</label>
+            <input id="create-authorId" name="authorId" value="">
+          </div>
+          <div>
+            <label>genreId</label>
+            <input id="create-genreId" name="genreId" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">создать книгу</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/book}" method="get">
+          <label>read</label>
+          <div>
+            <label>bookId</label>
+            <input id="id" name="id" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить книгу по ID</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/book}" id="update" th:method="put">
+          <label>update</label>
+          <div>
+            <label>bookId</label>
+            <input id="update-bookId" name="bookId" value="">
+          </div>
+          <div>
+            <label>название книги</label>
+            <input id="update-name-book" name="name" value="">
+          </div>
+          <div>
+            <label>authorId</label>
+            <input id="update-authorId" name="authorId" value="">
+          </div>
+          <div>
+            <label>genreId</label>
+            <input id="update-genreId" name="genreId" value="">
+          </div>
+          <div class="col-auto">
+
+
+            <button type="submit" class="btn btn-primary mb-3" >обновить книгу</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/book}" th:method="delete">
+          <label>delete</label>
+          <div>
+            <label>bookId</label>
+            <input id="delete-id" name="id" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-danger mb-3">удалить книгу</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row">
+    <hr/>
+    <div th:if="${books}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Name</th>
+          <th scope="col">authorName</th>
+          <th scope="col">genreName</th>
+        </tr>
+        </thead>
+        <tbody>
+        <div th:each="book : ${books}">
+          <tr>
+            <th scope="row" th:text="${book.getId()}"></th>
+            <td th:text="${book.getName()}"></td>
+            <td th:text="${book.getAuthorName()}"></td>
+            <td th:text="${book.getGenreName()}"></td>
+          </tr>
+        </div>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${book}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Name</th>
+          <th scope="col">authorName</th>
+          <th scope="col">genreName</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row" th:text="${book.getId()}"></th>
+          <td th:text="${book.getName()}"></td>
+          <td th:text="${book.getAuthorName()}"></td>
+          <td th:text="${book.getGenreName()}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${bookDelete}">
+      <h3 th:text="${bookDelete}"/>
+    </div>
+  </div>
+
+</div>
+</div>
+<div th:replace="~{fragments/footer}"/>
+
+
+
+</body>
+</html>

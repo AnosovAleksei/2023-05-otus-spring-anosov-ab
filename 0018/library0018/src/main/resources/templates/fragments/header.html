@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>library service</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+</head>
+<body>
+<div th:fragment="header">
+    <div th:unless ="${selected}">
+      <nav class="nav nav-pills flex-column flex-sm-row my-1 mb-2">
+        <a class="flex-sm-fill text-sm-center nav-link"  th:classappend="${bookPage ? 'active' : ''}" href="../bookPage">Книги</a>
+        <a class="flex-sm-fill text-sm-center nav-link" th:classappend="${authorPage ? 'active' : ''}" href="../authorPage">Авторы</a>
+        <a class="flex-sm-fill text-sm-center nav-link" th:classappend="${genrePage ? 'active' : ''}" href="../genrePage">Жанры</a>
+        <a class="flex-sm-fill text-sm-center nav-link" th:classappend="${commentaryPage ? 'active' : ''}" href="../commentaryPage">Коментарии</a>
+      </nav>
+  </div>
+   <div th:if ="${selected}">
+      <nav class="nav nav-pills flex-column flex-sm-row my-1 mb-2">
+        <a class="flex-sm-fill text-sm-center nav-link" href="../bookPage">Книги</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="../authorPage">Авторы</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="../genrePage">Жанры</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="../commentaryPage">Коментарии</a>
+      </nav>
+  </div>
+
+</div>
+
+</body>
+</html>
