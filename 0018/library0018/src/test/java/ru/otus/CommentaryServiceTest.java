@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
+import ru.otus.dto.CommentaryCreateDto;
+import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
@@ -46,6 +48,24 @@ public class CommentaryServiceTest {
         Assertions.assertEquals(commentary.getBookId(), book.getId());
         Assertions.assertEquals(commentary.getMessage(), str);
     }
+
+    @DisplayName("Проверка create(CommentaryCreateDto)")
+    @Test
+    public void testCreateDto(){
+        Book book = bookService.getByID(1L);
+        final String str = "any massege";
+
+        CommentaryCreateDto commentaryCreateDto = new CommentaryCreateDto();
+
+        commentaryCreateDto.setMessage(str);
+        commentaryCreateDto.setBookId(book.getId());
+
+        Commentary commentary = commentaryService.create(commentaryCreateDto);
+        Assertions.assertNotNull(commentary);
+        Assertions.assertEquals(commentary.getBookId(), book.getId());
+        Assertions.assertEquals(commentary.getMessage(), str);
+    }
+
 
     @DisplayName("Проверка read")
     @Test
@@ -88,6 +108,34 @@ public class CommentaryServiceTest {
         Assertions.assertEquals(commentary2.getBookId(), book.getId());
         Assertions.assertEquals(commentary2.getMessage(), strNew);
     }
+
+    @DisplayName("Проверка update(CommentaryUpdateDto)")
+    @Test
+    public void testUpdateDto(){
+        Book book = bookService.getByID(1L);
+        final String str = "any massege";
+        final String strNew = "update massege";
+
+
+        Commentary commentaryNew = new Commentary();
+        commentaryNew.setMessage(str);
+        commentaryNew.setBookId(book.getId());
+
+        Commentary commentary = commentaryService.create(commentaryNew);
+
+        CommentaryUpdateDto commentaryUpdateDto = new CommentaryUpdateDto(commentary.getId(),
+                commentary.getBookId(),
+                commentary.getMessage());
+        commentaryUpdateDto.setMessage(strNew);
+
+
+        Commentary commentary2 = commentaryService.update(commentaryUpdateDto);
+
+        Assertions.assertNotNull(commentary2);
+        Assertions.assertEquals(commentary2.getBookId(), book.getId());
+        Assertions.assertEquals(commentary2.getMessage(), strNew);
+    }
+
 
     @DisplayName("Проверка delate")
     @Test

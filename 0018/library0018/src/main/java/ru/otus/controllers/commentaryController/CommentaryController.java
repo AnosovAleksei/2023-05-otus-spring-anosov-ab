@@ -1,16 +1,21 @@
 package ru.otus.controllers.commentaryController;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.controllers.NavigatorController;
-import ru.otus.domain.Commentary;
+import ru.otus.dto.CommentaryCreateDto;
+import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.service.CommentaryService;
 
+@Validated
 @RequiredArgsConstructor
 @Controller
 public class CommentaryController {
@@ -26,19 +31,15 @@ public class CommentaryController {
     }
 
     @PostMapping("/commentary")
-    public String createCommentary(Model model, CommentaryCreateRequest commentaryCreateRequest) {
+    public String createCommentary(Model model,
+                                   @Valid CommentaryCreateDto commentaryCreateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.COMMENTARY_PAGE, true));
-        Commentary commentary = new Commentary();
-        commentary.setBookId(commentaryCreateRequest.getBookId());
-        commentary.setMessage(commentaryCreateRequest.getMessage());
-
-
-        model.addAttribute("commentary", commentaryService.create(commentary));
+        model.addAttribute("commentary", commentaryService.create(commentaryCreateDto));
         return NavigatorController.COMMENTARY_PAGE;
     }
 
     @GetMapping("/commentary")
-    public String getCommentary(Model model, @RequestParam("id") Long id) {
+    public String getCommentary(Model model, @Valid @NotNull  @RequestParam("id") Long id) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.COMMENTARY_PAGE, true));
         model.addAttribute("commentary", commentaryService.read(id));
         return NavigatorController.COMMENTARY_PAGE;
@@ -46,14 +47,10 @@ public class CommentaryController {
 
 
     @PutMapping("/commentary")
-    public String updateCommentary(Model model, CommentaryUpdateRequest commentaryUpdateRequest) {
+    public String updateCommentary(Model model,
+                                   @Valid CommentaryUpdateDto commentaryUpdateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.COMMENTARY_PAGE, true));
-        Commentary commentary = new Commentary();
-        commentary.setBookId(commentaryUpdateRequest.getBookId());
-        commentary.setMessage(commentaryUpdateRequest.getMessage());
-        commentary.setId(commentaryUpdateRequest.getId());
-
-        model.addAttribute("commentary", commentaryService.update(commentary));
+        model.addAttribute("commentary", commentaryService.update(commentaryUpdateDto));
         return NavigatorController.COMMENTARY_PAGE;
     }
 }

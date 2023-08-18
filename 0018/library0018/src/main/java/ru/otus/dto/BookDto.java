@@ -1,4 +1,4 @@
-package ru.otus.controllers.bookController;
+package ru.otus.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

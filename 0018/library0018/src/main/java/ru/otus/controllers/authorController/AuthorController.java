@@ -1,17 +1,21 @@
 package ru.otus.controllers.authorController;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.controllers.NavigatorController;
-import ru.otus.domain.Author;
+import ru.otus.dto.AuthorCreateDto;
+import ru.otus.dto.AuthorUpdateDto;
 import ru.otus.service.AuthorService;
 
+@Validated
 @RequiredArgsConstructor
 @Controller
 public class AuthorController {
@@ -27,17 +31,14 @@ public class AuthorController {
     }
 
     @PostMapping("/author")
-    public String createAuthor(Model model, String name, HttpServletRequest request) {
+    public String createAuthor(@Valid AuthorCreateDto authorCreateDto, Model model) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.AUTHOR_PAGE, true));
-        Author author = new Author();
-        author.setName(name);
-
-        model.addAttribute("author", authorService.create(author));
+        model.addAttribute("author", authorService.create(authorCreateDto));
         return NavigatorController.AUTHOR_PAGE;
     }
 
     @GetMapping("/author")
-    public String getAuthor(Model model, @RequestParam("id") Long id) {
+    public String getAuthor(Model model, @Valid @NotNull @RequestParam("id") Long id) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.AUTHOR_PAGE, true));
         model.addAttribute("author", authorService.read(id));
         return NavigatorController.AUTHOR_PAGE;
@@ -45,13 +46,9 @@ public class AuthorController {
 
 
     @PutMapping("/author")
-    public String updateAuthor(Model model, AuthorUpdateRequest authorUpdateRequest) {
+    public String updateAuthor(Model model, @Valid AuthorUpdateDto authorUpdateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.AUTHOR_PAGE, true));
-        Author author = new Author();
-        author.setName(authorUpdateRequest.getName());
-        author.setId(authorUpdateRequest.getId());
-
-        model.addAttribute("author", authorService.update(author));
+        model.addAttribute("author", authorService.update(authorUpdateDto));
         return NavigatorController.AUTHOR_PAGE;
     }
 }

@@ -1,16 +1,21 @@
 package ru.otus.controllers.genreController;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.controllers.NavigatorController;
-import ru.otus.domain.Genre;
+import ru.otus.dto.GenreCreateDto;
+import ru.otus.dto.GenreUpdateDto;
 import ru.otus.service.GenreService;
 
+@Validated
 @RequiredArgsConstructor
 @Controller
 public class GenreController {
@@ -26,17 +31,14 @@ public class GenreController {
     }
 
     @PostMapping("/genre")
-    public String createAuthor(Model model, String name) {
+    public String createAuthor(Model model, @Valid GenreCreateDto genreCreateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.GENRE_PAGE, true));
-        Genre genre = new Genre();
-        genre.setName(name);
-
-        model.addAttribute("genre", genreService.create(genre));
+        model.addAttribute("genre", genreService.create(genreCreateDto));
         return NavigatorController.GENRE_PAGE;
     }
 
     @GetMapping("/genre")
-    public String getAuthor(Model model, @RequestParam("id") Long id) {
+    public String getAuthor(Model model, @Valid @NotNull @RequestParam("id") Long id) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.GENRE_PAGE, true));
         model.addAttribute("genre", genreService.read(id));
         return NavigatorController.GENRE_PAGE;
@@ -44,13 +46,9 @@ public class GenreController {
 
 
     @PutMapping("/genre")
-    public String updateAuthor(Model model, GenreUpdateRequest genreUpdateRequest) {
+    public String updateAuthor(Model model, @Valid GenreUpdateDto genreUpdateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.GENRE_PAGE, true));
-        Genre genre = new Genre();
-        genre.setName(genreUpdateRequest.getName());
-        genre.setId(genreUpdateRequest.getId());
-
-        model.addAttribute("genre", genreService.update(genre));
+        model.addAttribute("genre", genreService.update(genreUpdateDto));
         return NavigatorController.GENRE_PAGE;
     }
 }

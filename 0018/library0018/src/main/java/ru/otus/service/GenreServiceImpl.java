@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Genre;
+import ru.otus.dto.GenreCreateDto;
+import ru.otus.dto.GenreUpdateDto;
 import ru.otus.repository.GenreRepository;
 
 import java.util.List;
@@ -31,6 +33,16 @@ public class GenreServiceImpl implements GenreService {
             genreRepository.save(genre);
         }
         return genre;
+    }
+
+    @Override
+    public Genre create(GenreCreateDto genreCreateDto) {
+        return create(new Genre(genreCreateDto.getName()));
+    }
+
+    @Override
+    public Genre update(GenreUpdateDto genreUpdateDto) {
+        return update(new Genre(genreUpdateDto.getId(), genreUpdateDto.getName()));
     }
 
     @Override

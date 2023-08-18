@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.controllers.authorController.AuthorController;
 import ru.otus.domain.Author;
+import ru.otus.dto.AuthorCreateDto;
+import ru.otus.dto.AuthorUpdateDto;
+import ru.otus.dto.BookCreateDto;
 import ru.otus.service.AuthorService;
 
 import java.util.ArrayList;
@@ -78,7 +81,7 @@ public class AuthorControllerTest {
         Author author = new Author(str);
         author.setId(id);
 
-        given(authorService.create(any())).willReturn(author);
+        given(authorService.create((AuthorCreateDto)any())).willReturn(author);
 
         try {
             Object l1 = mvc.perform(post("/author").content("name="+str)
@@ -125,8 +128,10 @@ public class AuthorControllerTest {
         String str = "zzzz";
         Long id = 2L;
 
+        Author author = new Author(str);
+        author.setId(id);
 
-        when(authorService.update(any())).thenAnswer(i -> i.getArguments()[0]);
+        when(authorService.update((AuthorUpdateDto)any())).thenAnswer(i -> author);
 
         try {
             Object l1 = mvc.perform(put("/author").content("name="+str+"&id="+id)

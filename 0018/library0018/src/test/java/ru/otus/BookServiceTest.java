@@ -7,10 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 import ru.otus.domain.Genre;
+import ru.otus.dto.BookCreateDto;
+import ru.otus.dto.BookUpdateDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
@@ -59,8 +62,36 @@ public class BookServiceTest {
 
         book = bookService.create(book);
 
-//        Author author = book.getAuthor();
-//        Genre genre = book.getGenre();
+        Commentary commentaryNew = new Commentary();
+        commentaryNew.setBookId(book.getId());
+
+        List<Commentary> commentaryList = new ArrayList<>();
+
+        commentaryNew.setId(null);
+        commentaryNew.setMessage("comment one");
+        commentaryList.add(commentaryService.create(commentaryNew));
+
+        commentaryNew.setId(null);
+        commentaryNew.setMessage("comment two");
+        commentaryList.add(commentaryService.create(commentaryNew));
+
+        Book bookNew = bookService.update(book);
+        Assertions.assertNotNull(bookNew);
+        Assertions.assertEquals(author.getId(), bookNew.getAuthor().getId());
+        Assertions.assertEquals(genre.getId(), bookNew.getGenre().getId());
+
+    }
+
+    @DisplayName("Проверка работы методов доступа к данным create(BookCreateDto)")
+    @Test
+    public void testCreateDto(){
+        Author author = authorService.create(new Author("Author1"));
+        Genre genre = genreService.create(new Genre("Genre1"));
+
+
+        BookCreateDto bookCreateDto = new BookCreateDto("bookName1_", author.getId(), genre.getId());
+
+        Book book = bookService.create(bookCreateDto);
 
         Commentary commentaryNew = new Commentary();
         commentaryNew.setBookId(book.getId());
@@ -75,13 +106,9 @@ public class BookServiceTest {
         commentaryNew.setMessage("comment two");
         commentaryList.add(commentaryService.create(commentaryNew));
 
-//        book.setCommentaryList(commentaryList);
-
 
         Book bookNew = bookService.update(book);
-        bookNew = bookNew;
         Assertions.assertNotNull(bookNew);
-//        Assertions.assertEquals(bookNew.getCommentaryList().size(), commentaryList.size());
         Assertions.assertEquals(author.getId(), bookNew.getAuthor().getId());
         Assertions.assertEquals(genre.getId(), bookNew.getGenre().getId());
 
@@ -100,49 +127,30 @@ public class BookServiceTest {
 
 
         bookService.create(book);
-//        Author author = book.getAuthor();
-//        Genre genre = book.getGenre();
-
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setBookId(book.getId());
+        Long bookId = book.getId();
 
         List<Commentary> commentaryList = new ArrayList<>();
-
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment one");
-        commentaryList.add(commentaryService.create(commentaryNew));
-
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment two");
-        commentaryList.add(commentaryService.create(commentaryNew));
-
-//        List<Commentary> commentaryList = new ArrayList<>();
-//        commentaryList.add(commentaryService.create(book.getId(), "comment one"));
-//        commentaryList.add(commentaryService.create(book.getId(), "comment two"));
-
-        Assertions.assertTrue(commentaryService.getCommentaryByBookId(book.getId()).size()==2);
-
-        Book bookNew = bookService.update(book);
-        bookNew = bookNew;
-        Assertions.assertNotNull(bookNew);
-
-        Assertions.assertEquals(author.getId(), bookNew.getAuthor().getId());
-        Assertions.assertEquals(genre.getId(), bookNew.getGenre().getId());
-
-        bookService.delete(bookNew.getName());
-
-        Assertions.assertTrue(commentaryService.getCommentaryByBookId(book.getId()).size()==0);
-
-
-
-
+        {
+            Commentary commentaryNew = new Commentary();
+            commentaryNew.setBookId(bookId);
+            commentaryNew.setMessage("comment one");
+            commentaryList.add(commentaryService.create(commentaryNew));
+        }
+        {
+            Commentary commentaryNew = new Commentary();
+            commentaryNew.setBookId(bookId);
+            commentaryNew.setMessage("comment two");
+            commentaryList.add(commentaryService.create(commentaryNew));
+        }
+        Assertions.assertTrue(commentaryService.getCommentaryByBookId(bookId).size()==2);
+        bookService.delete(bookId);
+        Assertions.assertTrue(commentaryService.getCommentaryByBookId(bookId).size()==0);
     }
 
     @DisplayName("Проверка работы методов доступа к данным (новых)")
     @Test
     public void testGetBookById(){
         Book book = bookService.getByID(1L);
-
         Assertions.assertNotNull(book);
     }
 
@@ -154,6 +162,7 @@ public class BookServiceTest {
 
     @DisplayName("Проверка работы методов доступа к данным")
     @Test
+    @Transactional
     public void testCrud() {
 
         {
@@ -182,11 +191,14 @@ public class BookServiceTest {
             genre2.setName("TestGenre2");
             genre2 = genreService.create(genre2);
 
-            Book book2 = bookService.getByName("testName");
-            book2.setName("testName");
-            book2.setGenre(genre2);
-            book2.setAuthor(author2);
-            book2 = bookService.update(book2);
+            Book book3 = bookService.getByName("testName");
+
+            BookUpdateDto bookUpdateDto =
+                    new BookUpdateDto(book3.getId(),"testName", author2.getId(),genre2.getId());
+
+
+
+            Book book2 = bookService.update(bookUpdateDto);
 
             Assertions.assertEquals(book2.getAuthor().getName(), "TestAuthor2");
             Assertions.assertEquals(book2.getGenre().getName(), "TestGenre2");

@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Commentary;
+import ru.otus.dto.CommentaryCreateDto;
+import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentaryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +43,14 @@ public class CommentaryServiceImpl implements CommentaryService {
     public Commentary create(Commentary commentary) {
         commentaryRepository.save(commentary);
         return commentary;
+    }
 
-
-//        Book book = bookRepository.getById(bookId)
-//                .orElseThrow(() -> new RuntimeException("book with bookId" + bookId.toString() + "does not exist"));
-//        Commentary commentary = new Commentary();
-//        commentary.setMessage(message);
-//        commentary.setBookId(book.getId());
-//        return commentaryRepository.save(commentary);
+    @Override
+    public Commentary create(CommentaryCreateDto commentaryCreateDto) {
+        Commentary commentary = new Commentary();
+        commentary.setBookId(commentaryCreateDto.getBookId());
+        commentary.setMessage(commentaryCreateDto.getMessage());
+        return create(commentary);
     }
 
     @Override
@@ -63,6 +66,15 @@ public class CommentaryServiceImpl implements CommentaryService {
     }
 
     @Override
+    public Commentary update(CommentaryUpdateDto commentaryUpdateDto) {
+        Commentary commentary = new Commentary();
+        commentary.setBookId(commentaryUpdateDto.getBookId());
+        commentary.setMessage(commentaryUpdateDto.getMessage());
+        commentary.setId(commentaryUpdateDto.getId());
+        return update(commentary);
+    }
+
+    @Override
     @Transactional
     public void delete(Commentary commentary) {
         commentaryRepository.delete(commentary);
@@ -75,3 +87,4 @@ public class CommentaryServiceImpl implements CommentaryService {
 
 
 }
+

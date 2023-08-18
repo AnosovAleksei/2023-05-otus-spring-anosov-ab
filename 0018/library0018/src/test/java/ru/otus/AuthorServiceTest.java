@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
+import ru.otus.dto.AuthorCreateDto;
+import ru.otus.dto.AuthorUpdateDto;
 import ru.otus.service.AuthorService;
 
 import java.util.List;
 
 
-@DisplayName("Проверка работы AuthorDao")
+@DisplayName("Проверка работы AuthorService")
 @SpringBootTest(properties = {"spring.shell.interactive.enabled=false"})
 public class AuthorServiceTest {
 
@@ -27,6 +29,13 @@ public class AuthorServiceTest {
         Assertions.assertEquals(author.getName(), "testAuthor1");
     }
 
+    @DisplayName("Проверка работы методов доступа к данным - create(AuthorCreateDto)")
+    @Test
+    public void testCreateDto() {
+        Author author = authorService.create(new AuthorCreateDto("testAuthor1"));
+        Assertions.assertEquals(author.getName(), "testAuthor1");
+    }
+
     @DisplayName("Проверка работы методов доступа к данным - update")
     @Test
     public void testUpdate() {
@@ -34,6 +43,21 @@ public class AuthorServiceTest {
         author.setName("testAuthor2");
         author = authorService.update(author);
         Assertions.assertEquals(author.getName(), "testAuthor2");
+    }
+    @DisplayName("Проверка работы методов доступа к данным - update(AuthorUpdateDto)")
+    @Test
+    public void testUpdateDto() {
+
+
+
+        Author author = authorService.create(new Author("testAuthor_"));
+
+        AuthorUpdateDto authorUpdateDto = new AuthorUpdateDto(author.getId(), author.getName());
+
+
+        authorUpdateDto.setName("testAuthor2_");
+        author = authorService.update(authorUpdateDto);
+        Assertions.assertEquals(author.getName(), "testAuthor2_");
     }
 
     @DisplayName("Проверка работы методов доступа к данным - read")

@@ -1,7 +1,6 @@
 package ru.otus.controllers;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,12 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.controllers.authorController.AuthorController;
 import ru.otus.controllers.bookController.BookController;
-import ru.otus.controllers.bookController.BookDto;
+import ru.otus.dto.BookCreateDto;
+import ru.otus.dto.BookDto;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
+import ru.otus.dto.BookUpdateDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.GenreService;
@@ -69,12 +69,22 @@ public class BookControllerTest {
 
 
         given(bookService.getAll()).willReturn(bookList);
+//        given(bookService.converterToListBookDto(any())).willReturn(bookList);
+        when(bookService.converterToListBookDto(any())).thenAnswer(i -> {
+            List<Book> lb = (List<Book>)(i.getArguments()[0]);
+            return new ArrayList<>(){{
+                for(Book b : lb) {
+
+                    add(new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName()));
+                }
+                }};
+            });
 
         try {
             Object l1 = mvc.perform(get("/books"))
                     .andExpect(status().isOk())
                     .andReturn().getModelAndView().getModel().get("books");
-            List<Author> l2 = (List<Author>)l1;
+            List<BookDto> l2 = (List<BookDto>)l1;
             Assertions.assertEquals(l2.size(),1);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,10 +112,14 @@ public class BookControllerTest {
         book.setAuthor(author);
         book.setGenre(genre);
 
-        given(bookService.create(any())).willReturn(book);
+        given(bookService.create((BookCreateDto) any())).willReturn(book);
         given(authorService.read(authorId)).willReturn(author);
         given(genreService.read(genreId)).willReturn(genre);
 
+        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
+            Book b = (Book)(i.getArguments()[0]);
+            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
+        });
         try {
             Object l1 = mvc.perform(post("/book").content("name="+name+"&authorId="+authorId+"&genreId="+genreId)
                             .contentType("application/x-www-form-urlencoded;charset=UTF-8"))
@@ -141,7 +155,10 @@ public class BookControllerTest {
         book.setGenre(genre);
 
         given(bookService.getByID(id)).willReturn(book);
-
+        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
+            Book b = (Book)(i.getArguments()[0]);
+            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
+        });
 
         try {
             Object l1 = mvc.perform(get("/book").param("id", String.valueOf(id)))
@@ -177,9 +194,14 @@ public class BookControllerTest {
 
 
         given(bookService.getByID(id)).willReturn(book);
-        when(bookService.update(any())).thenAnswer(i -> i.getArguments()[0]);
+        when(bookService.update((BookUpdateDto) any())).thenAnswer(i -> book);
         given(authorService.read(authorId)).willReturn(author);
         given(genreService.read(genreId)).willReturn(genre);
+
+        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
+            Book b = (Book)(i.getArguments()[0]);
+            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
+        });
 
         try {
             Object l1 = mvc.perform(put("/book").content("bookId="+id+"&name="+name+"&authorId="+authorId+"&genreId="+genreId)
@@ -216,7 +238,7 @@ public class BookControllerTest {
 
 
         try {
-            mvc.perform(delete("/book").content("bookId="+id)
+            mvc.perform(delete("/book").content("id="+id)
                             .contentType("application/x-www-form-urlencoded;charset=UTF-8"))
                     .andExpect(status().isOk());
 

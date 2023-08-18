@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
+import ru.otus.dto.AuthorCreateDto;
+import ru.otus.dto.AuthorUpdateDto;
 import ru.otus.repository.AuthorRepository;
 
 import java.util.List;
@@ -25,12 +27,22 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public Author create(AuthorCreateDto authorCreateDto) {
+        return create(new Author(authorCreateDto.getName()));
+    }
+
+    @Override
     @Transactional
     public Author update(Author author) {
         authorRepository.findById(author.getId())
                 .orElseThrow(() -> new NotFoundException("author with name" + author.getName() + "does not exist"));
         authorRepository.save(author);
         return author;
+    }
+
+    @Override
+    public Author update(AuthorUpdateDto authorUpdateDto) {
+        return update(new Author(authorUpdateDto.getId(), authorUpdateDto.getName()));
     }
 
     @Override

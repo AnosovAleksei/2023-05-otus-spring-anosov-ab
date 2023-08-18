@@ -11,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.controllers.commentaryController.CommentaryController;
 import ru.otus.domain.Commentary;
+import ru.otus.dto.CommentaryCreateDto;
+import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.service.CommentaryService;
 
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ public class CommentaryControllerTest {
         commentary.setBookId(bookId);
         commentary.setMessage(str);
 
-        given(commentaryService.create(any())).willReturn(commentary);
+        given(commentaryService.create((CommentaryCreateDto)any())).willReturn(commentary);
 
         try {
             Object l1 = mvc.perform(post("/commentary").content("message="+str+"&bookId="+bookId)
@@ -137,7 +139,7 @@ public class CommentaryControllerTest {
         commentary.setMessage(str);;
 
 
-        when(commentaryService.update(any())).thenAnswer(i -> i.getArguments()[0]);
+        when(commentaryService.update((CommentaryUpdateDto)any())).thenAnswer(i -> commentary);
 
         try {
             Object l1 = mvc.perform(put("/commentary").content("message="+str+"&id="+id+"&bookId="+bookId)

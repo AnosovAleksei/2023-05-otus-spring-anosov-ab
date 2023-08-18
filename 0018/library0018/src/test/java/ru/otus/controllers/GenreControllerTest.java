@@ -11,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.controllers.genreController.GenreController;
 import ru.otus.domain.Genre;
+import ru.otus.dto.GenreCreateDto;
+import ru.otus.dto.GenreUpdateDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.GenreService;
 
@@ -76,7 +78,7 @@ public class GenreControllerTest {
         Genre genre = new Genre(str);
         genre.setId(id);
 
-        given(genreService.create(any())).willReturn(genre);
+        given(genreService.create((GenreCreateDto) any())).willReturn(genre);
 
         try {
             Object l1 = mvc.perform(post("/genre").content("name="+str)
@@ -122,8 +124,9 @@ public class GenreControllerTest {
         String str = "zzzz";
         Long id = 2L;
 
-
-        when(genreService.update(any())).thenAnswer(i -> i.getArguments()[0]);
+        Genre genre = new Genre(str);
+        genre.setId(id);
+        when(genreService.update((GenreUpdateDto) any())).thenAnswer(i -> genre);
 
         try {
             Object l1 = mvc.perform(put("/genre").content("name="+str+"&id="+id)

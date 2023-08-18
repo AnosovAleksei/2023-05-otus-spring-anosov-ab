@@ -4,13 +4,19 @@ package ru.otus.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
+import ru.otus.dto.BookCreateDto;
+import ru.otus.dto.BookDto;
+import ru.otus.dto.BookUpdateDto;
 import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentaryRepository;
 import ru.otus.repository.GenreRepository;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,6 +47,26 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Book create(BookCreateDto bookCreateDto) {
+
+        Author author = authorRepository.findById(bookCreateDto.getAuthorId())
+                .orElseThrow(() ->
+                        new NotFoundException("author with name" + bookCreateDto.getAuthorId() + "does not exist"));
+
+        Genre genre = genreRepository.findById(bookCreateDto.getGenreId())
+                .orElseThrow(() ->
+                        new NotFoundException("genre with id " + bookCreateDto.getGenreId() + " does not exist"));
+
+        Book book = new Book();
+
+        book.setName(bookCreateDto.getName());
+        book.setAuthor(author);
+        book.setGenre(genre);
+
+        return create(book);
+    }
+
+    @Override
     @Transactional
     public Book update(Book book) {
         Book book1 = getByName(book.getName());
@@ -58,6 +84,27 @@ public class BookServiceImpl implements BookService {
 
         bookRepository.save(book);
         return book;
+    }
+
+    @Override
+    public Book update(BookUpdateDto bookUpdateDto) {
+        Author author = authorRepository.findById(bookUpdateDto.getAuthorId())
+                .orElseThrow(() ->
+                        new NotFoundException("author with name" + bookUpdateDto.getAuthorId() + "does not exist"));
+
+        Genre genre = genreRepository.findById(bookUpdateDto.getGenreId())
+                .orElseThrow(() ->
+                        new NotFoundException("genre with id " + bookUpdateDto.getGenreId() + " does not exist"));
+
+        Book book = bookRepository.getById(bookUpdateDto.getBookId())
+                .orElseThrow(() ->
+                        new NotFoundException("book with bookId " + bookUpdateDto.getBookId() + " does not exist"));
+
+        book.setName(bookUpdateDto.getName());
+        book.setAuthor(author);
+        book.setGenre(genre);
+
+        return update(book);
     }
 
     @Override
@@ -85,39 +132,30 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void delete(String name) {
-        Book book = bookRepository.getByName(name).orElse(null);
-        if (book != null) {
-            Long authorId = book.getAuthor().getId();
-            Long genreId = book.getGenre().getId();
-            Long bookId = book.getId();
-
-            bookRepository.delete(book);
-//            {
-//                List<Book> tempBookList = bookRepository.getByAuthorId(authorId);
-//                if (tempBookList != null && tempBookList.size() == 0) {
-//                    authorRepository.delete(authorRepository.findById(authorId).get());
-//                }
-//            }
-//            {
-//                List<Book> tempBookList = bookRepository.getByGenreId(genreId);
-//                if (tempBookList != null && tempBookList.size() == 0) {
-//                    genreRepository.delete(genreRepository.findById(genreId).get());
-//                }
-//            }
-//
-//            commentaryRepository.deleteAll(commentaryRepository.findByBookId(bookId));
-        }
+        Book book = bookRepository.getByName(name)
+                .orElseThrow(() -> new NotFoundException("book with bookName" + name + "does not exist"));
+        bookRepository.delete(book);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        Book book = bookRepository.getById(id).orElse(null);
-        if (book != null) {
-            Long authorId = book.getAuthor().getId();
-            Long genreId = book.getGenre().getId();
-            Long bookId = book.getId();
+        Book book = bookRepository.getById(id)
+                .orElseThrow(() -> new NotFoundException("book with bookId" + id + "does not exist"));
+        bookRepository.delete(book);
+    }
 
-            bookRepository.delete(book);
-        }
+    @Override
+    public BookDto converterToBookDto(Book book) {
+        return new BookDto(book.getId(), book.getName(), book.getAuthor().getName(), book.getGenre().getName());
+    }
+
+    @Override
+    public List<BookDto> converterToListBookDto(List<Book> books) {
+        return new ArrayList<>() {{
+            for (Book book : books) {
+                add(new BookDto(book.getId(), book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
+            }
+        }};
     }
 }
