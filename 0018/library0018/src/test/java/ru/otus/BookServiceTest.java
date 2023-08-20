@@ -12,8 +12,12 @@ import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 import ru.otus.domain.Genre;
+import ru.otus.dto.AuthorCreateDto;
 import ru.otus.dto.BookCreateDto;
+import ru.otus.dto.BookDto;
 import ru.otus.dto.BookUpdateDto;
+import ru.otus.dto.CommentaryCreateDto;
+import ru.otus.dto.GenreCreateDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
@@ -50,67 +54,63 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным create")
     @Test
     public void testCreate(){
-        Author author = authorService.create(new Author("Author1"));
-        Genre genre = genreService.create(new Genre("Genre1"));
-        Book book = new Book();
-        book.setName("bookName1");
-        book.setAuthor(author);
-        book.setGenre(genre);
+        Author author = authorService.create(new AuthorCreateDto("Author1"));
+        Genre genre = genreService.create(new GenreCreateDto("Genre1"));
+
+        BookCreateDto bookCreateDto = new BookCreateDto("bookName1", author.getId(), genre.getId());
 
 
+        BookDto book = bookService.create(bookCreateDto);
 
-
-        book = bookService.create(book);
-
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setBookId(book.getId());
 
         List<Commentary> commentaryList = new ArrayList<>();
 
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment one");
-        commentaryList.add(commentaryService.create(commentaryNew));
 
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment two");
-        commentaryList.add(commentaryService.create(commentaryNew));
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment one")));
 
-        Book bookNew = bookService.update(book);
+
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment two")));
+
+
+        BookUpdateDto bookUpdateDto =
+                new BookUpdateDto(book.getId(), book.getName(), author.getId(), genre.getId());
+
+
+        BookDto bookNew = bookService.update(bookUpdateDto);
         Assertions.assertNotNull(bookNew);
-        Assertions.assertEquals(author.getId(), bookNew.getAuthor().getId());
-        Assertions.assertEquals(genre.getId(), bookNew.getGenre().getId());
+        Assertions.assertEquals(author.getName(), bookNew.getAuthorName());
+        Assertions.assertEquals(genre.getName(), bookNew.getGenreName());
 
     }
 
     @DisplayName("Проверка работы методов доступа к данным create(BookCreateDto)")
     @Test
     public void testCreateDto(){
-        Author author = authorService.create(new Author("Author1"));
-        Genre genre = genreService.create(new Genre("Genre1"));
+        Author author = authorService.create(new AuthorCreateDto("Author1_"));
+        Genre genre = genreService.create(new GenreCreateDto("Genre1_"));
 
 
         BookCreateDto bookCreateDto = new BookCreateDto("bookName1_", author.getId(), genre.getId());
 
-        Book book = bookService.create(bookCreateDto);
+        BookDto book = bookService.create(bookCreateDto);
 
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setBookId(book.getId());
 
         List<Commentary> commentaryList = new ArrayList<>();
 
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment one");
-        commentaryList.add(commentaryService.create(commentaryNew));
 
-        commentaryNew.setId(null);
-        commentaryNew.setMessage("comment two");
-        commentaryList.add(commentaryService.create(commentaryNew));
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment one")));
 
 
-        Book bookNew = bookService.update(book);
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment two")));
+
+        BookUpdateDto bookUpdateDto =
+                new BookUpdateDto(book.getId(), book.getName(),author.getId(), genre.getId());
+
+
+        BookDto bookNew = bookService.update(bookUpdateDto);
         Assertions.assertNotNull(bookNew);
-        Assertions.assertEquals(author.getId(), bookNew.getAuthor().getId());
-        Assertions.assertEquals(genre.getId(), bookNew.getGenre().getId());
+        Assertions.assertEquals(author.getName(), bookNew.getAuthorName());
+        Assertions.assertEquals(genre.getName(), bookNew.getGenreName());
 
     }
 
@@ -118,30 +118,21 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным delete")
     @Test
     public void testDelate(){
-        Author author = authorService.create(new Author("Author5"));
-        Genre genre = genreService.create(new Genre("Genre5"));
-        Book book = new Book();
-        book.setName("bookName5");
-        book.setAuthor(author);
-        book.setGenre(genre);
+        Author author = authorService.create(new AuthorCreateDto("Author5"));
+        Genre genre = genreService.create(new GenreCreateDto("Genre5"));
+
+        BookCreateDto bookCreateDto = new BookCreateDto("bookName5", author.getId(), genre.getId());
 
 
-        bookService.create(book);
+        BookDto book = bookService.create(bookCreateDto);
         Long bookId = book.getId();
 
         List<Commentary> commentaryList = new ArrayList<>();
-        {
-            Commentary commentaryNew = new Commentary();
-            commentaryNew.setBookId(bookId);
-            commentaryNew.setMessage("comment one");
-            commentaryList.add(commentaryService.create(commentaryNew));
-        }
-        {
-            Commentary commentaryNew = new Commentary();
-            commentaryNew.setBookId(bookId);
-            commentaryNew.setMessage("comment two");
-            commentaryList.add(commentaryService.create(commentaryNew));
-        }
+
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment two")));
+
+        commentaryList.add(commentaryService.create(new CommentaryCreateDto(book.getId(), "comment two")));
+
         Assertions.assertTrue(commentaryService.getCommentaryByBookId(bookId).size()==2);
         bookService.delete(bookId);
         Assertions.assertTrue(commentaryService.getCommentaryByBookId(bookId).size()==0);
@@ -150,7 +141,7 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным (новых)")
     @Test
     public void testGetBookById(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         Assertions.assertNotNull(book);
     }
 
@@ -166,42 +157,36 @@ public class BookServiceTest {
     public void testCrud() {
 
         {
-            Author author = authorService.create(new Author("Author"));
-            Genre genre = genreService.create(new Genre("Genre"));
-            Book book = new Book();
-            book.setName("testName");
-            book.setAuthor(author);
-            book.setGenre(genre);
+            Author author = authorService.create(new AuthorCreateDto("Author"));
+            Genre genre = genreService.create(new GenreCreateDto("Genre"));
 
-            bookService.create(book);
+            BookCreateDto bookCreateDto = new BookCreateDto("testName", author.getId(), genre.getId());
 
-//            Book book = bookService.create("testName", "TestAuthor", "TestGenre");
-//            Author author = book.getAuthor();
-//            Genre genre = book.getGenre();
+            BookDto book = bookService.create(bookCreateDto);
 
-            Assertions.assertNotNull(book.getAuthor().getName());
-            Assertions.assertNotNull(book.getGenre().getName());
+            Assertions.assertNotNull(book.getAuthorName());
+            Assertions.assertNotNull(book.getGenreName());
             Assertions.assertEquals(book.getName(), "testName");
 
             Author author2 = new Author();
             author2.setName("TestAuthor2");
-            author2 = authorService.create(author2);
+            author2 = authorService.create(new AuthorCreateDto(author2.getName()));
 
             Genre genre2 = new Genre();
             genre2.setName("TestGenre2");
-            genre2 = genreService.create(genre2);
+            genre2 = genreService.create(new GenreCreateDto(genre2.getName()));
 
-            Book book3 = bookService.getByName("testName");
+            BookDto book3 = bookService.getByName("testName");
 
             BookUpdateDto bookUpdateDto =
                     new BookUpdateDto(book3.getId(),"testName", author2.getId(),genre2.getId());
 
 
 
-            Book book2 = bookService.update(bookUpdateDto);
+            BookDto book2 = bookService.update(bookUpdateDto);
 
-            Assertions.assertEquals(book2.getAuthor().getName(), "TestAuthor2");
-            Assertions.assertEquals(book2.getGenre().getName(), "TestGenre2");
+            Assertions.assertEquals(book2.getAuthorName(), "TestAuthor2");
+            Assertions.assertEquals(book2.getGenreName(), "TestGenre2");
             Assertions.assertEquals(book2.getName(), "testName");
         }
 

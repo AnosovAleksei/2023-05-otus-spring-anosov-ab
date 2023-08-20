@@ -1,6 +1,7 @@
 package ru.otus.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Genre;
@@ -17,20 +18,12 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
 
-    //    @Override
-//    @Transactional
-//    public Genre create(String name) {
-//        Genre genre = genreRepository.getByName(name).orElse(new Genre(name));
-//        if (genre.getId() == null) {
-//            genreRepository.save(genre);
-//        }
-//        return genre;
-//    }
-    @Override
+    @Transactional
     public Genre create(Genre genre) {
-        genre = genreRepository.getByName(genre.getName()).orElse(genre);
-        if (genre.getId() == null) {
+        try {
             genreRepository.save(genre);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataAlreadyExistsException("Жанр с таким названием уже есть в системе", e);
         }
         return genre;
     }
@@ -45,7 +38,6 @@ public class GenreServiceImpl implements GenreService {
         return update(new Genre(genreUpdateDto.getId(), genreUpdateDto.getName()));
     }
 
-    @Override
     @Transactional
     public Genre update(Genre genre) {
         genreRepository.findById(genre.getId())
@@ -55,12 +47,14 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Genre read(String name) {
         return genreRepository.getByName(name)
                 .orElseThrow(() -> new NotFoundException("genre with name " + name + " does not exist"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Genre read(Long id) {
         return genreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("genre with id " + id + " does not exist"));
@@ -68,6 +62,7 @@ public class GenreServiceImpl implements GenreService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<Genre> getAll() {
         return genreRepository.findAll();
     }

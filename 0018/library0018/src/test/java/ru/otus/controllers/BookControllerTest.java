@@ -66,19 +66,14 @@ public class BookControllerTest {
             add(book);
 
         }};
+        List<BookDto> bookDtoList = new ArrayList<>(){{
+            for(Book book: bookList){
+                add(new BookDto(book.getId(), book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
+            }
+        }};
 
 
-        given(bookService.getAll()).willReturn(bookList);
-//        given(bookService.converterToListBookDto(any())).willReturn(bookList);
-        when(bookService.converterToListBookDto(any())).thenAnswer(i -> {
-            List<Book> lb = (List<Book>)(i.getArguments()[0]);
-            return new ArrayList<>(){{
-                for(Book b : lb) {
-
-                    add(new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName()));
-                }
-                }};
-            });
+        given(bookService.getAll()).willReturn(bookDtoList);
 
         try {
             Object l1 = mvc.perform(get("/books"))
@@ -112,14 +107,11 @@ public class BookControllerTest {
         book.setAuthor(author);
         book.setGenre(genre);
 
-        given(bookService.create((BookCreateDto) any())).willReturn(book);
+        given(bookService.create((BookCreateDto) any())).willReturn(new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
         given(authorService.read(authorId)).willReturn(author);
         given(genreService.read(genreId)).willReturn(genre);
 
-        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
-            Book b = (Book)(i.getArguments()[0]);
-            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
-        });
+
         try {
             Object l1 = mvc.perform(post("/book").content("name="+name+"&authorId="+authorId+"&genreId="+genreId)
                             .contentType("application/x-www-form-urlencoded;charset=UTF-8"))
@@ -154,11 +146,9 @@ public class BookControllerTest {
         book.setAuthor(author);
         book.setGenre(genre);
 
-        given(bookService.getByID(id)).willReturn(book);
-        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
-            Book b = (Book)(i.getArguments()[0]);
-            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
-        });
+        given(bookService.getByID(id)).willReturn(
+                new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
+
 
         try {
             Object l1 = mvc.perform(get("/book").param("id", String.valueOf(id)))
@@ -193,15 +183,15 @@ public class BookControllerTest {
         book.setGenre(genre);
 
 
-        given(bookService.getByID(id)).willReturn(book);
-        when(bookService.update((BookUpdateDto) any())).thenAnswer(i -> book);
+        given(bookService.getByID(id)).willReturn(
+                new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName())
+        );
+        when(bookService.update((BookUpdateDto) any()))
+                .thenAnswer(i ->
+                        new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
         given(authorService.read(authorId)).willReturn(author);
         given(genreService.read(genreId)).willReturn(genre);
 
-        when(bookService.converterToBookDto(any())).thenAnswer(i -> {
-            Book b = (Book)(i.getArguments()[0]);
-            return new BookDto(b.getId(), b.getName(), b.getAuthor().getName(), b.getGenre().getName());
-        });
 
         try {
             Object l1 = mvc.perform(put("/book").content("bookId="+id+"&name="+name+"&authorId="+authorId+"&genreId="+genreId)

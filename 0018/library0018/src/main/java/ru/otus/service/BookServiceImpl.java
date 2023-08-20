@@ -32,22 +32,10 @@ public class BookServiceImpl implements BookService {
 
     private final CommentaryRepository commentaryRepository;
 
-    @Override
-    public Book create(Book book) {
-        authorRepository.findById(book.getAuthor().getId())
-                .orElseThrow(() ->
-                        new NotFoundException("author with bookName" + book.getAuthor().getName() + "does not exist"));
-
-        genreRepository.findById(book.getGenre().getId())
-                .orElseThrow(() ->
-                        new NotFoundException("genre with bookName" + book.getGenre().getName() + "does not exist"));
-
-        bookRepository.save(book);
-        return book;
-    }
 
     @Override
-    public Book create(BookCreateDto bookCreateDto) {
+    @Transactional
+    public BookDto create(BookCreateDto bookCreateDto) {
 
         Author author = authorRepository.findById(bookCreateDto.getAuthorId())
                 .orElseThrow(() ->
@@ -63,31 +51,15 @@ public class BookServiceImpl implements BookService {
         book.setAuthor(author);
         book.setGenre(genre);
 
-        return create(book);
+        bookRepository.save(book);
+        return converterToBookDto(book);
     }
+
+
 
     @Override
     @Transactional
-    public Book update(Book book) {
-        Book book1 = getByName(book.getName());
-        if (book1 == null) {
-            throw new NotFoundException("book with bookName " + book.getName() + " does not exist");
-        }
-        authorRepository.findById(book.getAuthor().getId())
-                .orElseThrow(() ->
-                        new NotFoundException("author with bookName" + book.getAuthor().getName() + "does not exist"));
-
-        genreRepository.findById(book.getGenre().getId())
-                .orElseThrow(() ->
-                        new NotFoundException("genre with bookName" + book.getGenre().getName() + "does not exist"));
-
-
-        bookRepository.save(book);
-        return book;
-    }
-
-    @Override
-    public Book update(BookUpdateDto bookUpdateDto) {
+    public BookDto update(BookUpdateDto bookUpdateDto) {
         Author author = authorRepository.findById(bookUpdateDto.getAuthorId())
                 .orElseThrow(() ->
                         new NotFoundException("author with name" + bookUpdateDto.getAuthorId() + "does not exist"));
@@ -103,30 +75,34 @@ public class BookServiceImpl implements BookService {
         book.setName(bookUpdateDto.getName());
         book.setAuthor(author);
         book.setGenre(genre);
-
-        return update(book);
+        bookRepository.save(book);
+        return converterToBookDto(book);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long count() {
         return bookRepository.count();
     }
 
     @Override
-    public List<Book> getAll() {
-        return bookRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<BookDto> getAll() {
+        return converterToListBookDto(bookRepository.findAll());
     }
 
     @Override
-    public Book getByName(String name) {
-        return bookRepository.getByName(name)
-                .orElseThrow(() -> new NotFoundException("book with bookName" + name + "does not exist"));
+    @Transactional(readOnly = true)
+    public BookDto getByName(String name) {
+        return converterToBookDto(bookRepository.getByName(name)
+                .orElseThrow(() -> new NotFoundException("book with bookName" + name + "does not exist")));
     }
 
     @Override
-    public Book getByID(Long bookId) {
-        return bookRepository.getById(bookId)
-                .orElseThrow(() -> new NotFoundException("book with bookId" + bookId.toString() + "does not exist"));
+    @Transactional(readOnly = true)
+    public BookDto getByID(Long bookId) {
+        return converterToBookDto(bookRepository.getById(bookId)
+                .orElseThrow(() -> new NotFoundException("book with bookId" + bookId.toString() + "does not exist")));
     }
 
     @Override
@@ -145,12 +121,14 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
-    @Override
+
+
+
     public BookDto converterToBookDto(Book book) {
         return new BookDto(book.getId(), book.getName(), book.getAuthor().getName(), book.getGenre().getName());
     }
 
-    @Override
+
     public List<BookDto> converterToListBookDto(List<Book> books) {
         return new ArrayList<>() {{
             for (Book book : books) {

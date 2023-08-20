@@ -8,12 +8,9 @@ import java.util.List;
 
 public interface AuthorService {
 
-    Author create(Author author);
 
     Author create(AuthorCreateDto authorCreateDto);
 
-
-    Author update(Author author);
 
     Author update(AuthorUpdateDto authorUpdateDto);
 

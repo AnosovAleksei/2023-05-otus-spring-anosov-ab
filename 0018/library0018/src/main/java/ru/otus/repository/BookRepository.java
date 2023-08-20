@@ -15,12 +15,16 @@ public interface BookRepository extends CrudRepository<Book, Long> {
     @EntityGraph(attributePaths = {"author", "genre"})
     List<Book> findAll();
 
+    @EntityGraph(attributePaths = {"author", "genre"})
     Optional<Book> getByName(String name);
 
+    @EntityGraph(attributePaths = {"author", "genre"})
     Optional<Book> getById(Long id);
 
+    @EntityGraph(attributePaths = {"author", "genre"})
     List<Book> getByAuthorId(Long id);
 
+    @EntityGraph(attributePaths = {"author", "genre"})
     List<Book> getByGenreId(Long id);
 
 

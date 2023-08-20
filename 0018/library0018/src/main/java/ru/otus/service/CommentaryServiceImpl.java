@@ -23,6 +23,7 @@ public class CommentaryServiceImpl implements CommentaryService {
     private final BookRepository bookRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Commentary> getAll() {
         return commentaryRepository.findAll();
     }
@@ -38,40 +39,33 @@ public class CommentaryServiceImpl implements CommentaryService {
         }};
     }
 
+
     @Override
-    @Transactional
-    public Commentary create(Commentary commentary) {
+    @Transactional(readOnly = true)
+    public Commentary create(CommentaryCreateDto commentaryCreateDto) {
+        Commentary commentary = new Commentary();
+        commentary.setBookId(commentaryCreateDto.getBookId());
+        commentary.setMessage(commentaryCreateDto.getMessage());
         commentaryRepository.save(commentary);
         return commentary;
     }
 
     @Override
-    public Commentary create(CommentaryCreateDto commentaryCreateDto) {
-        Commentary commentary = new Commentary();
-        commentary.setBookId(commentaryCreateDto.getBookId());
-        commentary.setMessage(commentaryCreateDto.getMessage());
-        return create(commentary);
-    }
-
-    @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Commentary read(Long commentaryId) {
         return commentaryRepository.findById(commentaryId).orElse(null);
     }
 
-    @Override
-    @Transactional
-    public Commentary update(Commentary commentary) {
-        return commentaryRepository.save(commentary);
-    }
 
     @Override
+    @Transactional(readOnly = true)
     public Commentary update(CommentaryUpdateDto commentaryUpdateDto) {
         Commentary commentary = new Commentary();
         commentary.setBookId(commentaryUpdateDto.getBookId());
         commentary.setMessage(commentaryUpdateDto.getMessage());
         commentary.setId(commentaryUpdateDto.getId());
-        return update(commentary);
+        commentaryRepository.save(commentary);
+        return commentary;
     }
 
     @Override
@@ -81,6 +75,7 @@ public class CommentaryServiceImpl implements CommentaryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Commentary> getCommentaryByBookId(Long bookId) {
         return commentaryRepository.findByBookId(bookId);
     }

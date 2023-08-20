@@ -31,28 +31,28 @@ public class BookController {
     @GetMapping("/books")
     public String getBooks(Model model) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.BOOK_PAGE, true));
-        model.addAttribute("books", bookService.converterToListBookDto(bookService.getAll()));
+        model.addAttribute("books", bookService.getAll());
         return NavigatorController.BOOK_PAGE;
     }
 
     @PostMapping("/book")
     public String createBook(Model model, @Valid BookCreateDto bookCreateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.BOOK_PAGE, true));
-        model.addAttribute("book", bookService.converterToBookDto(bookService.create(bookCreateDto)));
+        model.addAttribute("book", bookService.create(bookCreateDto));
         return NavigatorController.BOOK_PAGE;
     }
 
     @GetMapping("/book")
     public String getBook(Model model, @Valid @NotNull @RequestParam("id") Long id) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.BOOK_PAGE, true));
-        model.addAttribute("book", bookService.converterToBookDto(bookService.getByID(id)));
+        model.addAttribute("book", bookService.getByID(id));
         return NavigatorController.BOOK_PAGE;
     }
 
     @PutMapping("/book")
     public String updateBook(Model model, @Valid BookUpdateDto bookUpdateDto) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.BOOK_PAGE, true));
-        model.addAttribute("book", bookService.converterToBookDto(bookService.update(bookUpdateDto)));
+        model.addAttribute("book", bookService.update(bookUpdateDto));
 
         return NavigatorController.BOOK_PAGE;
     }

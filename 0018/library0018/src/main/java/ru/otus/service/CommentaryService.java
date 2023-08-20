@@ -14,13 +14,9 @@ public interface CommentaryService {
 
     List<String> getAllForString();
 
-    Commentary create(Commentary commentary);
-
     Commentary create(CommentaryCreateDto commentaryCreateDto);
 
     Commentary read(Long commentaryId);
-
-    Commentary update(Commentary commentary);
 
     Commentary update(CommentaryUpdateDto commentaryUpdateDto);
 

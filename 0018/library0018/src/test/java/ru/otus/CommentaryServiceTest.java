@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
+import ru.otus.dto.BookDto;
 import ru.otus.dto.CommentaryCreateDto;
 import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.service.AuthorService;
@@ -36,14 +37,14 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка create")
     @Test
     public void testCreate(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
 
         Commentary commentaryNew = new Commentary();
         commentaryNew.setMessage(str);
         commentaryNew.setBookId(book.getId());
 
-        Commentary commentary = commentaryService.create(commentaryNew);
+        Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
         Assertions.assertNotNull(commentary);
         Assertions.assertEquals(commentary.getBookId(), book.getId());
         Assertions.assertEquals(commentary.getMessage(), str);
@@ -52,7 +53,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка create(CommentaryCreateDto)")
     @Test
     public void testCreateDto(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
 
         CommentaryCreateDto commentaryCreateDto = new CommentaryCreateDto();
@@ -70,14 +71,10 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка read")
     @Test
     public void testRead(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
 
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setMessage(str);
-        commentaryNew.setBookId(book.getId());
-
-        Commentary commentary = commentaryService.create(commentaryNew);
+        Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
 
         Commentary commentary2 = commentaryService.read(commentary.getId());
 
@@ -89,7 +86,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка update")
     @Test
     public void testUpdate(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -97,12 +94,13 @@ public class CommentaryServiceTest {
         commentaryNew.setMessage(str);
         commentaryNew.setBookId(book.getId());
 
-        Commentary commentary = commentaryService.create(commentaryNew);
+        Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
 
         commentary.setMessage(strNew);
 
 
-        Commentary commentary2 = commentaryService.update(commentary);
+        Commentary commentary2 = commentaryService.update(
+                new CommentaryUpdateDto(commentary.getId(), commentary.getBookId(), commentary.getMessage()));
 
         Assertions.assertNotNull(commentary2);
         Assertions.assertEquals(commentary2.getBookId(), book.getId());
@@ -112,16 +110,12 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка update(CommentaryUpdateDto)")
     @Test
     public void testUpdateDto(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
 
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setMessage(str);
-        commentaryNew.setBookId(book.getId());
-
-        Commentary commentary = commentaryService.create(commentaryNew);
+        Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
 
         CommentaryUpdateDto commentaryUpdateDto = new CommentaryUpdateDto(commentary.getId(),
                 commentary.getBookId(),
@@ -140,17 +134,12 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка delate")
     @Test
     public void testDelate(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setMessage(str);
-        commentaryNew.setBookId(book.getId());
 
-
-
-        Commentary commentary = commentaryService.create(commentaryNew);
+        Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
         Long id = commentary.getId();
 
 
@@ -165,19 +154,15 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка getAllCommentary")
     @Test
     public void testGetAllComentary(){
-        Book book = bookService.getByID(1L);
+        BookDto book = bookService.getByID(1L);
         final String str = "any massege";
         final String strNew = "new massege";
 
-        Commentary commentaryNew = new Commentary();
-        commentaryNew.setMessage(str);
-        commentaryNew.setBookId(book.getId());
 
-        Commentary commentary1 = commentaryService.create(commentaryNew);
 
-        commentaryNew.setId(null);
-        commentaryNew.setMessage(strNew);
-        Commentary commentary2 = commentaryService.create(commentaryNew);
+        Commentary commentary1 = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
+
+        Commentary commentary2 = commentaryService.create(new CommentaryCreateDto(book.getId(), strNew));
 
 
         Iterable<Commentary> commentaryIter =  commentaryService.getAll();

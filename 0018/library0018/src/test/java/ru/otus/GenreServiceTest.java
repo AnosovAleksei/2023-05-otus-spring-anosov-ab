@@ -9,8 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.domain.Author;
 import ru.otus.domain.Genre;
+import ru.otus.dto.AuthorCreateDto;
 import ru.otus.dto.GenreCreateDto;
 import ru.otus.dto.GenreUpdateDto;
+import ru.otus.service.DataAlreadyExistsException;
 import ru.otus.service.GenreService;
 
 import java.util.List;
@@ -22,33 +24,30 @@ public class GenreServiceTest {
     @Autowired
     private GenreService genreService;
 
-    @DisplayName("Проверка работы методов доступа к данным - create")
-    @Test
-    public void testCreate() {
-        Genre genre = genreService.create(new Genre("testGenre1"));
-        Assertions.assertEquals(genre.getName(), "testGenre1");
-    }
 
     @DisplayName("Проверка работы методов доступа к данным - create(GenreCreateDto)")
     @Test
     public void testCreateDto() {
         Genre genre = genreService.create(new GenreCreateDto("testGenre1_"));
         Assertions.assertEquals(genre.getName(), "testGenre1_");
+
+        DataAlreadyExistsException e = Assertions.assertThrows(DataAlreadyExistsException.class, () ->
+                genreService.create(new GenreCreateDto("testGenre1_")));
     }
 
     @DisplayName("Проверка работы методов доступа к данным - update")
     @Test
     public void testUpdate() {
-        Genre genre = genreService.create(new Genre("testGenre"));
+        Genre genre = genreService.create(new GenreCreateDto("testGenre_"));
         genre.setName("testGenre2");
-        genre = genreService.update(genre);
+        genre = genreService.update(new GenreUpdateDto(genre.getId(), genre.getName()));
         Assertions.assertEquals(genre.getName(), "testGenre2");
     }
 
     @DisplayName("Проверка работы методов доступа к данным - update(GenreUpdateDto)")
     @Test
     public void testUpdateDto() {
-        Genre genre = genreService.create(new Genre("testGenre_"));
+        Genre genre = genreService.create(new GenreCreateDto("testGenre_"));
         GenreUpdateDto genreUpdateDto = new GenreUpdateDto( genre.getId(), genre.getName());
 
         genreUpdateDto.setName("testGenre2_");
@@ -59,7 +58,7 @@ public class GenreServiceTest {
     @DisplayName("Проверка работы методов доступа к данным - read")
     @Test
     public void testRead() {
-        genreService.create(new Genre("testGenre"));
+        genreService.create(new GenreCreateDto("testGenre"));
         Genre genre = genreService.read("testGenre");
         Assertions.assertEquals(genre.getName(), "testGenre");
     }
@@ -68,13 +67,13 @@ public class GenreServiceTest {
     @Test
     @Transactional
     public void testGetAll() {
-        Genre genre = genreService.create(new Genre("testGenre1"));
-        Assertions.assertEquals(genre.getName(), "testGenre1");
+        Genre genre = genreService.create(new GenreCreateDto("testGenre1__"));
+        Assertions.assertEquals(genre.getName(), "testGenre1__");
 
         Iterable<Genre> genres = genreService.getAll();
         for(Genre g : genres){
             if(g.getId() == genre.getId()){
-                Assertions.assertEquals(g.getName(), "testGenre1");
+                Assertions.assertEquals(g.getName(), "testGenre1__");
             }
         }
     }
