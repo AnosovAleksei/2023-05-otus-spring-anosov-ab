@@ -141,7 +141,7 @@ public class BookServiceTest {
     @DisplayName("Проверка работы методов доступа к данным (новых)")
     @Test
     public void testGetBookById(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         Assertions.assertNotNull(book);
     }
 

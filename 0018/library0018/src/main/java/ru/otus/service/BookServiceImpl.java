@@ -100,7 +100,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookDto getByID(Long bookId) {
+    public BookDto getById(Long bookId) {
         return converterToBookDto(bookRepository.getById(bookId)
                 .orElseThrow(() -> new NotFoundException("book with bookId" + bookId.toString() + "does not exist")));
     }

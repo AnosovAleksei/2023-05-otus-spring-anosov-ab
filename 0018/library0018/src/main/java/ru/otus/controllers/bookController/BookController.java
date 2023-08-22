@@ -45,7 +45,7 @@ public class BookController {
     @GetMapping("/book")
     public String getBook(Model model, @Valid @NotNull @RequestParam("id") Long id) {
         model.addAllAttributes(NavigatorController.getValue(NavigatorController.BOOK_PAGE, true));
-        model.addAttribute("book", bookService.getByID(id));
+        model.addAttribute("book", bookService.getById(id));
         return NavigatorController.BOOK_PAGE;
     }
 

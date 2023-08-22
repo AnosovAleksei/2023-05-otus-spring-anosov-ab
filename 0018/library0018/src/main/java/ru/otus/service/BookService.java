@@ -19,7 +19,7 @@ public interface BookService {
 
     BookDto getByName(String name);
 
-    BookDto getByID(Long bookId);
+    BookDto getById(Long bookId);
 
     void delete(String name);
 

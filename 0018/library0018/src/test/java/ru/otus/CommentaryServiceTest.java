@@ -37,7 +37,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка create")
     @Test
     public void testCreate(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
 
         Commentary commentaryNew = new Commentary();
@@ -53,7 +53,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка create(CommentaryCreateDto)")
     @Test
     public void testCreateDto(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
 
         CommentaryCreateDto commentaryCreateDto = new CommentaryCreateDto();
@@ -71,7 +71,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка read")
     @Test
     public void testRead(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
 
         Commentary commentary = commentaryService.create(new CommentaryCreateDto(book.getId(), str));
@@ -86,7 +86,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка update")
     @Test
     public void testUpdate(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -110,7 +110,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка update(CommentaryUpdateDto)")
     @Test
     public void testUpdateDto(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -134,7 +134,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка delate")
     @Test
     public void testDelate(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
         final String strNew = "update massege";
 
@@ -154,7 +154,7 @@ public class CommentaryServiceTest {
     @DisplayName("Проверка getAllCommentary")
     @Test
     public void testGetAllComentary(){
-        BookDto book = bookService.getByID(1L);
+        BookDto book = bookService.getById(1L);
         final String str = "any massege";
         final String strNew = "new massege";
 

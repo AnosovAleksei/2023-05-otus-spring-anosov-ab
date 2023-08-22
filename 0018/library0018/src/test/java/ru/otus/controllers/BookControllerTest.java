@@ -146,7 +146,7 @@ public class BookControllerTest {
         book.setAuthor(author);
         book.setGenre(genre);
 
-        given(bookService.getByID(id)).willReturn(
+        given(bookService.getById(id)).willReturn(
                 new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName()));
 
 
@@ -183,7 +183,7 @@ public class BookControllerTest {
         book.setGenre(genre);
 
 
-        given(bookService.getByID(id)).willReturn(
+        given(bookService.getById(id)).willReturn(
                 new BookDto(book.getId(),book.getName(), book.getAuthor().getName(), book.getGenre().getName())
         );
         when(bookService.update((BookUpdateDto) any()))
