@@ -1,0 +1,124 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragments/header}"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/comments}" method="get">
+          <label>getAll</label>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить все коментарии</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/commentary}" method="post">
+          <label>create</label>
+          <dev>
+            <label>message</label>
+            <input id="message" name="message" value="">
+          </dev>
+          <dev>
+            <label>bookId</label>
+            <input id="create-book-id" name="bookId" value="">
+          </dev>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">создать коментарий</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/commentary}" method="get">
+          <label>read</label>
+          <div>
+            <label>commentaryId</label>
+            <input id="id" name="id" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить коментарий по ID</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/commentary}" id="update" th:method="put">
+          <label>update</label>
+          <div>
+            <label>commentaryId</label>
+            <input id="commentaryId" name="id" value="">
+          </div>
+          <div>
+            <label>bookId</label>
+            <input id="bookId" name="bookId" value="">
+          </div>
+          <div>
+            <label>message</label>
+            <input id="update-message" name="message" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3" >обновить коментарий</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <hr/>
+    <div th:if="${comments}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">bookId</th>
+          <th scope="col">Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        <div th:each="commentary : ${comments}">
+          <tr>
+            <th scope="row" th:text="${commentary.getId()}"></th>
+            <td th:text="${commentary.getBookId()}"></td>
+            <td th:text="${commentary.getMessage()}"></td>
+          </tr>
+        </div>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${commentary}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">bookId</th>
+          <th scope="col">Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row" th:text="${commentary.getId()}"></th>
+          <td th:text="${commentary.getBookId()}"></td>
+          <td th:text="${commentary.getMessage()}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<div th:replace="~{fragments/footer}"/>
+
+
+
+</body>
+</html>

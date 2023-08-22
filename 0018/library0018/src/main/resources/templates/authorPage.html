@@ -1,0 +1,116 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/header}"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <form class="row g-3" th:action="@{/authors}" method="get">
+                    <label>getAll</label>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">Получить всех авторов</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col">
+            <div class="container">
+                <form class="row g-3" th:action="@{/author}" method="post">
+                    <label>create</label>
+                    <div>
+                        <label>имя автора</label>
+                        <input id="nameAuthor" name="name" value="">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">создать автора</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="container">
+                <form class="row g-3" th:action="@{/author}" method="get">
+                    <label>read</label>
+                    <div>
+                        <label>autorId</label>
+                        <input id="id" name="id" value="">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">Получить автора по ID</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col">
+            <div class="container">
+                <form class="row g-3" th:action="@{/author}" id="update" th:method="put">
+                    <label>update</label>
+                    <div>
+                        <label>autorId</label>
+                        <input id="updateid" name="id" value="">
+                    </div>
+                    <div>
+                        <label>name</label>
+                        <input id="updatename" name="name" value="">
+                    </div>
+                    <div class="col-auto">
+
+
+                        <button type="submit" class="btn btn-primary mb-3" >обновить автора</button>
+<!--                        <button th:onclick="loadDataMethodPut">обновить автора</button>-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <hr/>
+        <div th:if="${authors}">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <div th:each="author : ${authors}">
+                    <tr>
+                        <th scope="row" th:text="${author.getId()}"></th>
+                        <td th:text="${author.getName()}"></td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${author}">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" th:text="${author.getId()}"></th>
+                    <td th:text="${author.getName()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</div>
+<div th:replace="~{fragments/footer}"/>
+
+
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="~{fragments/header}"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/genries}" method="get">
+          <label>getAll</label>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить все жанры</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/genre}" method="post">
+          <label>create</label>
+          <div>
+            <label>название жанра</label>
+            <input id="nameGenre" name="name" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">создать жанр</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/genre}" method="get">
+          <label>read</label>
+          <div>
+            <label>genreId</label>
+            <input id="id" name="id" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Получить жанр по ID</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <div class="container">
+        <form class="row g-3" th:action="@{/genre}" id="update" th:method="put">
+          <label>update</label>
+          <div>
+            <label>genreId</label>
+            <input id="updateid" name="id" value="">
+          </div>
+          <div>
+            <label>genreName</label>
+            <input id="updatename" name="name" value="">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3" >обновить жанр</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <hr/>
+    <div th:if="${genries}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <div th:each="genre : ${genries}">
+          <tr>
+            <th scope="row" th:text="${genre.getId()}"></th>
+            <td th:text="${genre.getName()}"></td>
+          </tr>
+        </div>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${genre}">
+      <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row" th:text="${genre.getId()}"></th>
+          <td th:text="${genre.getName()}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+<div th:replace="~{fragments/footer}"/>
+
+
+
+</body>
+</html>
