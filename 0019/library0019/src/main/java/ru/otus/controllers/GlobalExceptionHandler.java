@@ -56,11 +56,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Обработка неизвестных исключений.
      */
-    @ExceptionHandler({Exception.class, RuntimeException.class})
-    public ResponseEntity<ProblemDetail> handleUnknownException(Exception e) {
+    @ExceptionHandler({Exception.class})
+    public ProblemDetail handleUnknownException(Exception e) {
         log.error("Server error occurred due to " + e.getMessage(), e);
-        return ResponseEntity.internalServerError()
-                .body(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
 }
