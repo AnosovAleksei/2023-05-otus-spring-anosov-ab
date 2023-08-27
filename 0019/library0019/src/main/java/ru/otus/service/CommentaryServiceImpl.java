@@ -10,7 +10,6 @@ import ru.otus.dto.CommentaryUpdateDto;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.CommentaryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,20 +29,13 @@ public class CommentaryServiceImpl implements CommentaryService {
 
 
     @Override
-    public List<String> getAllForString() {
-        Iterable<Commentary> commentaryList = getAll();
-        return new ArrayList<>() {{
-            for (Commentary commentary : commentaryList) {
-                add(ModelConverter.convertComentaryToStr(commentary));
-            }
-        }};
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Commentary create(CommentaryCreateDto commentaryCreateDto) {
         Commentary commentary = new Commentary();
+        bookRepository.findById(commentaryCreateDto.getBookId())
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                "book with id : " + commentaryCreateDto.getBookId() + " does not exist"));
         commentary.setBookId(commentaryCreateDto.getBookId());
         commentary.setMessage(commentaryCreateDto.getMessage());
         commentaryRepository.save(commentary);
@@ -53,17 +45,35 @@ public class CommentaryServiceImpl implements CommentaryService {
     @Override
     @Transactional(readOnly = true)
     public Commentary read(Long commentaryId) {
-        return commentaryRepository.findById(commentaryId).orElse(null);
+
+        return commentaryRepository.findById(commentaryId).orElseThrow(() ->
+                new NotFoundException(
+                        "commentary with id : " + commentaryId + " does not exist"));
     }
 
 
     @Override
     @Transactional
     public Commentary update(CommentaryUpdateDto commentaryUpdateDto) {
-        Commentary commentary = new Commentary();
-        commentary.setBookId(commentaryUpdateDto.getBookId());
+        Commentary commentary = commentaryRepository.findById(commentaryUpdateDto.getId())
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                "commentary with id : " + commentaryUpdateDto.getId() + " does not exist"));
+
+
+        bookRepository.findById(commentaryUpdateDto.getBookId())
+                .orElseThrow(() ->
+                        new NotFoundException(
+                                "book with id : " + commentaryUpdateDto.getBookId() + " does not exist"));
+
+        if (commentary.getBookId() != commentaryUpdateDto.getBookId()) {
+            throw new AppWorkException(
+                    "Изменение автора книги не допускается! Для внесения изменений обращайтесь к администратору");
+        }
+
+
         commentary.setMessage(commentaryUpdateDto.getMessage());
-        commentary.setId(commentaryUpdateDto.getId());
+
         commentaryRepository.save(commentary);
         return commentary;
     }

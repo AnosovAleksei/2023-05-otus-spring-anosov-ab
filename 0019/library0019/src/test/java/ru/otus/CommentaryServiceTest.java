@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 import ru.otus.dto.BookDto;
 import ru.otus.dto.CommentaryCreateDto;
@@ -14,6 +13,7 @@ import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.CommentaryService;
 import ru.otus.service.GenreService;
+import ru.otus.service.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,9 +145,8 @@ public class CommentaryServiceTest {
 
         commentaryService.delete(commentary);
 
-        Commentary commentary2 = commentaryService.read(id);
-
-        Assertions.assertNull(commentary2);
+        NotFoundException e = Assertions.assertThrows(NotFoundException.class, () ->
+                commentaryService.read(id));
 
     }
 
