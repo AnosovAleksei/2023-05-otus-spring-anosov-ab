@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.domain.Author;
 import ru.otus.dto.AuthorCreateDto;
 import ru.otus.dto.AuthorUpdateDto;
+import ru.otus.dto.AuthorUpdateRequestDto;
 import ru.otus.service.AuthorService;
 
 import java.util.ArrayList;
@@ -133,7 +134,8 @@ public class AuthorControllerTest {
         when(authorService.update((AuthorUpdateDto)any())).thenAnswer(i -> author);
 
         try {
-            mvc.perform(put("/api/v1/author").content(mapper.writeValueAsBytes(new AuthorUpdateDto(id, str)))
+            mvc.perform(put("/api/v1/author/"+id)
+                            .content(mapper.writeValueAsBytes(new AuthorUpdateRequestDto(str)))
                             .contentType("application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(id))

@@ -15,6 +15,7 @@ import ru.otus.controllers.CommentaryController;
 import ru.otus.domain.Commentary;
 import ru.otus.dto.CommentaryCreateDto;
 import ru.otus.dto.CommentaryUpdateDto;
+import ru.otus.dto.CommentaryUpdateRequestDto;
 import ru.otus.dto.GenreCreateDto;
 import ru.otus.service.CommentaryService;
 
@@ -154,8 +155,8 @@ public class CommentaryControllerTest {
         when(commentaryService.update((CommentaryUpdateDto)any())).thenAnswer(i -> commentary);
 
         try {
-            Object l1 = mvc.perform(put("/api/v1/commentary")
-                            .content(mapper.writeValueAsBytes(new CommentaryUpdateDto(id, bookId, str)))
+            Object l1 = mvc.perform(put("/api/v1/commentary/"+id)
+                            .content(mapper.writeValueAsBytes(new CommentaryUpdateRequestDto(bookId, str)))
                             .contentType("application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

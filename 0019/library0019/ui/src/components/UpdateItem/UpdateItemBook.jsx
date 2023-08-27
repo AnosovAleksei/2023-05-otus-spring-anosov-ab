@@ -37,15 +37,14 @@ export const UpdateItemBook = ({data, placeholder, loadAllData, authorData, genr
     
     const onSelect = () => {
         if(!!dataL && !!dataL.author){
-              
+            const id = dataL.author.id;
             const dataforSend = {
-                "bookId": dataL.author.id,
                 "authorId": author,
                 "genreId" : genre,
                 "name": dataInput
              };
             
-                fetch(url,
+                fetch(`${url}/${id}`,
                                         {
                                             method: "PUT", // *GET, POST, PUT, DELETE, etc.
                                             mode: "cors", // no-cors, *cors, same-origin

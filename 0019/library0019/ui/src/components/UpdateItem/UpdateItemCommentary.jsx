@@ -30,13 +30,13 @@ export const UpdateItemCommentary = ({data, placeholder, loadAllData, bookData, 
     
     const onSelect = () => {
         if(!!dataL && !!dataL.author){
+            const id = dataL.author.id;
             const dataforSend = {
-                "id": dataL.author.id,
                 "message": dataInput,
                 "bookId": book
             };    
             
-                fetch(url,
+                fetch(`${url}/${id}`,
                                         {
                                             method: "PUT", // *GET, POST, PUT, DELETE, etc.
                                             mode: "cors", // no-cors, *cors, same-origin

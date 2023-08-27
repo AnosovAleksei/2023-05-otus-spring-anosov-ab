@@ -17,6 +17,7 @@ import ru.otus.dto.AuthorCreateDto;
 import ru.otus.dto.AuthorUpdateDto;
 import ru.otus.dto.GenreCreateDto;
 import ru.otus.dto.GenreUpdateDto;
+import ru.otus.dto.GenreUpdateRequestDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.GenreService;
 
@@ -137,7 +138,8 @@ public class GenreControllerTest {
         when(genreService.update((GenreUpdateDto) any())).thenAnswer(i -> genre);
 
         try {
-            mvc.perform(put("/api/v1/genre").content(mapper.writeValueAsBytes(new GenreUpdateDto(id, str)))
+            mvc.perform(put("/api/v1/genre/"+id)
+                            .content(mapper.writeValueAsBytes(new GenreUpdateRequestDto(str)))
                             .contentType("application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(id))

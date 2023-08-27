@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.otus.domain.Commentary;
 import ru.otus.dto.CommentaryCreateDto;
 import ru.otus.dto.CommentaryUpdateDto;
+import ru.otus.dto.CommentaryUpdateRequestDto;
 import ru.otus.service.CommentaryService;
 
 import java.util.List;
@@ -37,9 +38,12 @@ public class CommentaryController {
         return commentaryService.create(commentaryCreateDto);
     }
 
-    @PutMapping("/api/v1/commentary")
-    public Commentary updateCommentary(@Valid @RequestBody CommentaryUpdateDto commentaryUpdateDto) {
-        return commentaryService.update(commentaryUpdateDto);
+    @PutMapping("/api/v1/commentary/{id}")
+    public Commentary updateCommentary(@PathVariable long id,
+                                       @Valid @RequestBody CommentaryUpdateRequestDto commentaryUpdateRequestDto) {
+        return commentaryService.update(new CommentaryUpdateDto(id,
+                                                                commentaryUpdateRequestDto.getBookId(),
+                                                                commentaryUpdateRequestDto.getMessage()));
     }
 
 }

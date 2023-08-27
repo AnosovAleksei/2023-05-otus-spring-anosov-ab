@@ -11,22 +11,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.controllers.BookController;
 import ru.otus.dto.BookCreateDto;
-import ru.otus.dto.BookDeleteDto;
 import ru.otus.dto.BookDto;
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 import ru.otus.dto.BookUpdateDto;
-import ru.otus.dto.GenreCreateDto;
+import ru.otus.dto.BookUpdateRequestDto;
 import ru.otus.service.AuthorService;
 import ru.otus.service.BookService;
 import ru.otus.service.GenreService;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -212,8 +208,8 @@ public class BookControllerTest {
 
 
         try {
-            mvc.perform(put("/api/v1/book")
-                            .content(mapper.writeValueAsBytes(new BookUpdateDto(id, str, authorId, genreId)))
+            mvc.perform(put("/api/v1/book/"+id)
+                            .content(mapper.writeValueAsBytes(new BookUpdateRequestDto(str, authorId, genreId)))
                             .contentType("application/json;charset=UTF-8"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -249,9 +245,8 @@ public class BookControllerTest {
 
 
         try {
-            mvc.perform(delete("/api/v1/book").content(mapper.writeValueAsBytes(new BookDeleteDto((id))))
-                            .contentType("application/json;charset=UTF-8"))
-                    .andExpect(status().isOk());
+            mvc.perform(delete("/api/v1/book/"+id))
+                    .andExpect(status().is2xxSuccessful());
 
         } catch (Exception e) {
             throw new RuntimeException(e);

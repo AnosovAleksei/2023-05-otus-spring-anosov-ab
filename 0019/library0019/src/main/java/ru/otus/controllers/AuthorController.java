@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.otus.domain.Author;
 import ru.otus.dto.AuthorCreateDto;
 import ru.otus.dto.AuthorUpdateDto;
+import ru.otus.dto.AuthorUpdateRequestDto;
 import ru.otus.service.AuthorService;
 
 import java.util.List;
@@ -23,27 +24,24 @@ public class AuthorController {
 
     @GetMapping("/api/v1/author")
     public List<Author> getAuthors() {
-        System.out.println("---------------------------");
         return authorService.getAll();
     }
 
 
     @GetMapping("/api/v1/author/{id}")
     public Author getAuthors(@PathVariable Long id) {
-        System.out.println("++++++++");
         return authorService.read(id);
     }
 
     @PostMapping("/api/v1/author")
     public Author createAuthor(@Valid @RequestBody AuthorCreateDto authorCreateDto) {
-        System.out.println(authorCreateDto);
         return authorService.create(authorCreateDto);
     }
 
-    @PutMapping("/api/v1/author")
-    public Author updateAuthor(@Valid @RequestBody AuthorUpdateDto authorUpdateDto) {
-        System.out.println(authorUpdateDto);
-        return authorService.update(authorUpdateDto);
+    @PutMapping("/api/v1/author/{id}")
+    public Author updateAuthor(@PathVariable long id,
+                               @Valid @RequestBody AuthorUpdateRequestDto authorUpdateRequestDto) {
+        return authorService.update(new AuthorUpdateDto(id, authorUpdateRequestDto.getName()));
     }
 
 }

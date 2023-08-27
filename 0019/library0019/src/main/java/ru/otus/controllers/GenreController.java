@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.otus.domain.Genre;
 import ru.otus.dto.GenreCreateDto;
 import ru.otus.dto.GenreUpdateDto;
+import ru.otus.dto.GenreUpdateRequestDto;
 import ru.otus.service.GenreService;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class GenreController {
         return genreService.create(genreCreateDto);
     }
 
-    @PutMapping("/api/v1/genre")
-    public Genre updateGenre(@Valid @RequestBody GenreUpdateDto genreUpdateDto) {
-        return genreService.update(genreUpdateDto);
+    @PutMapping("/api/v1/genre/{id}")
+    public Genre updateGenre(@PathVariable long id, @Valid @RequestBody GenreUpdateRequestDto genreUpdateRequestDto) {
+        return genreService.update(new GenreUpdateDto(id, genreUpdateRequestDto.getName()));
     }
 
 }

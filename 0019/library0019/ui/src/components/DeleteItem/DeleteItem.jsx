@@ -24,8 +24,8 @@ export const DeleteItem = ({data, loadAllData, itemName, columnNameArray, column
 
     const onDelete = () => {
         if(!!dataL && !!dataL.item){
-            console.log("********", dataL);
-            fetch('/api/v1/book', 
+            const id = dataL.item.id;
+            fetch(`/api/v1/book/${id}`, 
                 {
                     method: "DELETE", // *GET, POST, PUT, DELETE, etc.
                     mode: "cors", // no-cors, *cors, same-origin
@@ -77,6 +77,6 @@ export const DeleteItem = ({data, loadAllData, itemName, columnNameArray, column
                     </tbody>
                 </table>
                 <Button variant="danger" onClick={onDelete}>удалить</Button>
-                {!!statusDelete && <p>{statusDelete}</p>}
+                {!!statusDelete && <p>htth status: {statusDelete}</p>}
     </Card>)
 }
