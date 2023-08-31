@@ -38,11 +38,13 @@ public class BookController {
     }
 
     @PostMapping("/api/v1/book")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public BookDto createBook(@Valid @RequestBody BookCreateDto bookCreateDto) {
         return bookService.create(bookCreateDto);
     }
 
     @PutMapping("/api/v1/book/{id}")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public BookDto updateBook(@PathVariable long id, @Valid @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
         return bookService.update(new BookUpdateDto(id,
                                                     bookUpdateRequestDto.getName(),
