@@ -10,7 +10,7 @@ public interface CommentaryDao {
 
     Commentary create(Book book, String message);
 
-    Commentary read(Long commentary_id);
+    Commentary read(Long commentaryId);
 
     Commentary update(Commentary commentary);
 
