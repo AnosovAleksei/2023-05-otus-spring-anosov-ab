@@ -41,14 +41,14 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public Book upgradeBook(String name, Long author_id, Long genre_id) {
+    public Book upgradeBook(String name, Long authorId, Long genreId) {
 
         String sql = "update book set author_id=:author_id, genre_id=:genre_id where name = :name";
 
         Map<String, Object> namedParameters = new HashMap<>() {{
             put("name", name);
-            put("author_id", author_id);
-            put("genre_id", genre_id);
+            put("author_id", authorId);
+            put("genre_id", genreId);
 
         }};
         namedParameterJdbcTemplate.update(sql, namedParameters);
@@ -56,13 +56,13 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public Book saveBook(String name, Long author_id, Long genre_id) {
+    public Book saveBook(String name, Long authorId, Long genreId) {
         String sql = "insert into book (name, author_id, genre_id) values (:name, :author_id, :genre_id)";
 
         Map<String, Object> namedParameters = new HashMap<>() {{
             put("name", name);
-            put("author_id", author_id);
-            put("genre_id", genre_id);
+            put("author_id", authorId);
+            put("genre_id", genreId);
 
         }};
         namedParameterJdbcTemplate.update(sql, namedParameters);
