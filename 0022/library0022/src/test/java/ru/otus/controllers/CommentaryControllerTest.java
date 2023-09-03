@@ -3,10 +3,13 @@ package ru.otus.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -31,8 +34,11 @@ import static org.mockito.BDDMockito.given;
 
 
 @DisplayName("Проверка работы CommentaryController")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest(CommentaryController.class)
 public class CommentaryControllerTest {
+
+    @Autowired
+    private WebTestClient webTestClient;
 
     @MockBean
     CommentaryRepository commentaryRepository;
@@ -40,8 +46,7 @@ public class CommentaryControllerTest {
     @MockBean
     BookRepository bookRepository;
 
-    @LocalServerPort
-    private int port;
+
 
 
 
@@ -70,20 +75,22 @@ public class CommentaryControllerTest {
 
         given(commentaryRepository.findAll()).willReturn(Flux.fromIterable(commentaryList));
 
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/commentary")
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(Commentary.class)
-                .collectList()
-                .block();
-
-        //then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getMessage()).isEqualTo(commentaryList.get(0).getMessage());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$").isArray()//., Matchers.hasSize(2))
+                .jsonPath("$[0].id").isEqualTo("1L")
+                .jsonPath("$[0].message").isEqualTo("xxxx")
+                .jsonPath("$[1].id").isEqualTo("2L")
+                .jsonPath("$[1].message").isEqualTo("yyyy");;
 
     }
 
@@ -104,19 +111,20 @@ public class CommentaryControllerTest {
         given(bookRepository.findById(anyString())).willReturn(Mono.just(book));
         given(commentaryRepository.save(any(Commentary.class))).willReturn(Mono.just(commentary));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .post().uri("/api/v1/commentary")
                 .body(BodyInserters.fromValue(new CommentaryCreateDto(book.getId(), str)))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Commentary.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getMessage()).isEqualTo(commentary.getMessage());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.message").isEqualTo(str);
     }
 
     @DisplayName("Read")
@@ -136,18 +144,20 @@ public class CommentaryControllerTest {
 
         given(commentaryRepository.findById(anyString())).willReturn(Mono.just(commentary));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/commentary/"+id)
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Commentary.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.message").isEqualTo(str);
 
-        assertThat(result.getMessage()).isEqualTo(commentary.getMessage());
 
     }
 
@@ -171,19 +181,20 @@ public class CommentaryControllerTest {
         given(commentaryRepository.findById(anyString())).willReturn(Mono.just(commentary));
         given(commentaryRepository.save(any(Commentary.class))).willReturn(Mono.just(commentary));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .put().uri("/api/v1/commentary/"+id)
                 .body(BodyInserters.fromValue(new CommentaryUpdateRequestDto(book.getId(), str)))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Commentary.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getMessage()).isEqualTo(commentary.getMessage());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.message").isEqualTo(str);
 
 
     }

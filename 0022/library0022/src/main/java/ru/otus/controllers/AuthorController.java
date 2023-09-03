@@ -53,10 +53,10 @@ public class AuthorController {
                                      @Valid @RequestBody AuthorUpdateRequestDto authorUpdateRequestDto) {
 
         return authorRepository.findById(id)
-                .mapNotNull(a -> {
+                .switchIfEmpty(Mono.error(new NotFoundException("author with id " + id + " does not exist")))
+                .flatMap(a -> {
                     a.setName(authorUpdateRequestDto.getName());
                     return authorRepository.save(a);
-                })
-                .switchIfEmpty(Mono.error(new NotFoundException("author with id " + id + " does not exist"))).block();
+                });
     }
 }

@@ -4,12 +4,10 @@ package ru.otus.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.domain.Author;
@@ -23,19 +21,22 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 @DisplayName("Проверка работы AuthorController")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest(AuthorController.class)
 public class AuthorControllerTest {
 
+    @Autowired
+    private WebTestClient webTestClient;
 
     @MockBean
     AuthorRepository authorRepository;
 
-    @LocalServerPort
-    private int port;
 
     @DisplayName("getAll")
     @Test
@@ -55,19 +56,23 @@ public class AuthorControllerTest {
         given(authorRepository.findAll()).willReturn(Flux.fromIterable(authorList));
 
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-        var result = client
+
+        webTestClientForTest
                 .get().uri("/api/v1/author")
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(Author.class)
-                .collectList()
-                .block();
-
-        //then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo(authorList.get(0).getName());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$").isArray()//., Matchers.hasSize(2))
+                .jsonPath("$[0].id").isEqualTo("1L")
+                .jsonPath("$[0].name").isEqualTo("a1")
+                .jsonPath("$[1].id").isEqualTo("2L")
+                .jsonPath("$[1].name").isEqualTo("a2");;
     }
 
     @DisplayName("Create")
@@ -81,18 +86,19 @@ public class AuthorControllerTest {
         given(authorRepository.findByName(any())).willReturn(Mono.empty());
         given(authorRepository.save(any(Author.class))).willReturn(Mono.just(author));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .post().uri("/api/v1/author").body(BodyInserters.fromValue(new AuthorCreateDto(str)))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getName()).isEqualTo(author.getName());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo("2L")
+                .jsonPath("$.name").isEqualTo("zzzz");
     }
 
     @DisplayName("Read")
@@ -107,18 +113,20 @@ public class AuthorControllerTest {
 
         given(authorRepository.findById(anyString())).willReturn(Mono.just(author));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/author/"+id)
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
-        assertThat(result.getName()).isEqualTo(author.getName());
 
     }
 
@@ -134,19 +142,42 @@ public class AuthorControllerTest {
         given(authorRepository.findById(anyString())).willReturn(Mono.just(author));
         given(authorRepository.save(any(Author.class))).willReturn(Mono.just(author));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .put().uri("/api/v1/author/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getName()).isEqualTo(author.getName());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
     }
+    @DisplayName("Update exeption")
+    @Test
+    public void testUpdateAuthorErr(){
+        String str = "zzzz";
+        String id = "2L";
 
+        Author author = new Author(str);
+        author.setId(id);
+
+        given(authorRepository.findById(anyString())).willReturn(Mono.empty());
+        given(authorRepository.save(any(Author.class))).willReturn(Mono.just(author));
+
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
+
+        webTestClientForTest
+                .put().uri("/api/v1/author/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
+
+    }
 }

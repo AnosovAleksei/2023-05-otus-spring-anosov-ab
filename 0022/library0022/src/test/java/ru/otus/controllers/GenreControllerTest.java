@@ -4,39 +4,39 @@ package ru.otus.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.domain.Author;
 import ru.otus.domain.Genre;
-import ru.otus.dto.GenreCreateDto;
-import ru.otus.dto.GenreUpdateRequestDto;
+import ru.otus.dto.AuthorCreateDto;
+import ru.otus.dto.AuthorUpdateRequestDto;
 import ru.otus.repository.GenreRepository;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 
 @DisplayName("Проверка работы GenreController")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest(GenreController.class)
 public class GenreControllerTest {
+
+
+    @Autowired
+    private WebTestClient webTestClient;
 
     @MockBean
     GenreRepository genreRepository;
 
-    @LocalServerPort
-    private int port;
+
 
 
 
@@ -56,21 +56,23 @@ public class GenreControllerTest {
 
         given(genreRepository.findAll()).willReturn(Flux.fromIterable(genreList));
 
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
 
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/genre")
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(Genre.class)
-                .collectList()
-                .block();
-
-        //then
-        assertThat(result).hasSize(2);
-        assertThat(result.get(0).getName()).isEqualTo(genreList.get(0).getName());
-
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$").isArray()//., Matchers.hasSize(2))
+                .jsonPath("$[0].id").isEqualTo("1L")
+                .jsonPath("$[0].name").isEqualTo("a1")
+                .jsonPath("$[1].id").isEqualTo("2L")
+                .jsonPath("$[1].name").isEqualTo("a2");
     }
 
     @DisplayName("Create")
@@ -84,18 +86,20 @@ public class GenreControllerTest {
         given(genreRepository.findByName(any())).willReturn(Mono.empty());
         given(genreRepository.save(any(Genre.class))).willReturn(Mono.just(genre));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
-                .post().uri("/api/v1/genre").body(BodyInserters.fromValue(new GenreCreateDto(str)))
+        webTestClientForTest
+                .post().uri("/api/v1/genre").body(BodyInserters.fromValue(new AuthorCreateDto(str)))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo("2L")
+                .jsonPath("$.name").isEqualTo("zzzz");
 
-        assertThat(result.getName()).isEqualTo(genre.getName());
 
     }
 
@@ -110,18 +114,19 @@ public class GenreControllerTest {
 
         given(genreRepository.findById(anyString())).willReturn(Mono.just(genre));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/genre/"+id)
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getName()).isEqualTo(genre.getName());
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
     }
 
@@ -136,18 +141,42 @@ public class GenreControllerTest {
         given(genreRepository.findById(anyString())).willReturn(Mono.just(genre));
         given(genreRepository.save(any(Genre.class))).willReturn(Mono.just(genre));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
-                .put().uri("/api/v1/genre/"+id).body(BodyInserters.fromValue(new GenreUpdateRequestDto((str))))
+        webTestClientForTest
+                .put().uri("/api/v1/genre/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Author.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
-        assertThat(result.getName()).isEqualTo(genre.getName());
+    }
+
+    @DisplayName("Update exeption")
+    @Test
+    public void testUpdateGenreError(){
+        String str = "zzzz";
+        String id = "2L";
+
+        Genre genre = new Genre(str);
+        genre.setId(id);
+        given(genreRepository.findById(anyString())).willReturn(Mono.empty());
+        given(genreRepository.save(any(Genre.class))).willReturn(Mono.just(genre));
+
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
+
+        webTestClientForTest
+                .put().uri("/api/v1/genre/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
 
     }
 

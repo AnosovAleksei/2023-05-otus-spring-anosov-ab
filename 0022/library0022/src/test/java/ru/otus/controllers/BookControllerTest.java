@@ -3,10 +3,13 @@ package ru.otus.controllers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -33,8 +36,12 @@ import static org.mockito.BDDMockito.given;
 
 
 @DisplayName("Проверка работы BookController")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebFluxTest(BookController.class)
 public class BookControllerTest {
+
+
+    @Autowired
+    private WebTestClient webTestClient;
 
     @MockBean
     BookRepository bookRepository;
@@ -43,9 +50,6 @@ public class BookControllerTest {
 
     @MockBean
     GenreRepository genreRepository;
-
-    @LocalServerPort
-    private int port;
 
 
 
@@ -75,20 +79,21 @@ public class BookControllerTest {
 
         given(bookRepository.findAll()).willReturn(Flux.fromIterable(bookList));
 
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/book")
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToFlux(Book.class)
-                .collectList()
-                .block();
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$").isArray()//., Matchers.hasSize(2))
+                .jsonPath("$[0].id").isEqualTo("1L")
+                .jsonPath("$[0].name").isEqualTo("zzzzz1");
 
-        //then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getName()).isEqualTo(bookDtoList.get(0).getName());
 
     }
 
@@ -111,19 +116,51 @@ public class BookControllerTest {
         given(genreRepository.findById(anyString())).willReturn(Mono.just(genre));
         given(bookRepository.save(any(Book.class))).willReturn(Mono.just(book));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .post().uri("/api/v1/book")
                 .body(BodyInserters.fromValue(new BookCreateDto(str, author.getId(), genre.getId())))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Book.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
 
-        assertThat(result.getName()).isEqualTo(book.getName());
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
+
+    }
+
+    @DisplayName("Create error")
+    @Test
+    public void testCreateBookError(){
+        String str = "bookName";
+        String id = "1L";
+
+        Author author = new Author("1L", "a1");
+        Genre genre = new Genre("1L", "g1");
+
+        Book book = new Book();
+        book.setName(str);
+        book.setId(id);
+        book.setAuthor(author);
+        book.setGenre(genre);
+
+        given(bookRepository.save(any(Book.class))).willReturn(Mono.just(book));
+
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
+
+        webTestClientForTest
+                .post().uri("/api/v1/book")
+                .body(BodyInserters.fromValue(new BookCreateDto(str, author.getId(), genre.getId())))
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError();
 
     }
 
@@ -144,18 +181,19 @@ public class BookControllerTest {
 
         given(bookRepository.findById(anyString())).willReturn(Mono.just(book));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .get().uri("/api/v1/book/"+id)
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Book.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getName()).isEqualTo(book.getName());
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
     }
 
@@ -182,19 +220,20 @@ public class BookControllerTest {
 
         given(bookRepository.save(any(Book.class))).willReturn(Mono.just(book));
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(20))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .put().uri("/api/v1/book/"+id)
                 .body(BodyInserters.fromValue(new BookUpdateRequestDto(str, author.getId(), genre.getId())))
                 .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Book.class)
-                .timeout(Duration.ofSeconds(3))
-                .block();
-
-        assertThat(result.getName()).isEqualTo(book.getName());
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(id)
+                .jsonPath("$.name").isEqualTo(str);
 
     }
 
@@ -215,15 +254,16 @@ public class BookControllerTest {
 
 
         given(bookRepository.findById(anyString())).willReturn(Mono.just(book));
+        given(bookRepository.delete(any(Book.class))).willReturn(Mono.empty());
 
-        var client = WebClient.create(String.format("http://localhost:%d", port));
+        var webTestClientForTest = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(200))
+                .build();
 
-
-        var result = client
+        webTestClientForTest
                 .delete().uri("/api/v1/book/"+id)
                 .exchange()
-                .timeout(Duration.ofSeconds(3))
-                .block().statusCode().is2xxSuccessful();
+                .expectStatus().is2xxSuccessful();
     }
 
 }

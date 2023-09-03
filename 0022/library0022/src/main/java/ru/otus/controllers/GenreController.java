@@ -45,12 +45,13 @@ public class GenreController {
     @PutMapping("/api/v1/genre/{id}")
     public Mono<Genre> updateGenre(@PathVariable String id,
                                    @Valid @RequestBody GenreUpdateRequestDto genreUpdateRequestDto) {
+
         return genreRepository.findById(id)
-                .mapNotNull(a -> {
+                .switchIfEmpty(Mono.error(new NotFoundException("author with id " + id + " does not exist")))
+                .flatMap(a -> {
                     a.setName(genreUpdateRequestDto.getName());
                     return genreRepository.save(a);
-                })
-                .switchIfEmpty(Mono.error(new NotFoundException("genre with id " + id + " does not exist"))).block();
+                });
     }
 
 }

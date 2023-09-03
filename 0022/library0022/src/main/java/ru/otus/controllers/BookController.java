@@ -42,7 +42,8 @@ public class BookController {
 
     @GetMapping("/api/v1/book/{id}")
     public Mono<BookDto> getBook(@PathVariable String id) {
-        return bookRepository.findById(id).map(b -> new BookDto(b));
+        return bookRepository.findById(id).map(b -> new BookDto(b)).switchIfEmpty(Mono.error(
+                new NotFoundException("author with id " + id + " does not exist")));
     }
 
 
@@ -50,53 +51,66 @@ public class BookController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public Mono<BookDto> createBook(@Valid @RequestBody BookCreateDto bookCreateDto) {
 
-        Author author = authorRepository.findById(bookCreateDto.getAuthorId()).block();
-        if (author == null) {
-            throw new NotFoundException("author with id " + bookCreateDto.getAuthorId() + " does not exist");
-        }
 
+        Mono<Author> author = authorRepository.findById(bookCreateDto.getAuthorId());
+        Mono<Genre> genre = genreRepository.findById(bookCreateDto.getGenreId());
 
-        Genre genre = genreRepository.findById(bookCreateDto.getGenreId()).block();
-        if (genre == null) {
-            throw new NotFoundException("genre with id " + bookCreateDto.getGenreId() + " does not exist");
-        }
+        author.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "author with id " + bookCreateDto.getAuthorId() + " does not exist"))));
+        genre.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "genre with id " + bookCreateDto.getGenreId() + " does not exist"))));
 
-        return bookRepository.save(new Book(bookCreateDto.getName(), author, genre)).map(b -> new BookDto(b));
+        return bookRepository.save(new Book(bookCreateDto.getName(),
+                        author.block(),
+                        genre.block()))
+                .map(b -> new BookDto(b));
     }
 
     @PutMapping("/api/v1/book/{id}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Mono<BookDto> updateBook(@PathVariable String id,
                                     @Valid @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
-
-        Author author = authorRepository.findById(bookUpdateRequestDto.getAuthorId()).block();
-        if (author == null) {
-            throw new NotFoundException("author with id " + bookUpdateRequestDto.getAuthorId() + " does not exist");
-        }
-
-
-        Genre genre = genreRepository.findById(bookUpdateRequestDto.getGenreId()).block();
-        if (genre == null) {
-            throw new NotFoundException("genre with id " + bookUpdateRequestDto.getGenreId() + " does not exist");
-        }
-
-        return bookRepository.findById(id)
-                .mapNotNull(a -> {
-                    a.setName(bookUpdateRequestDto.getName());
-                    a.setAuthor(author);
-                    a.setGenre(genre);
-                    return bookRepository.save(a).map(b -> new BookDto(b));
-                })
-                .switchIfEmpty(Mono.error(new NotFoundException("book with id " + id + " does not exist"))).block();
+        Mono<Author> author = authorRepository.findById(bookUpdateRequestDto.getAuthorId());
+        Mono<Genre> genre = genreRepository.findById(bookUpdateRequestDto.getGenreId());
+        Mono<Book> bookMono = bookRepository.findById(id);
+        author.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "author with id " + bookUpdateRequestDto.getAuthorId() + " does not exist"))));
+        genre.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "genre with id " + bookUpdateRequestDto.getGenreId() + " does not exist"))));
+        bookMono.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "book with id " + id + " does not exist"))));
+        Book book = bookMono.block();
+        book.setName(bookUpdateRequestDto.getName());
+        book.setAuthor(author.block());
+        book.setGenre(genre.block());
+        return bookRepository.save(book).map(bv -> new BookDto(bv));
     }
 
     @DeleteMapping("/api/v1/book/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable String id) {
-        Book book = bookRepository.findById(id).block();
-        if (book == null) {
-            throw new NotFoundException("book with id " + id + " does not exist");
-        }
-        bookRepository.delete(book).block();
+        Mono<Book> bookMono = bookRepository.findById(id);
+        bookMono.switchIfEmpty(
+                Mono.defer(() ->
+                        Mono.error(
+                                new NotFoundException(
+                                        "book with id " + id + " does not exist"))));
+        Book book = bookMono.block();
+        var ccc = bookRepository.delete(book).block();
     }
 }
