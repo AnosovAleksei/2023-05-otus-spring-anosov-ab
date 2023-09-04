@@ -254,13 +254,14 @@ public class BookControllerTest {
 
 
         given(bookRepository.findById(anyString())).willReturn(Mono.just(book));
-        given(bookRepository.delete(any(Book.class))).willReturn(Mono.empty());
+        given(bookRepository.delete(any(Book.class))).willReturn(Mono.when());
 
-        var webTestClientForTest = webTestClient.mutate()
-                .responseTimeout(Duration.ofSeconds(200))
-                .build();
 
-        webTestClientForTest
+//        var webTestClientForTest = webTestClient. mutate()
+//                .responseTimeout(Duration.ofSeconds(20))
+//                .build();
+
+        webTestClient
                 .delete().uri("/api/v1/book/"+id)
                 .exchange()
                 .expectStatus().is2xxSuccessful();

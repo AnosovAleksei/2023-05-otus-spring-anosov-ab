@@ -177,7 +177,7 @@ public class AuthorControllerTest {
                 .put().uri("/api/v1/author/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().is5xxServerError();
+                .expectStatus().isNotFound();
 
     }
 }

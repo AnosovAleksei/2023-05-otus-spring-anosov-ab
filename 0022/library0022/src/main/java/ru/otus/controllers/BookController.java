@@ -2,6 +2,7 @@ package ru.otus.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import ru.otus.repository.AuthorRepository;
 import ru.otus.repository.BookRepository;
 import ru.otus.repository.GenreRepository;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class BookController {
@@ -47,70 +49,68 @@ public class BookController {
     }
 
 
+
+
     @PostMapping("/api/v1/book")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Mono<BookDto> createBook(@Valid @RequestBody BookCreateDto bookCreateDto) {
+        Book book = new Book();
+        book.setName(bookCreateDto.getName());
+        return authorRepository.findById(bookCreateDto.getAuthorId())
+                .switchIfEmpty(Mono.fromCallable(() -> {
+                        throw new NotFoundException("Автор с указанным идентификатором " + bookCreateDto.getAuthorId()
+                                + " не найден");
+                })).map(author -> {book.setAuthor(author); return book;})
+                .flatMap(b1->genreRepository.findById(bookCreateDto.getGenreId())
+                        .switchIfEmpty(Mono.fromCallable(() -> {
+                                throw new NotFoundException("Жанр с указанным идентификатором " +
+                                        bookCreateDto.getGenreId() + " не найден");
+                            })))
+                .map(genre -> {book.setGenre(genre); return book;})
+                .flatMap(bookRepository::save)
+                        .map(b->new BookDto(b));
 
 
-        Mono<Author> author = authorRepository.findById(bookCreateDto.getAuthorId());
-        Mono<Genre> genre = genreRepository.findById(bookCreateDto.getGenreId());
-
-        author.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "author with id " + bookCreateDto.getAuthorId() + " does not exist"))));
-        genre.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "genre with id " + bookCreateDto.getGenreId() + " does not exist"))));
-
-        return bookRepository.save(new Book(bookCreateDto.getName(),
-                        author.block(),
-                        genre.block()))
-                .map(b -> new BookDto(b));
     }
 
     @PutMapping("/api/v1/book/{id}")
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(code = HttpStatus.OK)
     public Mono<BookDto> updateBook(@PathVariable String id,
                                     @Valid @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
-        Mono<Author> author = authorRepository.findById(bookUpdateRequestDto.getAuthorId());
-        Mono<Genre> genre = genreRepository.findById(bookUpdateRequestDto.getGenreId());
-        Mono<Book> bookMono = bookRepository.findById(id);
-        author.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "author with id " + bookUpdateRequestDto.getAuthorId() + " does not exist"))));
-        genre.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "genre with id " + bookUpdateRequestDto.getGenreId() + " does not exist"))));
-        bookMono.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "book with id " + id + " does not exist"))));
-        Book book = bookMono.block();
+
+        Book book = new Book();
         book.setName(bookUpdateRequestDto.getName());
-        book.setAuthor(author.block());
-        book.setGenre(genre.block());
-        return bookRepository.save(book).map(bv -> new BookDto(bv));
+        return bookRepository.findById(id)
+                .switchIfEmpty(Mono.fromCallable(() -> {
+                    throw new NotFoundException("Книга с указанным идентификатором " + id
+                            + " не найдена");
+                })).map(b2 -> {book.setId(b2.getId()); return book;})
+                .flatMap(b1->authorRepository.findById(bookUpdateRequestDto.getAuthorId())
+                    .switchIfEmpty(Mono.fromCallable(() -> {
+                        throw new NotFoundException("Автор с указанным идентификатором " + bookUpdateRequestDto.getAuthorId()
+                            + " не найден");
+                })).map(author -> {book.setAuthor(author); return book;}))
+                .flatMap(b1->genreRepository.findById(bookUpdateRequestDto.getGenreId())
+                        .switchIfEmpty(Mono.fromCallable(() -> {
+                            throw new NotFoundException("Жанр с указанным идентификатором " +
+                                    bookUpdateRequestDto.getGenreId() + " не найден");
+                        })))
+                .map(genre -> {book.setGenre(genre); return book;})
+                .flatMap(bookRepository::save)
+                .map(b->new BookDto(b));
+
     }
 
     @DeleteMapping("/api/v1/book/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable String id) {
-        Mono<Book> bookMono = bookRepository.findById(id);
-        bookMono.switchIfEmpty(
-                Mono.defer(() ->
-                        Mono.error(
-                                new NotFoundException(
-                                        "book with id " + id + " does not exist"))));
-        Book book = bookMono.block();
-        var ccc = bookRepository.delete(book).block();
+
+        bookRepository.findById(id)
+                .switchIfEmpty(Mono.fromCallable(() -> {
+                    throw new NotFoundException("Книга с указанным идентификатором " + id
+                            + " не найдена");
+                }))
+                .map(book->{log.info("delete book {}", book.getName()); return book;})
+                .flatMap(bookRepository::delete).subscribe();
     }
 }

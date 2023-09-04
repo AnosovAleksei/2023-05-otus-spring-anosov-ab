@@ -176,7 +176,7 @@ public class GenreControllerTest {
                 .put().uri("/api/v1/genre/"+id).body(BodyInserters.fromValue(new AuthorUpdateRequestDto((str))))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().is5xxServerError();
+                .expectStatus().isNotFound();
 
     }
 
