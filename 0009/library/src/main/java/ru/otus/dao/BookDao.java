@@ -11,9 +11,9 @@ public interface BookDao {
 
     String delateBook(String name);
 
-    Book upgradeBook(String name, Long author_id, Long genre_id);
+    Book upgradeBook(String name, Long authorId, Long genreId);
 
-    Book saveBook(String name, Long author_id, Long genre_id);
+    Book saveBook(String name, Long authorId, Long genreId);
 
     Book getBookByName(String name);
 
