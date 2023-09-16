@@ -77,6 +77,30 @@ public class GenreControllerTest {
         }
     }
 
+    @DisplayName("check not authorities 2")
+    @WithMockUser( username= "user", roles={"NOT ROLE"})
+    @Test
+    public void checkNotAuthorities2(){
+        try {
+            mvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .apply(springSecurity())
+                    .build();
+
+
+            mvc.perform(get("/api/v1/genre"))
+                    .andExpect(status().isForbidden());
+            mvc.perform(get("/api/v1/genre/1"))
+                    .andExpect(status().isForbidden());
+            mvc.perform(put("/api/v1/genre/1").with(csrf()))
+                    .andExpect(status().isForbidden());
+            mvc.perform(post("/api/v1/genre").with(csrf()))
+                    .andExpect(status().isForbidden());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @DisplayName("Проверка работы getAll")
     @WithMockUser( username= "user", roles={"ADMIN"})
     @Test

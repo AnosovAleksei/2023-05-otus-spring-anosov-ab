@@ -79,6 +79,30 @@ public class AuthorControllerTest {
         }
     }
 
+    @DisplayName("check not authorities2")
+    @WithMockUser( username= "user", roles={"NOT ROLR"})
+    @Test
+    public void checkNotAuthorities2(){
+        try {
+            mvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .apply(springSecurity())
+                    .build();
+
+
+            mvc.perform(get("/api/v1/author"))
+                    .andExpect(status().isForbidden());
+            mvc.perform(get("/api/v1/author/1"))
+                    .andExpect(status().isForbidden());
+            mvc.perform(put("/api/v1/author/1").with(csrf()))
+                    .andExpect(status().isForbidden());
+            mvc.perform(post("/api/v1/author").with(csrf()))
+                    .andExpect(status().isForbidden());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     @DisplayName("getAll")
