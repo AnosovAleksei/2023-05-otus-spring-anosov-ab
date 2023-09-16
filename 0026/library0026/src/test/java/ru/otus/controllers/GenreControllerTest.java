@@ -65,9 +65,9 @@ public class GenreControllerTest {
 
 
             mvc.perform(get("/api/v1/genre"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
             mvc.perform(get("/api/v1/genre/1"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
             mvc.perform(put("/api/v1/genre/1").with(csrf()))
                     .andExpect(status().isForbidden());
             mvc.perform(post("/api/v1/genre").with(csrf()))

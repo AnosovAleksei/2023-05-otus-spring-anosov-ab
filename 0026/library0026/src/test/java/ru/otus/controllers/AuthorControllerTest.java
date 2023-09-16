@@ -67,9 +67,9 @@ public class AuthorControllerTest {
 
 
             mvc.perform(get("/api/v1/author"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
             mvc.perform(get("/api/v1/author/1"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
             mvc.perform(put("/api/v1/author/1").with(csrf()))
                     .andExpect(status().isForbidden());
             mvc.perform(post("/api/v1/author").with(csrf()))
