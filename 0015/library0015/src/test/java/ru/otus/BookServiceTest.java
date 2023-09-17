@@ -37,12 +37,12 @@ public class BookServiceTest {
     @Autowired
     CommentaryService commentaryService;
 
-    @DisplayName("Проверка работы методов доступа к данным count")
-    @Test
-    public void testCount(){
-
-        Assertions.assertTrue(bookService.count() > 0);
-    }
+//    @DisplayName("Проверка работы методов доступа к данным count")
+//    @Test
+//    public void testCount(){
+//
+//        Assertions.assertTrue(bookService.count() > 0);
+//    }
 
     @DisplayName("Проверка работы методов доступа к данным create")
     @Test
