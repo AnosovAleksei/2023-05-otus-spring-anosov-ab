@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
-import ru.otus.domain.Book;
 import ru.otus.domain.Commentary;
 
 import javax.sql.DataSource;
@@ -38,14 +37,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JobCommentaryConfig {
 
-    public final String IMPORT_COMMENTARY_JOB_NAME = "importCommentary";
-
     @Autowired
     private JobRepository jobRepository;
 
     @Autowired
     private PlatformTransactionManager platformTransactionManager;
-
 
 
     @StepScope
@@ -64,8 +60,8 @@ public class JobCommentaryConfig {
     @StepScope
     @Bean
     public ItemProcessor<Commentary,
-                         ru.otus.megration.entity.Commentary>
-                            processorCommentary(ru.otus.megration.service.CommentaryService commentaryService) {
+            ru.otus.megration.entity.Commentary>
+    processorCommentary(ru.otus.megration.service.CommentaryService commentaryService) {
         return commentaryService::convert;
     }
 
@@ -84,8 +80,9 @@ public class JobCommentaryConfig {
 
     @Bean
     public Step transformCommentaryStep(ItemReader<Commentary> readerCommentary,
-                                    JdbcBatchItemWriter<ru.otus.megration.entity.Commentary> writerCommentary,
-                                    ItemProcessor<Commentary, ru.otus.megration.entity.Commentary> itemProcessorCommentary) {
+                                        JdbcBatchItemWriter<ru.otus.megration.entity.Commentary> writerCommentary,
+                                        ItemProcessor<Commentary, ru.otus.megration.entity.Commentary>
+                                                itemProcessorCommentary) {
         return new StepBuilder("transformCommentaryStep", jobRepository)
                 .<Commentary, ru.otus.megration.entity.Commentary>chunk(10, platformTransactionManager)
                 .reader(readerCommentary)
@@ -109,7 +106,7 @@ public class JobCommentaryConfig {
 
     @Bean
     public Job importCommentaryJob(Step transformCommentaryStep) {
-        return new JobBuilder(IMPORT_COMMENTARY_JOB_NAME, jobRepository)
+        return new JobBuilder("importCommentary", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformCommentaryStep)
                 .end()

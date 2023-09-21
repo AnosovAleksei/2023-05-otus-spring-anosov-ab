@@ -38,7 +38,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JobAuthorConfig {
 
-    public final String IMPORT_AUTHOR_JOB_NAME = "importAuthor";
 
     @Autowired
     private JobRepository jobRepository;
@@ -63,8 +62,8 @@ public class JobAuthorConfig {
     @StepScope
     @Bean
     public ItemProcessor<ru.otus.domain.Author,
-                         ru.otus.megration.entity.Author>
-                            processorAuthor(ru.otus.megration.service.AuthorService authorService) {
+            ru.otus.megration.entity.Author>
+    processorAuthor(ru.otus.megration.service.AuthorService authorService) {
         return authorService::convert;
     }
 
@@ -84,7 +83,8 @@ public class JobAuthorConfig {
     @Bean
     public Step transformAuthorStep(ItemReader<Author> readerAuthor,
                                     JdbcBatchItemWriter<ru.otus.megration.entity.Author> writerAuthor,
-                                    ItemProcessor<ru.otus.domain.Author, ru.otus.megration.entity.Author> itemProcessorAuthor) {
+                                    ItemProcessor<ru.otus.domain.Author, ru.otus.megration.entity.Author>
+                                            itemProcessorAuthor) {
         return new StepBuilder("transformPersonsStep", jobRepository)
                 .<ru.otus.domain.Author, ru.otus.megration.entity.Author>chunk(10, platformTransactionManager)
                 .reader(readerAuthor)
@@ -108,7 +108,7 @@ public class JobAuthorConfig {
 
     @Bean
     public Job importAuthorJob(Step transformAuthorStep) {
-        return new JobBuilder(IMPORT_AUTHOR_JOB_NAME, jobRepository)
+        return new JobBuilder("importAuthor", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformAuthorStep)
                 .end()

@@ -8,7 +8,7 @@ import ru.otus.megration.entity.Genre;
 
 @Service
 public class CommentaryService {
-    public ru.otus.megration.entity.Commentary convert(Commentary commentary){
+    public ru.otus.megration.entity.Commentary convert(Commentary commentary) {
 
         ru.otus.megration.entity.Commentary comment = new ru.otus.megration.entity.Commentary();
 

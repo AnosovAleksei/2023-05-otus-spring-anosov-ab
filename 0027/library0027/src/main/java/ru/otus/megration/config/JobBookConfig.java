@@ -26,7 +26,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import ru.otus.domain.Book;
-import ru.otus.domain.Genre;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -38,7 +37,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JobBookConfig {
 
-    public final String IMPORT_BOOK_JOB_NAME = "importBook";
 
     @Autowired
     private JobRepository jobRepository;
@@ -111,7 +109,7 @@ public class JobBookConfig {
 
     @Bean
     public Job importBookJob(Step transformBookStep) {
-        return new JobBuilder(IMPORT_BOOK_JOB_NAME, jobRepository)
+        return new JobBuilder("importBook", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformBookStep)
                 .end()

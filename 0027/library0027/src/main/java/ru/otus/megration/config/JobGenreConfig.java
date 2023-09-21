@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
-import ru.otus.domain.Author;
 import ru.otus.domain.Genre;
 
 
@@ -38,8 +37,6 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class JobGenreConfig {
-
-    public final String IMPORT_GENRE_JOB_NAME = "importGenre";
 
     @Autowired
     private JobRepository jobRepository;
@@ -110,7 +107,7 @@ public class JobGenreConfig {
 
     @Bean
     public Job importGenreJob(Step transformGenreStep) {
-        return new JobBuilder(IMPORT_GENRE_JOB_NAME, jobRepository)
+        return new JobBuilder("importGenre", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformGenreStep)
                 .end()

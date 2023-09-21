@@ -24,7 +24,9 @@ public class BatchCommands {
     private final Job importCommentaryJob;
 
     private final JobLauncher jobLauncher;
+
     private final JobOperator jobOperator;
+
     private final JobExplorer jobExplorer;
 
     @SuppressWarnings("unused")
@@ -40,6 +42,7 @@ public class BatchCommands {
         JobExecution execution = jobLauncher.run(importGenreJob, new JobParametersBuilder()
                 .toJobParameters());
     }
+
     @SuppressWarnings("unused")
     @ShellMethod(value = "startMigrationBook", key = "sm-b")
     public void startMigrationBook() throws Exception {
