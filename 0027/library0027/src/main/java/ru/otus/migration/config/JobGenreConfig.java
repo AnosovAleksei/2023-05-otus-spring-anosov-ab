@@ -1,4 +1,4 @@
-package ru.otus.megration.config;
+package ru.otus.migration.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.lang.NonNull;
-import ru.otus.domain.Author;
+import org.springframework.transaction.PlatformTransactionManager;
+import ru.otus.domain.Genre;
 
 
 import javax.sql.DataSource;
@@ -36,8 +36,7 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class JobAuthorConfig {
-
+public class JobGenreConfig {
 
     @Autowired
     private JobRepository jobRepository;
@@ -46,12 +45,13 @@ public class JobAuthorConfig {
     private PlatformTransactionManager platformTransactionManager;
 
 
+
     @StepScope
     @Bean
-    public MongoItemReader<Author> readerAuthor(MongoTemplate mongoTemplate) {
-        return new MongoItemReaderBuilder<Author>()
-                .name("authorReader")
-                .targetType(Author.class)
+    public MongoItemReader<Genre> readerGenre(MongoTemplate mongoTemplate) {
+        return new MongoItemReaderBuilder<Genre>()
+                .name("genreReader")
+                .targetType(Genre.class)
                 .template(mongoTemplate)
                 .jsonQuery("{}")
                 .sorts(Map.of())
@@ -61,41 +61,40 @@ public class JobAuthorConfig {
 
     @StepScope
     @Bean
-    public ItemProcessor<ru.otus.domain.Author,
-            ru.otus.megration.entity.Author>
-    processorAuthor(ru.otus.megration.service.AuthorService authorService) {
-        return authorService::convert;
+    public ItemProcessor<Genre,
+                         ru.otus.migration.entity.Genre>
+                            processorGenre(ru.otus.migration.service.GenreService genreService) {
+        return genreService::convert;
     }
 
     @StepScope
     @Bean
-    public JdbcBatchItemWriter<ru.otus.megration.entity.Author> writerAuthor(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<ru.otus.megration.entity.Author>()
+    public JdbcBatchItemWriter<ru.otus.migration.entity.Genre> writerGenre(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<ru.otus.migration.entity.Genre>()
                 .dataSource(dataSource)
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("""
-                        insert into author (name)
+                        insert into genre (name)
                          values (:name);""")
 
                 .build();
     }
 
     @Bean
-    public Step transformAuthorStep(ItemReader<Author> readerAuthor,
-                                    JdbcBatchItemWriter<ru.otus.megration.entity.Author> writerAuthor,
-                                    ItemProcessor<ru.otus.domain.Author, ru.otus.megration.entity.Author>
-                                            itemProcessorAuthor) {
+    public Step transformGenreStep(ItemReader<Genre> readerGenre,
+                                    JdbcBatchItemWriter<ru.otus.migration.entity.Genre> writerGenre,
+                                    ItemProcessor<Genre, ru.otus.migration.entity.Genre> itemProcessorGenre) {
         return new StepBuilder("transformPersonsStep", jobRepository)
-                .<ru.otus.domain.Author, ru.otus.megration.entity.Author>chunk(10, platformTransactionManager)
-                .reader(readerAuthor)
-                .processor(itemProcessorAuthor)
-                .writer(writerAuthor)
+                .<Genre, ru.otus.migration.entity.Genre>chunk(10, platformTransactionManager)
+                .reader(readerGenre)
+                .processor(itemProcessorGenre)
+                .writer(writerGenre)
                 .listener(new ItemReadListener<>() {
                     public void beforeRead() {
                         log.info("Начало чтения");
                     }
 
-                    public void afterRead(@NonNull Author o) {
+                    public void afterRead(@NonNull Genre o) {
                         log.info("Конец чтения {}", o.getName());
                     }
 
@@ -107,10 +106,10 @@ public class JobAuthorConfig {
     }
 
     @Bean
-    public Job importAuthorJob(Step transformAuthorStep) {
-        return new JobBuilder("importAuthor", jobRepository)
+    public Job importGenreJob(Step transformGenreStep) {
+        return new JobBuilder("importGenre", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .flow(transformAuthorStep)
+                .flow(transformGenreStep)
                 .end()
                 .listener(new JobExecutionListener() {
                     @Override

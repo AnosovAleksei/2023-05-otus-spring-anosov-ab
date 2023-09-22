@@ -1,4 +1,4 @@
-package ru.otus.megration;
+package ru.otus.migration;
 
 
 import lombok.RequiredArgsConstructor;

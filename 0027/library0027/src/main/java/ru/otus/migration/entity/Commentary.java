@@ -1,4 +1,5 @@
-package ru.otus.megration.entity;
+package ru.otus.migration.entity;
+
 
 
 import jakarta.persistence.Column;
@@ -14,8 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.otus.megration.entity.Author;
-import ru.otus.megration.entity.Genre;
 
 
 @Getter
@@ -23,31 +22,24 @@ import ru.otus.megration.entity.Genre;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "book")
-public class Book {
-
+@Table(name = "commentary")
+public class Commentary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id")
+    @Column(name = "commentary_id")
     private Long id;
 
-    private String name;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @JoinColumn(name = "book_id")
+    private Book book;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
-    private Genre genre;
+    private String message;
 
     @Override
     public String toString() {
-        return "Book{" +
+        return "Commentary{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", message='" + message + '\'' +
                 '}';
     }
 }

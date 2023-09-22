@@ -1,4 +1,4 @@
-package ru.otus.megration.config;
+package ru.otus.migration.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
-import ru.otus.domain.Book;
+import org.springframework.lang.NonNull;
+import ru.otus.domain.Author;
+
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -35,7 +36,7 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class JobBookConfig {
+public class JobAuthorConfig {
 
 
     @Autowired
@@ -45,13 +46,12 @@ public class JobBookConfig {
     private PlatformTransactionManager platformTransactionManager;
 
 
-
     @StepScope
     @Bean
-    public MongoItemReader<Book> readerBook(MongoTemplate mongoTemplate) {
-        return new MongoItemReaderBuilder<Book>()
-                .name("bookReader")
-                .targetType(Book.class)
+    public MongoItemReader<Author> readerAuthor(MongoTemplate mongoTemplate) {
+        return new MongoItemReaderBuilder<Author>()
+                .name("authorReader")
+                .targetType(Author.class)
                 .template(mongoTemplate)
                 .jsonQuery("{}")
                 .sorts(Map.of())
@@ -61,42 +61,41 @@ public class JobBookConfig {
 
     @StepScope
     @Bean
-    public ItemProcessor<Book,
-                         ru.otus.megration.entity.Book>
-                            processorBook(ru.otus.megration.service.BookService bookService) {
-        return bookService::convert;
+    public ItemProcessor<ru.otus.domain.Author,
+            ru.otus.migration.entity.Author>
+    processorAuthor(ru.otus.migration.service.AuthorService authorService) {
+        return authorService::convert;
     }
 
     @StepScope
     @Bean
-    public JdbcBatchItemWriter<ru.otus.megration.entity.Book> writerBook(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<ru.otus.megration.entity.Book>()
+    public JdbcBatchItemWriter<ru.otus.migration.entity.Author> writerAuthor(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<ru.otus.migration.entity.Author>()
                 .dataSource(dataSource)
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("""
-                        insert into book (name, author_id, genre_id)
-                         values (:name, 
-                         select author_id from author where name = :author.name, 
-                         select genre_id from genre where name = :genre.name);""")
+                        insert into author (name)
+                         values (:name);""")
 
                 .build();
     }
 
     @Bean
-    public Step transformBookStep(ItemReader<Book> readerBook,
-                                    JdbcBatchItemWriter<ru.otus.megration.entity.Book> writerBook,
-                                    ItemProcessor<Book, ru.otus.megration.entity.Book> itemProcessorBook) {
-        return new StepBuilder("transformBookStep", jobRepository)
-                .<Book, ru.otus.megration.entity.Book>chunk(10, platformTransactionManager)
-                .reader(readerBook)
-                .processor(itemProcessorBook)
-                .writer(writerBook)
+    public Step transformAuthorStep(ItemReader<Author> readerAuthor,
+                                    JdbcBatchItemWriter<ru.otus.migration.entity.Author> writerAuthor,
+                                    ItemProcessor<ru.otus.domain.Author, ru.otus.migration.entity.Author>
+                                            itemProcessorAuthor) {
+        return new StepBuilder("transformPersonsStep", jobRepository)
+                .<ru.otus.domain.Author, ru.otus.migration.entity.Author>chunk(10, platformTransactionManager)
+                .reader(readerAuthor)
+                .processor(itemProcessorAuthor)
+                .writer(writerAuthor)
                 .listener(new ItemReadListener<>() {
                     public void beforeRead() {
                         log.info("Начало чтения");
                     }
 
-                    public void afterRead(@NonNull Book o) {
+                    public void afterRead(@NonNull Author o) {
                         log.info("Конец чтения {}", o.getName());
                     }
 
@@ -108,10 +107,10 @@ public class JobBookConfig {
     }
 
     @Bean
-    public Job importBookJob(Step transformBookStep) {
-        return new JobBuilder("importBook", jobRepository)
+    public Job importAuthorJob(Step transformAuthorStep) {
+        return new JobBuilder("importAuthor", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .flow(transformBookStep)
+                .flow(transformAuthorStep)
                 .end()
                 .listener(new JobExecutionListener() {
                     @Override

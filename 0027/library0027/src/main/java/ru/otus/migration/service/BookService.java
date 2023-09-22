@@ -1,14 +1,14 @@
-package ru.otus.megration.service;
+package ru.otus.migration.service;
 
 import org.springframework.stereotype.Service;
 import ru.otus.domain.Book;
-import ru.otus.megration.entity.Author;
-import ru.otus.megration.entity.Genre;
+import ru.otus.migration.entity.Author;
+import ru.otus.migration.entity.Genre;
 
 @Service
 public class BookService {
-    public ru.otus.megration.entity.Book convert(Book book) {
-        ru.otus.megration.entity.Book b = new ru.otus.megration.entity.Book();
+    public ru.otus.migration.entity.Book convert(Book book) {
+        ru.otus.migration.entity.Book b = new ru.otus.migration.entity.Book();
 
         b.setName(book.getName());
         b.setGenre(new Genre(book.getGenre().getName()));

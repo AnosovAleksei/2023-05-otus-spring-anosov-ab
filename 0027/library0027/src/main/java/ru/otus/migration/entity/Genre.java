@@ -1,4 +1,4 @@
-package ru.otus.megration.entity;
+package ru.otus.migration.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

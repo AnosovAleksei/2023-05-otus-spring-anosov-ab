@@ -1,4 +1,4 @@
-package ru.otus.megration.config;
+package ru.otus.migration.config;
 
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;

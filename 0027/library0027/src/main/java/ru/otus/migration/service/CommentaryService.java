@@ -1,16 +1,16 @@
-package ru.otus.megration.service;
+package ru.otus.migration.service;
 
 import org.springframework.stereotype.Service;
 import ru.otus.domain.Commentary;
-import ru.otus.megration.entity.Author;
-import ru.otus.megration.entity.Book;
-import ru.otus.megration.entity.Genre;
+import ru.otus.migration.entity.Author;
+import ru.otus.migration.entity.Book;
+import ru.otus.migration.entity.Genre;
 
 @Service
 public class CommentaryService {
-    public ru.otus.megration.entity.Commentary convert(Commentary commentary) {
+    public ru.otus.migration.entity.Commentary convert(Commentary commentary) {
 
-        ru.otus.megration.entity.Commentary comment = new ru.otus.megration.entity.Commentary();
+        ru.otus.migration.entity.Commentary comment = new ru.otus.migration.entity.Commentary();
 
         comment.setMessage(commentary.getMessage());
 

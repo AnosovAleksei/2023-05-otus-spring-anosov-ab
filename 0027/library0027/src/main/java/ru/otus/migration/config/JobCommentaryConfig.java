@@ -1,4 +1,4 @@
-package ru.otus.megration.config;
+package ru.otus.migration.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,15 +60,15 @@ public class JobCommentaryConfig {
     @StepScope
     @Bean
     public ItemProcessor<Commentary,
-            ru.otus.megration.entity.Commentary>
-    processorCommentary(ru.otus.megration.service.CommentaryService commentaryService) {
+            ru.otus.migration.entity.Commentary>
+    processorCommentary(ru.otus.migration.service.CommentaryService commentaryService) {
         return commentaryService::convert;
     }
 
     @StepScope
     @Bean
-    public JdbcBatchItemWriter<ru.otus.megration.entity.Commentary> writerCommentary(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<ru.otus.megration.entity.Commentary>()
+    public JdbcBatchItemWriter<ru.otus.migration.entity.Commentary> writerCommentary(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<ru.otus.migration.entity.Commentary>()
                 .dataSource(dataSource)
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql("""
@@ -80,11 +80,11 @@ public class JobCommentaryConfig {
 
     @Bean
     public Step transformCommentaryStep(ItemReader<Commentary> readerCommentary,
-                                        JdbcBatchItemWriter<ru.otus.megration.entity.Commentary> writerCommentary,
-                                        ItemProcessor<Commentary, ru.otus.megration.entity.Commentary>
+                                        JdbcBatchItemWriter<ru.otus.migration.entity.Commentary> writerCommentary,
+                                        ItemProcessor<Commentary, ru.otus.migration.entity.Commentary>
                                                 itemProcessorCommentary) {
         return new StepBuilder("transformCommentaryStep", jobRepository)
-                .<Commentary, ru.otus.megration.entity.Commentary>chunk(10, platformTransactionManager)
+                .<Commentary, ru.otus.migration.entity.Commentary>chunk(10, platformTransactionManager)
                 .reader(readerCommentary)
                 .processor(itemProcessorCommentary)
                 .writer(writerCommentary)
