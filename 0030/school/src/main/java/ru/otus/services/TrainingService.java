@@ -19,14 +19,27 @@ import ru.otus.domain.TrainingWork;
 public class TrainingService {
     private final SchoolGateway schoolGateway;
 
+    private List<TrainingWork> createData() {
+        return new ArrayList<>() {{
+            add(new TrainingWork("marematics", new ArrayList<>() {{
+                add("Alex");
+                add("Maks");
+            }}));
+            add(new TrainingWork("language", new ArrayList<>() {{
+                add("Anna");
+                add("Maks");
+            }}));
+            add(new TrainingWork("physics", new ArrayList<>() {{
+                add("Alex");
+                add("Anna");
+            }}));
+        }};
+    }
+
     @PostConstruct
     public void runWork() {
 
-        List<TrainingWork> trainingWorks = new ArrayList<>() {{
-            add(new TrainingWork("marematics", new String[]{"Alex", "Maks"}));
-            add(new TrainingWork("language", new String[]{"Anna", "Maks"}));
-            add(new TrainingWork("physics", new String[]{"Alex", "Anna"}));
-        }};
+        List<TrainingWork> trainingWorks = createData();
 
         log.info("start trainingWork: {}",
                 trainingWorks.stream().map(TrainingWork::getTrainingName)

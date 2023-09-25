@@ -21,11 +21,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public List<Child> work(TrainingWork trainingWork) {
         log.info("Lesson {}", trainingWork.getTrainingName());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
         log.info("Lesson {} done", trainingWork.getTrainingName());
 
         return new ArrayList<>() {{

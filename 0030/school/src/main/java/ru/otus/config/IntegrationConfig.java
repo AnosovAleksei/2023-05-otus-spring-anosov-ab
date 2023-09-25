@@ -34,7 +34,7 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public IntegrationFlow cafeFlow(LessonService lessonService) {
+    public IntegrationFlow schoolFlow(LessonService lessonService) {
         return IntegrationFlow.from(itemsChannel())
                 .split()
                 .handle(lessonService, "work")
