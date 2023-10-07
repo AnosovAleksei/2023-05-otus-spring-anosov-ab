@@ -1,0 +1,10 @@
+FROM maven:3.8.3-openjdk-17 as build
+COPY pom.xml .
+COPY src src
+RUN mvn install -DskipTests && mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+FROM openjdk:17-alpine3.14
+COPY --from=build /target/library0033.jar /app/app.jar
+EXPOSE 8000
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
