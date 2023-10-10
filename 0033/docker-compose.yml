@@ -13,16 +13,17 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - "database"
+
   database:
     container_name: database
-    image: database
-    build:
-      context: ./SqlDb
-      dockerfile: Dockerfile
+    image: "postgres:13"
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=db
+
 
