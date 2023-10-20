@@ -1,0 +1,92 @@
+spring:
+  data:
+    rest:
+      base-path: /rest
+
+
+#  web:
+#    resources:
+#      static-locations: classpath:/static/
+
+  jmx:
+    enabled: true
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+      javax:
+        persistence:
+          validation:
+            mode: none
+    hibernate:
+      ddl-auto: none
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      schema-locations: classpath:schema.sql
+
+
+
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#
+#    username: sa
+#    password:
+#    driverClassName: org.h2.Driver
+#    #initialization-mode: always
+#    #schema: schema.sql
+#    #data: data.sql
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
+#  sql:
+#    init:
+#      mode: always
+#  #      data-locations: data.sql
+#  #      schema-locations: schema.sql
+#  h2:
+#    console:
+#      #      enable: true
+#      path: /h2-console
+#      settings:
+#        web-allow-others: true
+
+server:
+  port: 8000
+
+  error:
+    include-exception: true
+    include-stacktrace: always
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  info:
+    build:
+      enabled: true
+  endpoints:
+    web:
+      exposure.include: health, info, prometheus, metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+#  health:
+#    defaults:
+#      enabled: true

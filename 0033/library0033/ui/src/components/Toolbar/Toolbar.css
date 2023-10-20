@@ -1,0 +1,32 @@
+.toolbar-secondary {
+    padding: 5px 0 5px 15px;
+    background: #343A40;
+}
+
+.settings-btn {
+    background: url("../../images/settings.png") white center no-repeat;
+    width: 36px;
+    height: 36px;
+}
+
+.comment-btn {
+    background: url("../../images/comment.png") white center no-repeat;
+    width: 36px;
+    height: 36px;
+}
+
+.btn-alert {
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.toolbar-recommendation {
+    margin-left: 30px;
+    font-size: 16px!important;
+    font-weight: bolder!important;
+    outline: none;
+    pointer-events: none;
+    color: black!important;
+    border: 1px solid white!important;
+    border-radius: 4px!important;
+}
