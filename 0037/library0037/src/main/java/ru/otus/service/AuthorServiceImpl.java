@@ -64,11 +64,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional(readOnly = true)
     public Author read(Long id) {
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return authorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("author with name" + id + "does not exist"));
     }
