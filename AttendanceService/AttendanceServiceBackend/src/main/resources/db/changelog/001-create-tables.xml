@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="anosov_ab@nlmk.com">
+        <createTable tableName="user_access" remarks="user">
+            <column name="user_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="username" type="varchar" autoIncrement="false" remarks="name user">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar" autoIncrement="false" remarks="password (checksumm)"/>
+            <column name="role" type="varchar" autoIncrement="false" remarks="user role"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="anosov_ab@nlmk.com">
+        <createTable tableName="team" remarks="team">
+            <column name="team_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="description" type="varchar" remarks="description team">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="anosov_ab@nlmk.com">
+        <createTable tableName="team_user_access" remarks="maping tiam for user_access">
+            <column name="team_id" type="bigint">
+                <constraints referencedTableName="team"
+                             referencedColumnNames="team_id"
+                             foreignKeyName="fk_team_user_access_constraint_on_team"
+                             nullable="false"
+                             primaryKeyName="team_user_access_pkey"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints referencedTableName="user_access"
+                             referencedColumnNames="user_id"
+                             foreignKeyName="fk_team_user_access_constraint_on_user_access"
+                             nullable="false"
+                             primaryKeyName="team_user_access_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="4" author="anosov_ab@nlmk.com">
+        <createTable tableName="student" remarks="student">
+            <column name="student_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true"/>
+            </column>
+            <column name="team_id" type="bigint">
+                <constraints referencedTableName="team" referencedColumnNames="team_id"
+                             foreignKeyName="fk_student_constraint_on_team" nullable="false"/>
+            </column>
+            <column name="surname" type="varchar" autoIncrement="false" remarks="surname student"/>
+            <column name="name" type="varchar" autoIncrement="false" remarks="name student"/>
+            <column name="patronymic" type="varchar" autoIncrement="false" remarks="patronymic student"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="anosov_ab@nlmk.com">
+        <createTable tableName="student_attendance" remarks="student attendance">
+            <column name="student_id" type="bigint">
+                <constraints referencedTableName="student" referencedColumnNames="student_id"
+                             foreignKeyName="fk_student_constraint_on_team" nullable="false"
+                             primaryKey="true"
+                             unique="false" primaryKeyName="student_attendance_pkey"/>
+            </column>
+            <column name="control_date" type="text" autoIncrement="false" remarks="control date attendance firmat YYYY_MM_DD">
+                <constraints nullable="false" primaryKey="true" unique="false" primaryKeyName="student_attendance_pkey"/>
+            </column>
+            <column name="status" type="bool" autoIncrement="false" remarks="status attendance"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

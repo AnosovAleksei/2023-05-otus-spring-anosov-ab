@@ -28,5 +28,6 @@
         <module>0031/library0031</module>
         <module>0033/library0033</module>
         <module>0037/library0037</module>
+        <module>AttendanceService/AttendanceServiceBackend</module>
     </modules>
 </project>
