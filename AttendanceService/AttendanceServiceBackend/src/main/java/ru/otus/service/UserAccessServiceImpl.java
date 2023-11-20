@@ -23,14 +23,13 @@ public class UserAccessServiceImpl implements UserAccessService {
     }
 
 
-
     @Override
     public List<TeamDto> getTeamsByUserName(String username) {
         UserAccess userAccess = userRepository.findAllByUsername(username);
-        if(userAccess == null){
+        if (userAccess == null) {
             throw new NotFoundException("username with name :" + username + " does not exist");
         }
-        return userAccess.getTeam().stream().map(m->new TeamDto(m.getId(), m.getDescription())).toList();
+        return userAccess.getTeam().stream().map(m -> new TeamDto(m.getId(), m.getDescription())).toList();
     }
 
 

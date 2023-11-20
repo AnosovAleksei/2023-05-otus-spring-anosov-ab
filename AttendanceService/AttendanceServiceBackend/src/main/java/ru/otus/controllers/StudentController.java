@@ -53,8 +53,8 @@ public class StudentController {
     @GetMapping("/api/v1/{teamId}/control-write-date")
     public String getLastDateList(@PathVariable Long teamId) {
         List<String> stringList = studentAttendanceService.getControlDateList(teamId);
-        if(stringList!=null && stringList.size()>0){
-            return stringList.get(stringList.size()-1);
+        if (stringList != null && stringList.size() > 0) {
+            return stringList.get(stringList.size() - 1);
         }
         return null;
     }

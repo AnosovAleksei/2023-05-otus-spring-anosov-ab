@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StudentAttendanceServiceImpl implements StudentAttendanceService{
+public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 
     private final StudentAttendanceRepository studentAttendanceRepository;
 
@@ -28,24 +28,26 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService{
         return studentAttendanceRepository.findDateByTeamId(teamId);
     }
 
+
     @Override
     public List<StudentResponceDto> getStudentByTeamIdForDate(Long teamId, String dataControl) {
 
         return studentAttendanceRepository.
                 findByStudentTeamIdAndControlDateOrderByStudentSurname(teamId, dataControl).
-                stream().map(m->new StudentResponceDto(m.getStudent().getId(),
+                stream().map(m -> new StudentResponceDto(m.getStudent().getId(),
                         m.getStudent().getSurname(),
                         m.getStudent().getName(),
                         m.getStudent().getPatronymic(),
                         m.getStatus())).toList();
     }
 
+
     @Override
     public void setStudentAttendanceControl(List<StudentRequestDto> studentRequestDtoList) {
 
         String controlDate = Converter.dateToString(new Date());
 
-        List<StudentAttendance> studentAttendances = studentRequestDtoList.stream().map(m-> {
+        List<StudentAttendance> studentAttendances = studentRequestDtoList.stream().map(m -> {
             Student student = studentRepository.findById(m.getId())
                     .orElseThrow(() -> new NotFoundException("student with id" + m.getId() + "does not exist"));
             return new StudentAttendance(student, controlDate, m.getStatus());

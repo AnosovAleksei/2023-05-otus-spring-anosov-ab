@@ -36,19 +36,14 @@ public class SecurityConfiguration {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/v1/team").hasAnyRole("TEACHER", "CAPTAIN")
-
-                        .requestMatchers(
+                .requestMatchers(HttpMethod.GET, "/api/v1/team").hasAnyRole("TEACHER", "CAPTAIN")
+                .requestMatchers(
                         "/api/v1/*/control-date").hasAnyRole("TEACHER")
                         .requestMatchers(
                         "/api/v1/*/control-write-date").hasAnyRole("CAPTAIN")
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/v1/*/student").hasAnyRole("CAPTAIN")
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/v1/*/student").hasAnyRole("CAPTAIN")
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/v1/*/student/*").hasAnyRole("TEACHER")
-
+                        .requestMatchers(HttpMethod.GET, "/api/v1/*/student").hasAnyRole("CAPTAIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/*/student").hasAnyRole("CAPTAIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/*/student/*").hasAnyRole("TEACHER")
                         .requestMatchers("/swagger/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()

@@ -8,14 +8,16 @@ import java.util.Date;
 public class Converter {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-    public static String dateToString(Date date){
-        return formatter.format(date);
+
+    private static final DateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
+
+    public static String dateToString(Date date) {
+        return FORMATTER.format(date);
     }
 
-    public static Date stringToDate(String string){
+    public static Date stringToDate(String string) {
         try {
-            return formatter.parse(string);
+            return FORMATTER.parse(string);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

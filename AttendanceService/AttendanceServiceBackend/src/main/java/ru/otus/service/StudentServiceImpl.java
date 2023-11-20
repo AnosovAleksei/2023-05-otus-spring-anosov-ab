@@ -20,7 +20,7 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentResponceDto> getStudentByTeamId(Long teamId) {
         List<Student> students = studentRepository.findByTeamId(teamId);
 
-        if(students == null){
+        if (students == null) {
             throw new NotFoundException("student with team id :" + teamId + " does not exist");
         }
 

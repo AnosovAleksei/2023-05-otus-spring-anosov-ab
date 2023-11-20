@@ -10,16 +10,16 @@ import java.util.List;
 
 
 @Repository
-public interface StudentAttendanceRepository extends JpaRepository<StudentAttendance, Long>{
+public interface StudentAttendanceRepository extends JpaRepository<StudentAttendance, Long> {
     @Query(
             value = """
-            SELECT distinct rre.control_date as dt
-            FROM student_attendance rre
-            left join student s on s.student_id = rre.student_id
-            where s.team_id = :team_id
-            order by dt""",
+                    SELECT distinct rre.control_date as dt
+                    FROM student_attendance rre
+                    left join student s on s.student_id = rre.student_id
+                    where s.team_id = :teamId
+                    order by dt""",
             nativeQuery = true)
-    List<String> findDateByTeamId(@Param("team_id") Long team_id);
+    List<String> findDateByTeamId(@Param("teamId") Long teamId);
 
 
     List<StudentAttendance> findByStudentTeamIdAndControlDateOrderByStudentSurname(Long teamId, String controlDate);
